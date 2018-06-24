@@ -29,7 +29,10 @@ import android.support.annotation.NonNull;
 
 import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.data.EventsContract.EventsEntry;
 import com.aiassoft.capstone.data.FavoriteVideosContract.FavoriteVideosEntry;
+import com.aiassoft.capstone.data.ImagesContract.ImagesEntry;
+import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 
 /**
  * Created by gvryn on 23/06/2018.
@@ -44,11 +47,18 @@ public class CapstoneContentProvider extends ContentProvider {
 
     /**
      * Define final integer constants for the directory of FAVORITE_VIDEOS and a single item.
-     * It's convention to use 100, 200, 300, etc for directories,
-     * and related ints (101, 102, ..) for items in that directory.
+     * It's convention to use 10, 20, 30, etc for directories,
+     * and related ints (11, 12, ..) for items in that directory.
      */
-    public static final int FAVORITE_VIDEOS = 100;
-    public static final int FAVORITE_VIDEO_WITH_ID = 101;
+    public static final int VEHICLES = 10;
+    public static final int VEHICLE_WITH_ID = 11;
+    public static final int EVENTS = 20;
+    public static final int EVENT_WITH_ID = 21;
+    public static final int IMAGES = 30;
+    public static final int IMAGE_WITH_ID = 31;
+    public static final int FAVORITE_VIDEOS = 40;
+    public static final int FAVORITE_VIDEO_WITH_ID = 41;
+    public static final int FAVORITE_VIDEO_WITH_YOUTUBE_ID = 42;
 
     /**
      * Now let's actually build our UriMatcher and associate these constants with the correct URI.
@@ -67,13 +77,30 @@ public class CapstoneContentProvider extends ContentProvider {
          * Using the method addURI(String authority, String path, int code)
          * directory
          */
+        // Vehicles
+        uriMatcher.addURI(Const.AUTHORITY, VehiclesContract.PATH_VEHICLES, VEHICLES);
+        /** single item */
+        uriMatcher.addURI(Const.AUTHORITY, VehiclesContract.PATH_VEHICLES + "/#",
+                VEHICLE_WITH_ID);
+        // Events
+        uriMatcher.addURI(Const.AUTHORITY, EventsContract.PATH_EVENTS, EVENTS);
+        /** single item */
+        uriMatcher.addURI(Const.AUTHORITY, EventsContract.PATH_EVENTS + "/#",
+                EVENT_WITH_ID);
+        // Images
+        uriMatcher.addURI(Const.AUTHORITY, ImagesContract.PATH_IMAGES, IMAGES);
+        /** single item */
+        uriMatcher.addURI(Const.AUTHORITY, ImagesContract.PATH_IMAGES + "/#",
+                IMAGE_WITH_ID);
+        // Favorite Videos
         uriMatcher.addURI(Const.AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS, FAVORITE_VIDEOS);
         /** single item */
         uriMatcher.addURI(Const.AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS + "/#",
                 FAVORITE_VIDEO_WITH_ID);
 
         return uriMatcher;
-    }
+
+    } // UriMatcher buildUriMatcher()
 
     /**
      * initialize the Popular Movies Content Provider
@@ -94,9 +121,9 @@ public class CapstoneContentProvider extends ContentProvider {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
         /**
-         * Write URI matching code to identify the match for the FAVORITE_VIDEOS directory
-         * This match will be either 100 for all FAVORITE_VIDEOS
-         * or 101 for a movie with ID, or an unrecognized URI
+         * Write URI matching code to identify the match for the directories
+         * This match will be either 10,20,30.. for all entries
+         * or 11,21,31.. for a entry with ID, or an unrecognized URI
          */
         int match = sUriMatcher.match(uri);
 
@@ -107,46 +134,66 @@ public class CapstoneContentProvider extends ContentProvider {
         Uri returnUri;
 
         /**
-         * We want to check these cases and respond to only the FAVORITE_VIDEOS case.
-         * If the FAVORITE_VIDEOS case is met, we can insert a new row of data into this directory.
-         * We can't insert data into just one row like in the FAVORITE_VIDEOS with id case.
+         * Contract Values
+         */
+        String tableName;
+        Uri contentUri;
+
+        /**
+         * We want to check these cases and respond to only the 10,20,30.. cases.
+         * If the cases are met, we can insert a new row of data into this directory.
+         * We can't insert data into just one row like in the with id case.
          * And if we receive any other type URI or an invalid one, the default behavior
          * will be to throw an UnsupportedOperationException and print out an
          * Unknown uri message.
          */
         switch(match) {
-            case FAVORITE_VIDEOS:
-                /** Inserting values into favoriteMovies table */
-                long id = db.insert(FavoriteVideosEntry.TABLE_NAME, null, values);
-                /**
-                 *  If the insert wasn't successful, this ID will be -1
-                 *  But if ths insert is successful, we want the provider's insert method to take
-                 *  that unique row ID and create and return a URI for that newly inserted data.
-                 */
-
-                /** So first, let's write an if that checks that this insert was successful. */
-                if ( id > 0 ) {
-                    /**
-                     * Success, the insert worked and we can construct the new URI
-                     * that will be our main content URI, which has the authority
-                     * and tasks path, with the id appended to it.
-                     */
-                    returnUri = ContentUris.withAppendedId(
-                            FavoriteVideosEntry.CONTENT_URI, id);
-                    /**
-                     * contentUris is an Android class that contains helper methods for
-                     * constructing URIs
-                     */
-                } else {
-                    /** Otherwise, we'll throw a SQLiteException, because the insert failed. */
-                    throw new android.database.SQLException(getContext().getString(R.string.failed_to_insert_row_into) + uri);
-                }
-
+            case VEHICLES:
+                tableName = VehiclesEntry.TABLE_NAME;
+                contentUri = VehiclesEntry.CONTENT_URI;
                 break;
-            /** Default case throws an UnsupportedOperationException */
+            case EVENTS:
+                tableName = EventsEntry.TABLE_NAME;
+                contentUri = EventsEntry.CONTENT_URI;
+                break;
+            case IMAGES:
+                tableName = ImagesEntry.TABLE_NAME;
+                contentUri = ImagesEntry.CONTENT_URI;
+                break;
+            case FAVORITE_VIDEOS:
+                tableName = FavoriteVideosEntry.TABLE_NAME;
+                contentUri = FavoriteVideosEntry.CONTENT_URI;
+                break;
             default:
+                /** Default case throws an UnsupportedOperationException */
                 throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
+
+        /** Inserting values into the table */
+        long id = db.insert(tableName, null, values);
+        /**
+         *  If the insert wasn't successful, this ID will be -1
+         *  But if ths insert is successful, we want the provider's insert method to take
+         *  that unique row ID and create and return a URI for that newly inserted data.
+         */
+
+        /** So first, let's write an if that checks that this insert was successful. */
+        if ( id > 0 ) {
+            /**
+             * Success, the insert worked and we can construct the new URI
+             * that will be our main content URI, which has the authority
+             * and tasks path, with the id appended to it.
+             */
+            returnUri = ContentUris.withAppendedId(contentUri, id);
+            /**
+             * contentUris is an Android class that contains helper methods for
+             * constructing URIs
+             */
+        } else {
+            /** Otherwise, we'll throw a SQLiteException, because the insert failed. */
+            throw new android.database.SQLException(getContext().getString(R.string.failed_to_insert_row_into) + uri);
+        }
+
 
         /**
          * Notify the resolver if the uri has been changed, and return the newly inserted URI
@@ -169,27 +216,30 @@ public class CapstoneContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
 
         Cursor retCursor;
+        String id;
+        String mSelection;
+        String[] mSelectionArgs;
 
         switch (match) {
-            /** Query for the FAVORITE_VIDEOS directory */
-            case FAVORITE_VIDEOS:
+            case VEHICLES:
+                /** Query for the VEHICLES directory */
                 /**
                  * This starting code will look pretty similar for all of our CRUD functions.
-                 * The query for our FAVORITE_VIDEOS case, will return all the rows in our database
+                 * The query for our VEHICLES case, will return all the rows in our database
                  * as a cursor.
                  */
-                retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
+                retCursor = db.query(VehiclesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
-            /** Query for one movie in the FAVORITE_VIDEOS directory */
-            case FAVORITE_VIDEO_WITH_ID:
+            case VEHICLE_WITH_ID:
+                /** Query for one vehicle in the VEHICLES directory */
                 /**
                  * To Query a row of data by its ID, we'll use the selection and
-                 * selection args parameters of the delete method.
+                 * selection args parameters of the ??? method.
                  * First we'll have to get the row ID from the past URI.
-                 * The URI will look similar to the FAVORITE_VIDEOS directory URI.
-                 * It'll start with the same scheme authority and FAVORITE_VIDEOS path.
+                 * The URI will look similar to the directory URI.
+                 * It'll start with the same scheme authority and path.
                  * But this time also with an ID as the part of the path.
                  * And we can grab this ID by Using a call to get path segments on that URI.
                  * And get with the index 1 passed in.
@@ -198,14 +248,14 @@ public class CapstoneContentProvider extends ContentProvider {
                  *
                  * Get the id from the URI
                  */
-                String id = uri.getPathSegments().get(1);
+                id = uri.getPathSegments().get(1);
 
                 /**
-                 * Selection is the theMovieDBId column = ?,
+                 * Selection is the Vechicle _id column = ?,
                  * and the Selection args = the row ID from the URI
                  * The question mark indicates that this is asking for
                  */
-                String mSelection = FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + "=?";
+                mSelection = VehiclesEntry._ID + "=?";
 
                 /**
                  * the rest of this equality from the selection args parameter.
@@ -213,9 +263,75 @@ public class CapstoneContentProvider extends ContentProvider {
                  * which we just got from the past URI.
                  * And selection args has to be an array of strings.
                  */
-                String[] mSelectionArgs = new String[]{id};
+                mSelectionArgs = new String[]{id};
 
                 /** finally the query is constructed as normally, passing in the selection/args */
+                retCursor = db.query(VehiclesEntry.TABLE_NAME,
+                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
+                break;
+
+            case EVENTS:
+                /** Query for the EVENTS directory */
+                retCursor = db.query(EventsEntry.TABLE_NAME,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            case EVENT_WITH_ID:
+                /** Query for one event in the EVENTS directory */
+                id = uri.getPathSegments().get(1);
+
+                mSelection = EventsEntry._ID + "=?";
+
+                mSelectionArgs = new String[]{id};
+
+                retCursor = db.query(EventsEntry.TABLE_NAME,
+                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
+                break;
+
+            case IMAGES:
+                /** Query for the IMAGES directory */
+                retCursor = db.query(ImagesEntry.TABLE_NAME,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            case IMAGE_WITH_ID:
+                /** Query for one event in the IMAGES directory */
+                id = uri.getPathSegments().get(1);
+
+                mSelection = ImagesEntry._ID + "=?";
+
+                mSelectionArgs = new String[]{id};
+
+                retCursor = db.query(ImagesEntry.TABLE_NAME,
+                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
+                break;
+
+            case FAVORITE_VIDEOS:
+                /** Query for the FAVORITE_VIDEOS directory */
+                retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            case FAVORITE_VIDEO_WITH_ID:
+                /** Query for one movie in the FAVORITE_VIDEOS directory with its db id */
+                id = uri.getPathSegments().get(1);
+
+                mSelection = FavoriteVideosEntry._ID + "=?";
+
+                mSelectionArgs = new String[]{id};
+
+                retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
+                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
+                break;
+
+            case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
+                /** Query for one movie in the FAVORITE_VIDEOS directory with its youtube id */
+                id = uri.getPathSegments().get(1);
+
+                mSelection = FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + "=?";
+
+                mSelectionArgs = new String[]{id};
+
                 retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
@@ -235,6 +351,9 @@ public class CapstoneContentProvider extends ContentProvider {
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
+        String id;
+        String mSelection;
+        String[] mSelectionArgs;
 
         /**
          * returns the number of deleted records
@@ -243,15 +362,51 @@ public class CapstoneContentProvider extends ContentProvider {
         int deletedRecord = 0;
 
         switch (match) {
-            case FAVORITE_VIDEO_WITH_ID:
+            case VEHICLE_WITH_ID:
                 /**
                  * build the deletion selections/args as in the delete statement
-                  */
-                String id = uri.getPathSegments().get(1);
-                String mSelection = FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + "=?";
-                String[] mSelectionArgs = new String[]{id};
+                 */
+                id = uri.getPathSegments().get(1);
+                mSelection = VehiclesEntry._ID + "=?";
+                mSelectionArgs = new String[]{id};
 
                 /** finally the deletion is constructed as normally, passing in the selection/args */
+                deletedRecord =  db.delete(VehiclesEntry.TABLE_NAME, mSelection, mSelectionArgs);
+
+                break;
+
+            case EVENT_WITH_ID:
+                id = uri.getPathSegments().get(1);
+                mSelection = EventsEntry._ID + "=?";
+                mSelectionArgs = new String[]{id};
+
+                deletedRecord =  db.delete(EventsEntry.TABLE_NAME, mSelection, mSelectionArgs);
+
+                break;
+
+            case IMAGE_WITH_ID:
+                id = uri.getPathSegments().get(1);
+                mSelection = ImagesEntry._ID + "=?";
+                mSelectionArgs = new String[]{id};
+
+                deletedRecord =  db.delete(ImagesEntry.TABLE_NAME, mSelection, mSelectionArgs);
+
+                break;
+
+            case FAVORITE_VIDEO_WITH_ID:
+                id = uri.getPathSegments().get(1);
+                mSelection = FavoriteVideosEntry._ID + "=?";
+                mSelectionArgs = new String[]{id};
+
+                deletedRecord =  db.delete(FavoriteVideosEntry.TABLE_NAME, mSelection, mSelectionArgs);
+
+                break;
+
+            case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
+                id = uri.getPathSegments().get(1);
+                mSelection = FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + "=?";
+                mSelectionArgs = new String[]{id};
+
                 deletedRecord =  db.delete(FavoriteVideosEntry.TABLE_NAME
                         , mSelection, mSelectionArgs);
 

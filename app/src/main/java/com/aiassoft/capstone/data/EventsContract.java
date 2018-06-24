@@ -51,7 +51,7 @@ public class EventsContract {
      */
     public static final class EventsEntry implements BaseColumns {
         /** This final content URI will include the scheme, the authority,
-         *  and our FAVORITE_VIDEOS path.
+         *  and our EVENTS path.
          */
         public static final Uri CONTENT_URI = Const.BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_EVENTS).build();

@@ -69,6 +69,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
     }
 	
     private void createDatabase(SQLiteDatabase sqLiteDatabase) {
+        // Vehicles
         final String SQL_CREATE_VEHICLES_TABLE = "CREATE TABLE " +
                 VehiclesEntry.TABLE_NAME + " (" +
                 VehiclesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -91,6 +92,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(SQL_CREATE_VEHICLES_TABLE);
 
+        // Events
         final String SQL_CREATE_EVENTS_TABLE = "CREATE TABLE " +
                 EventsEntry.TABLE_NAME + " (" +
                 EventsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -105,6 +107,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(SQL_CREATE_EVENTS_TABLE);
 
+        // Images
         final String SQL_CREATE_IMAGES_TABLE = "CREATE TABLE " +
                 ImagesEntry.TABLE_NAME + " (" +
                 ImagesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -115,6 +118,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(SQL_CREATE_IMAGES_TABLE);
 
+        // FavoriteVideos
         final String SQL_CREATE_FAVORITEVIDEOS_TABLE = "CREATE TABLE " +
                 FavoriteVideosEntry.TABLE_NAME + " (" +
                 FavoriteVideosEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

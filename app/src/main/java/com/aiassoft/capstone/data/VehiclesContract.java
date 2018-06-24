@@ -51,7 +51,7 @@ public class VehiclesContract {
      */
     public static final class VehiclesEntry implements BaseColumns {
         /** This final content URI will include the scheme, the authority,
-         *  and our FAVORITE_VIDEOS path.
+         *  and our VEHICLES path.
          */
         public static final Uri CONTENT_URI = Const.BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_VEHICLES).build();
