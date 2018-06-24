@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Capstone</string>
+
+    <!-- Developer Messages -->
+    <string name="no_instances_for_you">No Instances for you!</string>
+
+    <!-- System Messages -->
+    <string name="failed_to_insert_row_into">Failed to insert row into: </string>
+    <string name="unknown_uri">Unknown URI: </string>
+
 </resources>
