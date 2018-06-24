@@ -6,6 +6,7 @@
 .docs
 .GV Docs
 .Books
+.SourceUtils
 
 #my api keys
 sensitive_data.txt
