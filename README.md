@@ -41,4 +41,7 @@ The Capstone project will give you the experience you need to own the full devel
 
 ## June 23, 2018 - Initial Commit
 
+## Resources
+Photo by Jonathan Daniels on Unsplash
+
 > Written with [StackEdit](https://stackedit.io/).

@@ -27,11 +27,13 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.aiassoft.capstone"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // https://chris.banes.me/2016/02/25/appcompat-vector/#enabling-the-flag
+        vectorDrawables.useSupportLibrary = true
 
         // Begin of injecting the sensitive data
         // Add the sensitive data as Constant Fields to the BuildConfig class
@@ -42,8 +44,16 @@ android {
     }
     buildTypes {
         release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+        debug {
+            debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 }
@@ -53,4 +63,5 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
     implementation "com.android.support:design:$androidSupportVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.rany.albeg.wein:spring-fab-menu:1.0.1'
 }
