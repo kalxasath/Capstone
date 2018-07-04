@@ -30,8 +30,10 @@
     <string name="hint_vehicle_notes">Notes</string>
 
     <!-- Picture Chooser -->
-    <string name="select_image_source">Select Image Source</string>
+    <string name="_x_select_image_source">Select Image Source</string>
 
+    <!-- Errors -->
+    <string name="error_while_creating_file">Error occurred while creating the Image File</string>
 
 
     <!-- Dummy Large Text -->

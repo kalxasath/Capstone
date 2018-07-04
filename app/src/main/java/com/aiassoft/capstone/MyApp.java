@@ -32,7 +32,7 @@ public class MyApp extends Application {
     // static resources
     private static MyApp mInstance;
 
-    public static final String APP_TAG = "Capstone:";
+    public static final String APP_TAG = "Capstone: ";
 
     /** a little speed up by keeping function results in static variables*/
     public static final boolean isTablet = AppUtils.isTablet();

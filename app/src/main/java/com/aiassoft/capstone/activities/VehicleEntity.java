@@ -2,37 +2,47 @@ package com.aiassoft.capstone.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.aiassoft.capstone.BuildConfig;
+import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.utilities.FileUtils;
 import com.rany.albeg.wein.springfabmenu.SpringFabMenu;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 public class VehicleEntity extends AppCompatActivity {
 
+    private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntity.class.getSimpleName();
+
     private static final boolean USER_IS_GOING_TO_EXIT = false;
+    private static final int REQUEST_TAKE_PHOTO = 0;
+    private static final int REQUEST_PICK_PHOTO = 1;
+
+    private static String mTempPhotoPath = null;
+    private static File mTempPhotoFile = null;
 
     private Context mContext;
     private Toolbar mToolbar;
     private ViewGroup mRootLayout;
     private ViewGroup mLayoutContainer;
+    private ImageView mToolbarPhoto;
     private Toast mBacktoast;
 
     @Override
@@ -60,6 +70,9 @@ public class VehicleEntity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        // toolbar photo
+        mToolbarPhoto = findViewById(R.id.toolbar_photo);
+
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,39 +86,14 @@ public class VehicleEntity extends AppCompatActivity {
             public void onSpringFabMenuItemClick(View view) {
                 switch (view.getId()) {
                     case R.id.fab_camera:
-                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        Uri uri  = Uri.fromFile(getTempFile(mContext));
-                        takePicture.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
-                        startActivityForResult(takePicture, 0);//PICK_IMAGE_CAMERA
+                        startCamera();
                         break;
                     case R.id.fab_gallery:
-                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(pickPhoto , 1);//PICK_IMAGE_GALLERY
+                        startGallery();
                         break;
                 }
             }
         });
-
-        /*
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = getPickImageIntent(mContext);
-                startActivityForResult(intent, 1);
-//                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                startActivityForResult(takePicture, 0);//zero can be replaced with any action code
-//                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
-                //selectImage((Activity) mContext);
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-            }
-        });
-        */
-
 
         setTitle("Peugeot 307sw");
     }
@@ -182,180 +170,93 @@ public class VehicleEntity extends AppCompatActivity {
     }
     */
 
-    // (resultCode == RESULT_CANCELED)
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mTempPhotoFile.delete();
+    }
+
+    /**
+     * Camera & Gallery Handling
+     */
+    void startCamera() {
+        try {
+            dispatchTakePictureIntent();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, getString(R.string.error_while_creating_file));
+            Snackbar.make(mRootLayout, getString(R.string.error_while_creating_file), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
+    }
+
+    private void dispatchTakePictureIntent() throws IOException {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
+            // delete previous created temp file
+            if (mTempPhotoFile != null) {
+                mTempPhotoFile.delete();
+            }
+
+            // Create the Temp File where the photo should go
+            try {
+                mTempPhotoFile = FileUtils.createTempFile(mContext, "ve_", ".jpg");
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                return;
+            }
+
+            // Continue only if the File was successfully created
+            if (mTempPhotoFile != null) {
+                //Uri photoURI = Uri.fromFile(photoFile);
+                mTempPhotoPath = "file:" + mTempPhotoFile.getAbsolutePath();
+                Uri photoURI = FileProvider.getUriForFile(mContext,BuildConfig.APPLICATION_ID + ".provider", mTempPhotoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    void startGallery() {
+        try {
+            dispatchPickPictureIntent();
+        } catch (IOException e) {
+        }
+    }
+
+    private void dispatchPickPictureIntent() throws IOException {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        // Ensure that there's a gallery activity to handle the intent
+        if (pickPhoto.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(pickPhoto, REQUEST_PICK_PHOTO);
+        }
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent identData) {
         super.onActivityResult(requestCode, resultCode, identData);
         switch(requestCode) {
-            case 0:
-                if(resultCode == RESULT_OK) {
-                    Uri selectedImage = identData.getData();
-                    if (selectedImage == null) {
-                        Snackbar.make(mLayoutContainer, "NULL RETURN", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    } else {
-                        Snackbar.make(mLayoutContainer, selectedImage.toString(), Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                    //imageview.setImageURI(selectedImage);
+            case REQUEST_TAKE_PHOTO:
+                switch(resultCode) {
+                    case RESULT_OK:
+                        mToolbarPhoto.setImageURI(Uri.parse(mTempPhotoPath));
+                        return;
+                    case RESULT_CANCELED:
+                        // TODO remove temp file
+                        return;
                 }
-
                 break;
-            case 1:
+            case REQUEST_PICK_PHOTO:
                 if(resultCode == RESULT_OK) {
                     Uri selectedImage = identData.getData();
                     Snackbar.make(mLayoutContainer, selectedImage.toString(), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    //imageview.setImageURI(selectedImage);
+                    mToolbarPhoto.setImageURI(selectedImage);
                 }
                 break;
         }
     }
-
-    public static Intent getPickImageIntent(Context context) {
-        Intent chooserIntent = null;
-
-        List<Intent> intentList = new ArrayList<>();
-
-        Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePhotoIntent.putExtra("return-data", true);
-        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(context)));
-        intentList = addIntentsToList(context, intentList, pickIntent);
-        intentList = addIntentsToList(context, intentList, takePhotoIntent);
-
-        if (intentList.size() > 0) {
-            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),
-                    context.getString(R.string.select_image_source));
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
-        }
-
-        return chooserIntent;
-    }
-
-    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resInfo) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            Intent targetedIntent = new Intent(intent);
-            targetedIntent.setPackage(packageName);
-            list.add(targetedIntent);
-        }
-        return list;
-    }
-
-    private static File getTempFile(Context context) {
-        File imageFile = new File(context.getExternalCacheDir(), "tempImage");
-        imageFile.getParentFile().mkdirs();
-        return imageFile;
-    }
-
-    /**
-     * Image Handling Functions
-     * https://stackoverflow.com/questions/10165302/dialog-to-pick-image-from-gallery-or-from-camera
-     */
-    /*
-    private ImageView imageview;
-    private Button btnSelectImage;
-    private Bitmap bitmap;
-    private File destination = null;
-    private InputStream inputStreamImg;
-    private String imgPath = null;
-    private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
-    // Select image from camera and gallery
-    private void selectImage(Activity activity) {
-        try {
-            PackageManager pm = getPackageManager();
-            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getPackageName());
-            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
-                final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(activity);
-                builder.setTitle("Select Option");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Take Photo")) {
-                            dialog.dismiss();
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
-                        } else if (options[item].equals("Choose From Gallery")) {
-                            dialog.dismiss();
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                builder.show();
-            } else
-                Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        inputStreamImg = null;
-        if (requestCode == PICK_IMAGE_CAMERA) {
-            try {
-                Uri selectedImage = data.getData();
-                bitmap = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-
-                Log.e("Activity", "Pick from Camera::>>> ");
-
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                destination = new File(Environment.getExternalStorageDirectory() + "/" +
-                        getString(R.string.app_name), "IMG_" + timeStamp + ".jpg");
-                FileOutputStream fo;
-                try {
-                    destination.createNewFile();
-                    fo = new FileOutputStream(destination);
-                    fo.write(bytes.toByteArray());
-                    fo.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                imgPath = destination.getAbsolutePath();
-                imageview.setImageBitmap(bitmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == PICK_IMAGE_GALLERY) {
-            Uri selectedImage = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                Log.e("Activity", "Pick from Gallery::>>> ");
-
-                imgPath = getRealPathFromURI(selectedImage);
-                destination = new File(imgPath.toString());
-                imageview.setImageBitmap(bitmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Audio.Media.DATA};
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-    */
-
 
 }
