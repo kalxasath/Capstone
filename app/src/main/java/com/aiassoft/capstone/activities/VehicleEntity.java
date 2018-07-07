@@ -1,21 +1,30 @@
 package com.aiassoft.capstone.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aiassoft.capstone.BuildConfig;
@@ -26,6 +35,10 @@ import com.rany.albeg.wein.springfabmenu.SpringFabMenu;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class VehicleEntity extends AppCompatActivity {
 
@@ -35,15 +48,40 @@ public class VehicleEntity extends AppCompatActivity {
     private static final int REQUEST_TAKE_PHOTO = 0;
     private static final int REQUEST_PICK_PHOTO = 1;
 
+    private static final int TYPE_OF_DEFAULT = 0;
+    private static final int TYPE_OF_NAME = 1;
+    private static final int TYPE_OF_MAKE = 2;
+    private static final int TYPE_OF_MODEL = 3;
+
     private static String mTempPhotoPath = null;
     private static File mTempPhotoFile = null;
 
+    private static TextWatcher mTextWatcher = null;
+
     private Context mContext;
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Toolbar mToolbar;
+    private View mTitleView;
+    private TextView mTitle;
     private ViewGroup mRootLayout;
     private ViewGroup mLayoutContainer;
     private ImageView mToolbarPhoto;
     private Toast mBacktoast;
+
+    @BindView(R.id.name_wrapper) TextInputLayout mNameWrapper;
+    @BindView(R.id.name) TextInputEditText mName;
+    @BindView(R.id.make_wrapper) TextInputLayout mMakeWrapper;
+    @BindView(R.id.make) TextInputEditText mMake;
+    @BindView(R.id.model_wrapper) TextInputLayout mModelWrapper;
+    @BindView(R.id.model) TextInputEditText mModel;
+
+//    TextInputLayout mNameWrapper;
+//    TextInputEditText mName;
+//    TextInputLayout mMakeWrapper;
+//    TextInputEditText mMake;
+//    TextInputLayout mModelWrapper;
+//    TextInputEditText mModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +97,14 @@ public class VehicleEntity extends AppCompatActivity {
 
         // Root Content Layout
         mRootLayout = this.findViewById(R.id.root_layout);
+        // Toolbar layout, to set the title
+        mCollapsingToolbarLayout = findViewById(R.id.toolbar_layout);
         // Layout Content
         mLayoutContainer = this.findViewById(R.id.layout_container);
         // Entity
         View.inflate(this, R.layout.activity_vehicle_entity, mLayoutContainer);
         // Fab
-        View.inflate(this, R.layout.fab_image, mRootLayout);
+        View.inflate(this, R.layout.fab_image_menu, mRootLayout);
 
         // toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -95,7 +135,66 @@ public class VehicleEntity extends AppCompatActivity {
             }
         });
 
-        setTitle("Peugeot 307sw");
+        ButterKnife.bind(this);
+
+        mTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setEntityTitle(s.toString());
+            }
+        };
+
+        mName.addTextChangedListener(mTextWatcher);
+        mMake.addTextChangedListener(mTextWatcher);
+        mModel.addTextChangedListener(mTextWatcher);
+
+        setEntityTitle("Peugeot 307sw");
+    }
+
+    private void setEntityTitle(String s) {
+        String title = "";
+        String name = mName.getText().toString();
+        String make = mMake.getText().toString();
+        String model = mModel.getText().toString();
+
+        if (!name.isEmpty()) {
+            title = name;
+        } else {
+
+            if (make.isEmpty() && model.isEmpty()) {
+                if (s.isEmpty()) {
+                    title = getString(R.string.title_activity_vehicle_entity);
+                } else {
+                    title = s;
+                }
+            }
+
+            if (title.isEmpty()) {
+                if (!s.isEmpty() && name.equals(s)) {
+                    title = name;
+                } else {
+                    if (!make.isEmpty() && model.isEmpty()) {
+                        title = make;
+                    } else if (make.isEmpty() && !model.isEmpty()) {
+                        title = model;
+                    } else {
+                        title = make + " " + model;
+                    }
+                }
+            }
+        }
+
+        mCollapsingToolbarLayout.setTitle(title);
     }
 
 
@@ -173,7 +272,9 @@ public class VehicleEntity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mTempPhotoFile.delete();
+        if (mTempPhotoFile != null) {
+            mTempPhotoFile.delete();
+        }
     }
 
     /**
@@ -257,6 +358,62 @@ public class VehicleEntity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+
+    /**
+     *
+     */
+    /** @param root usually Activity.getWindow().getDecorView() or your custom Toolbar */
+    public static @Nullable View findActionBarTitle(@NonNull View root) {
+        return findActionBarItem(root, "action_bar_title", "mTitleTextView");
+    }
+    /** @param root usually Activity.getWindow().getDecorView() or your custom Toolbar */
+    public static @Nullable View findActionBarSubTitle(@NonNull View root) {
+        return findActionBarItem(root, "action_bar_subtitle", "mSubtitleTextView");
+    }
+
+    private static @Nullable View findActionBarItem(@NonNull View root,
+                                                    @NonNull String resourceName, @NonNull String toolbarFieldName) {
+        View result = findViewSupportOrAndroid(root, resourceName);
+
+        if (result == null) {
+            View actionBar = findViewSupportOrAndroid(root, "action_bar");
+            if (actionBar != null) {
+                result = reflectiveRead(actionBar, toolbarFieldName);
+            }
+        }
+        if (result == null && root.getClass().getName().endsWith("widget.Toolbar")) {
+            result = reflectiveRead(root, toolbarFieldName);
+        }
+        return result;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private static @Nullable View findViewSupportOrAndroid(@NonNull View root, @NonNull String resourceName) {
+        Context context = root.getContext();
+        View result = null;
+        if (result == null) {
+            int supportID = context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
+            result = root.findViewById(supportID);
+        }
+        if (result == null) {
+            int androidID = context.getResources().getIdentifier(resourceName, "id", "android");
+            result = root.findViewById(androidID);
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T reflectiveRead(@NonNull Object object, @NonNull String fieldName) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return (T)field.get(object);
+        } catch (Exception ex) {
+            Log.w("HACK", "Cannot read " + fieldName + " in " + object, ex);
+        }
+        return null;
     }
 
 }

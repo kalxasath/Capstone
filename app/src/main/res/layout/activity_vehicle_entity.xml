@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_wrapper">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/make"
             style="@style/EditFieldsTextSingleLine"
             />
@@ -60,7 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/make_wrapper">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/model"
             style="@style/EditFieldsTextSingleLine"
             />
@@ -79,7 +79,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/model_wrapper">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/plateno"
             style="@style/EditFieldsTextSingleLine"
             />
@@ -98,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/plateno_wrapper">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/initial_mileage"
             style="@style/EditFieldsTextSingleLine"
             />
@@ -117,7 +117,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/initial_mileage_wrapper">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/tank_volume"
             style="@style/EditFieldsTextSingleLine"
             />
@@ -136,7 +136,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tank_volume_wrapper">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/notes"
             style="@style/EditFieldsTextMultiLine"
             />

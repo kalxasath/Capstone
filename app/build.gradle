@@ -62,6 +62,20 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
     implementation "com.android.support:design:$androidSupportVersion"
+    implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
+
+    compile "com.android.support:support-annotations:$androidSupportVersion"
+
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+    // Spring Fab Menu
     implementation 'com.rany.albeg.wein:spring-fab-menu:1.0.1'
+
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    // Butter Knife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
 }
