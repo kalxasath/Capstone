@@ -73,7 +73,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_VEHICLES_TABLE = "CREATE TABLE " +
                 VehiclesEntry.TABLE_NAME + " (" +
                 VehiclesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                VehiclesEntry.COLUMN_NAME_NAME + "  TEXT NOT NULL, " +
+                VehiclesEntry.COLUMN_NAME_NAME + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MAKE + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MODEL + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_VIN + "  TEXT," +
@@ -86,6 +86,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
                 VehiclesEntry.COLUMN_NAME_SELLDATE + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_SEELPRICE + "  REAL, " +
                 VehiclesEntry.COLUMN_NAME_TANKVOLUME + "  INTEGER, " +
+                VehiclesEntry.COLUMN_NAME_VOLUME_UNIT + "  INTEGER NOT NULL, " +
                 VehiclesEntry.COLUMN_NAME_FUEL_TYPE + "  INTEGER NOT NULL, " +
                 VehiclesEntry.COLUMN_NAME_NOTES + "  TEXT " +
                 ");";

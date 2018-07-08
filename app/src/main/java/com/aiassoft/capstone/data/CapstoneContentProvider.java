@@ -424,16 +424,98 @@ public class CapstoneContentProvider extends ContentProvider {
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
 
-        /**
-         * We don't need to update some data, so we don't implemented it yet
-         */
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        String tableName = "";
+        String id = "";
+        String mSelection = "";
+        String[] mSelectionArgs;
+
+        // Keep track of if an update occurs
+        int recordsUpdated = 0;
+
+        switch (match) {
+            case VEHICLE_WITH_ID:
+                tableName = VehiclesEntry.TABLE_NAME;
+                // update a sing;e vehicle by getting the id
+                id = uri.getPathSegments().get(1);
+                mSelection = VehiclesEntry._ID + "=?";
+
+                break;
+        }
+
+        if (!tableName.isEmpty()) {
+            mSelectionArgs = new String[]{id};
+            recordsUpdated = db.update(tableName, values, mSelection, mSelectionArgs);
+
+            if (recordsUpdated != 0) {
+                // set notifications if a task was updated
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
+        }
+
+        return recordsUpdated;
     }
 
     @Override
     public String getType(@NonNull Uri uri) {
 
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case VEHICLES:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                        + VehiclesContract.PATH_VEHICLES;
+
+            case VEHICLE_WITH_ID:
+                // single item type
+                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                        + VehiclesContract.PATH_VEHICLES;
+
+            case EVENTS:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                        + EventsContract.PATH_EVENTS;
+
+            case EVENT_WITH_ID:
+                // single item type
+                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                        + EventsContract.PATH_EVENTS;
+
+            case IMAGES:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                        + ImagesContract.PATH_IMAGES;
+
+            case IMAGE_WITH_ID:
+                // single item type
+                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                        + ImagesContract.PATH_IMAGES;
+
+            case FAVORITE_VIDEOS:
+                // directory
+                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                        + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
+
+            case FAVORITE_VIDEO_WITH_ID:
+                // directory
+                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                        + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
+
+            case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
+                // single item type
+                return "vnd.android.cursor.youtube" + "/" + Const.AUTHORITY + "/"
+                        + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
+
+            /** default exception */
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
 }
