@@ -90,7 +90,7 @@
     <!-- initmilage -->
     <android.support.design.widget.TextInputLayout
         android:id="@+id/initial_mileage_wrapper"
-        android:layout_width="140dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -107,10 +107,19 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <Spinner
+        android:id="@+id/distance_unit_spinner"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/initial_mileage_wrapper"
+        app:layout_constraintStart_toEndOf="@+id/initial_mileage_wrapper" />
+
     <!-- tankvolume -->
     <android.support.design.widget.TextInputLayout
         android:id="@+id/tank_volume_wrapper"
-        android:layout_width="140dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -126,6 +135,15 @@
             />
 
     </android.support.design.widget.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/volume_unit_spinner"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tank_volume_wrapper"
+        app:layout_constraintStart_toEndOf="@+id/tank_volume_wrapper" />
 
     <!-- notes -->
     <android.support.design.widget.TextInputLayout

@@ -23,7 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +43,7 @@ import java.lang.reflect.Field;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VehicleEntity extends AppCompatActivity {
+public class VehicleEntity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntity.class.getSimpleName();
 
@@ -57,6 +60,8 @@ public class VehicleEntity extends AppCompatActivity {
     private static File mTempPhotoFile = null;
 
     private static TextWatcher mTextWatcher = null;
+    private static ArrayAdapter<CharSequence> adapterDistanceUnit;
+    private static ArrayAdapter<CharSequence> adapterVolumeUnit;
 
     private Context mContext;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -74,6 +79,16 @@ public class VehicleEntity extends AppCompatActivity {
     @BindView(R.id.make) TextInputEditText mMake;
     @BindView(R.id.model_wrapper) TextInputLayout mModelWrapper;
     @BindView(R.id.model) TextInputEditText mModel;
+    @BindView(R.id.plateno_wrapper) TextInputLayout mPlatenoWrapper;
+    @BindView(R.id.plateno) TextInputEditText mPlateno;
+    @BindView(R.id.initial_mileage_wrapper) TextInputLayout mInitialMileageWrapper;
+    @BindView(R.id.initial_mileage) TextInputEditText mInitialMileage;
+    @BindView(R.id.distance_unit_spinner) Spinner mDistanceUnitSpinner;
+    @BindView(R.id.tank_volume_wrapper) TextInputLayout mTankVolumeWrapper;
+    @BindView(R.id.tank_volume) TextInputEditText mTankVolume;
+    @BindView(R.id.volume_unit_spinner) Spinner mVolumeUnitSpinner;
+    @BindView(R.id.notes_wrapper) TextInputLayout mNotesWrapper;
+    @BindView(R.id.notes) TextInputEditText mNotes;
 
 //    TextInputLayout mNameWrapper;
 //    TextInputEditText mName;
@@ -137,6 +152,30 @@ public class VehicleEntity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        initTextWatcher();
+        initSpinners();
+
+        setEntityTitle("Peugeot 307sw");
+    }
+
+    private void initSpinners() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        adapterVolumeUnit = ArrayAdapter.createFromResource(this,
+                R.array.volume_unit_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterVolumeUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mVolumeUnitSpinner.setAdapter(adapterVolumeUnit);
+        mVolumeUnitSpinner.setOnItemSelectedListener(this);
+
+        adapterDistanceUnit = ArrayAdapter.createFromResource(this,
+                R.array.distance_unit_array, android.R.layout.simple_spinner_item);
+        adapterDistanceUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mDistanceUnitSpinner.setAdapter(adapterDistanceUnit);
+        mDistanceUnitSpinner.setOnItemSelectedListener(this);
+    }
+
+    private void initTextWatcher() {
         mTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -157,8 +196,6 @@ public class VehicleEntity extends AppCompatActivity {
         mName.addTextChangedListener(mTextWatcher);
         mMake.addTextChangedListener(mTextWatcher);
         mModel.addTextChangedListener(mTextWatcher);
-
-        setEntityTitle("Peugeot 307sw");
     }
 
     private void setEntityTitle(String s) {
@@ -360,60 +397,16 @@ public class VehicleEntity extends AppCompatActivity {
         }
     }
 
-
     /**
-     *
+     * AdapterView.OnItemSelectedListener methods
      */
-    /** @param root usually Activity.getWindow().getDecorView() or your custom Toolbar */
-    public static @Nullable View findActionBarTitle(@NonNull View root) {
-        return findActionBarItem(root, "action_bar_title", "mTitleTextView");
-    }
-    /** @param root usually Activity.getWindow().getDecorView() or your custom Toolbar */
-    public static @Nullable View findActionBarSubTitle(@NonNull View root) {
-        return findActionBarItem(root, "action_bar_subtitle", "mSubtitleTextView");
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
     }
 
-    private static @Nullable View findActionBarItem(@NonNull View root,
-                                                    @NonNull String resourceName, @NonNull String toolbarFieldName) {
-        View result = findViewSupportOrAndroid(root, resourceName);
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
-        if (result == null) {
-            View actionBar = findViewSupportOrAndroid(root, "action_bar");
-            if (actionBar != null) {
-                result = reflectiveRead(actionBar, toolbarFieldName);
-            }
-        }
-        if (result == null && root.getClass().getName().endsWith("widget.Toolbar")) {
-            result = reflectiveRead(root, toolbarFieldName);
-        }
-        return result;
     }
-
-    @SuppressWarnings("ConstantConditions")
-    private static @Nullable View findViewSupportOrAndroid(@NonNull View root, @NonNull String resourceName) {
-        Context context = root.getContext();
-        View result = null;
-        if (result == null) {
-            int supportID = context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
-            result = root.findViewById(supportID);
-        }
-        if (result == null) {
-            int androidID = context.getResources().getIdentifier(resourceName, "id", "android");
-            result = root.findViewById(androidID);
-        }
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T reflectiveRead(@NonNull Object object, @NonNull String fieldName) {
-        try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (T)field.get(object);
-        } catch (Exception ex) {
-            Log.w("HACK", "Cannot read " + fieldName + " in " + object, ex);
-        }
-        return null;
-    }
-
 }

@@ -71,6 +71,7 @@ public class VehiclesContract {
         public static final String COLUMN_NAME_SELLDATE = "sellDate";
         public static final String COLUMN_NAME_SEELPRICE = "sellPrice";
         public static final String COLUMN_NAME_TANKVOLUME = "tankVolume";
+        public static final String COLUMN_NAME_VOLUME_UNIT = "volumeUnit";
         public static final String COLUMN_NAME_FUEL_TYPE = "fuelType";
         public static final String COLUMN_NAME_NOTES = "notes";
     }

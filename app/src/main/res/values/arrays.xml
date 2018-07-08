@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="distance_unit_array">
+        <item>Kilometers</item>
+        <item>Miles</item>
+        <item>Hours</item>
+    </string-array>
+
+    <string-array name="volume_unit_array">
+        <item>Liters</item>
+        <item>Gallons</item>
+    </string-array>
+</resources>
