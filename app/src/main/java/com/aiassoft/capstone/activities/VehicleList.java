@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.internal.NavigationMenuView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -19,18 +20,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.aiassoft.capstone.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class VehicleList extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     Context mContext;
-    DrawerLayout mDrawer;
+
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
-    Toolbar mToolbar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
+    FloatingActionButton mFab;
     android.support.design.widget.NavigationView mNavView;
+
+//    @BindView(R.id.ll_error_message) LinearLayout mErrorMessageBlock;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,31 +52,46 @@ public class VehicleList extends AppCompatActivity
         setContentView(R.layout.app_drawer);
         mContext = this;
 
-        mNavView = this.findViewById(R.id.nav_view);
-        //mNavView.setFocusable(true);
-
         // for fragment see https://stackoverflow.com/questions/2395769/how-to-programmatically-add-views-to-views
         mContainer = this.findViewById(R.id.layout_container);
         View.inflate(this, R.layout.activity_vehicle_list, mContainer);
 
-        mToolbar = findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
+        mNavView = this.findViewById(R.id.nav_view);
+        //mNavView.setFocusable(true);
+
+        //mToolbar = findViewById(R.id.toolbar);
         //mToolbar.setFocusable(true);
         setSupportActionBar(mToolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
+        initFab();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, VehicleEntity.class);
-                startActivity(intent);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-            }
-        });
+        initDrawer();
 
-        mDrawer = findViewById(R.id.drawer_layout);
+        initNavigation();
+
+    }
+
+    private void initFab() {
+        mFab = findViewById(R.id.fab);
+        if (mFab != null) {
+            mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
+
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, VehicleEntity.class);
+                    startActivity(intent);
+                    //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    //        .setAction("Action", null).show();
+                }
+            });
+        }
+    }
+
+    private void initDrawer() {
+        //mDrawer = findViewById(R.id.drawer_layout);
         //mDrawer.setFocusable(true);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -90,7 +119,9 @@ public class VehicleList extends AppCompatActivity
         };
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+    }
 
+    private void initNavigation() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
@@ -158,4 +189,7 @@ public class VehicleList extends AppCompatActivity
         return super.onKeyUp(keyCode, event);
     }
 
+    @Override
+    public void onClick(View v) {
+    }
 }

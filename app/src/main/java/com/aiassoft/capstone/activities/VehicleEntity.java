@@ -1,6 +1,7 @@
 package com.aiassoft.capstone.activities;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,8 +34,9 @@ import android.widget.Toast;
 import com.aiassoft.capstone.BuildConfig;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 import com.aiassoft.capstone.utilities.FileUtils;
-import com.rany.albeg.wein.springfabmenu.SpringFabMenu;
+//import com.rany.albeg.wein.springfabmenu.SpringFabMenu;
 
 import java.io.File;
 import java.io.IOException;
@@ -133,7 +135,7 @@ public class VehicleEntity extends AppCompatActivity implements AdapterView.OnIt
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
+/*
         SpringFabMenu sfm = (SpringFabMenu)findViewById(R.id.fab);
 
         sfm.setOnSpringFabMenuItemClickListener(new SpringFabMenu.OnSpringFabMenuItemClickListener() {
@@ -149,7 +151,7 @@ public class VehicleEntity extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         });
-
+*/
         ButterKnife.bind(this);
 
         initTextWatcher();
@@ -258,6 +260,7 @@ public class VehicleEntity extends AppCompatActivity implements AdapterView.OnIt
             case R.id.action_done :
                 //TODO check data validity
                 //TODO save the data
+                saveVehiclesData();
                 //NavUtils.navigateUpFromSameTask(this); Did you forget to add the android.support.PARENT_ACTIVITY <meta-data>  element in your manifest?
                 finish();
                 return true;
@@ -265,6 +268,40 @@ public class VehicleEntity extends AppCompatActivity implements AdapterView.OnIt
 
         return super.onOptionsItemSelected(item);
     } // onOptionsItemSelected
+
+    private boolean saveVehiclesData() {
+        /** We'll create a new ContentValues object to place data into. */
+        ContentValues contentValues = new ContentValues();
+
+        /** Put the Vehicle's data into the ContentValues */
+        contentValues.put(VehiclesEntry.COLUMN_NAME_NAME, mName.getText().toString());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_MAKE, mMake.getText().toString());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_MODEL, mModel.getText().toString());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_PLATE_NO, mPlateno.getText().toString());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_INITIALMILEAGE, Integer.valueOf(mInitialMileage.getText().toString()));
+        contentValues.put(VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT, mDistanceUnitSpinner.getSelectedItemId());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_TANKVOLUME, Integer.valueOf(mTankVolume.getText().toString()));
+        contentValues.put(VehiclesEntry.COLUMN_NAME_VOLUME_UNIT, mVolumeUnitSpinner.getSelectedItemId());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
+
+
+        /**
+         * Insert new Vehicle's data via a ContentResolver
+         * Then we need to insert these values into our database with
+         * a call to a content resolver
+         */
+        Uri uri = getContentResolver().insert(VehiclesEntry.CONTENT_URI, contentValues);
+
+        if (uri == null) {
+            Toast.makeText(getBaseContext(), getString(R.string.couldnt_insert_vehicle),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getBaseContext(), "Vehicle added: " + uri,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        return (uri != null);
+    }
 
     /*
     @Override

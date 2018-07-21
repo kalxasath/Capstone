@@ -76,18 +76,18 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
                 VehiclesEntry.COLUMN_NAME_NAME + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MAKE + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MODEL + "  TEXT, " +
-                VehiclesEntry.COLUMN_NAME_VIN + "  TEXT," +
+                //VehiclesEntry.COLUMN_NAME_VIN + "  TEXT," +
                 VehiclesEntry.COLUMN_NAME_PLATE_NO + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_INITIALMILEAGE + "  INTEGER, " +
                 VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT + "  INTEGER, " +
-                VehiclesEntry.COLUMN_NAME_PURCHASEDATE + "  TEXT, " +
-                VehiclesEntry.COLUMN_NAME_PURCHASEMILEAGE + "  INTEGER ," +
-                VehiclesEntry.COLUMN_NAME_PURCHASEPRICE + "  REAL, " +
-                VehiclesEntry.COLUMN_NAME_SELLDATE + "  TEXT, " +
-                VehiclesEntry.COLUMN_NAME_SEELPRICE + "  REAL, " +
+                //VehiclesEntry.COLUMN_NAME_PURCHASEDATE + "  TEXT, " +
+                //VehiclesEntry.COLUMN_NAME_PURCHASEMILEAGE + "  INTEGER ," +
+                //VehiclesEntry.COLUMN_NAME_PURCHASEPRICE + "  REAL, " +
+                //VehiclesEntry.COLUMN_NAME_SELLDATE + "  TEXT, " +
+                //VehiclesEntry.COLUMN_NAME_SEELPRICE + "  REAL, " +
                 VehiclesEntry.COLUMN_NAME_TANKVOLUME + "  INTEGER, " +
-                VehiclesEntry.COLUMN_NAME_VOLUME_UNIT + "  INTEGER NOT NULL, " +
-                VehiclesEntry.COLUMN_NAME_FUEL_TYPE + "  INTEGER NOT NULL, " +
+                VehiclesEntry.COLUMN_NAME_VOLUME_UNIT + "  INTEGER, " +
+                //VehiclesEntry.COLUMN_NAME_FUEL_TYPE + "  INTEGER, " +
                 VehiclesEntry.COLUMN_NAME_NOTES + "  TEXT " +
                 ");";
 

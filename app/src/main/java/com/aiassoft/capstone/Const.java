@@ -57,7 +57,7 @@ public class Const {
      */
     // The authority, which is how the code knows which Content Provider to access
     // The authority is defined in the Android Manifest.
-    public static final String AUTHORITY = "com.aiassoft.capstone";
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".contentprovider";
 
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);

@@ -13,7 +13,7 @@ if (sensitiveDataFile.canRead()){
     sensitiveData.load(new FileInputStream(sensitiveDataFile))
 
     if (sensitiveData != null) {
-        if (sensitiveData.containsKey('youtubeApiKey')) theMovieDbApiKey = sensitiveData['youtubeApiKey']
+        if (sensitiveData.containsKey('youtubeApiKey')) youtubeApiKey = sensitiveData['youtubeApiKey']
     }
 }
 
@@ -41,6 +41,8 @@ android {
         // Add the sensitive data as String Resources
         resValue "string", "YOUTUBE_API_KEY", youtubeApiKey
         // End of injecting the sensitive data
+
+        resValue "string", "ANDROID_SUPPORT_VERSION", androidSupportVersion
     }
     buildTypes {
         release {
@@ -64,12 +66,11 @@ dependencies {
     implementation "com.android.support:design:$androidSupportVersion"
     implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
 
-    compile "com.android.support:support-annotations:$androidSupportVersion"
+    implementation "com.android.support:support-annotations:$androidSupportVersion"
+
+    implementation 'com.google.android.gms:play-services-ads:15.0.1'
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-
-    // Spring Fab Menu
-    implementation 'com.rany.albeg.wein:spring-fab-menu:1.0.1'
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
