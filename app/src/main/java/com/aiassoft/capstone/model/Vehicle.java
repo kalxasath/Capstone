@@ -18,6 +18,8 @@
 
 package com.aiassoft.capstone.model;
 
+import com.aiassoft.capstone.R;
+
 /**
  * Created by gvryn on 25/06/18.
  *
@@ -25,6 +27,7 @@ package com.aiassoft.capstone.model;
  */
 public class Vehicle {
     private int id;
+    private String image;
     private String name;
     private String make;
     private String model;
@@ -47,11 +50,12 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(int id, String name, String make, String model, String vin, String plateNo,
+    public Vehicle(int id, String image, String name, String make, String model, String vin, String plateNo,
                    int initialMileage, int distanceUnit, String purchaseDate, int purchaseMileage,
                    float purchasePrice, String sellDate, float sellPrice, int tankVolume,
                    int fuelType, String notes) {
         this.id = id;
+        this.image = image;
         this.name = name;
         this.make = make;
         this.model = model;
@@ -75,6 +79,14 @@ public class Vehicle {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getName() {
@@ -197,4 +209,31 @@ public class Vehicle {
         this.notes = notes;
     }
 
+    public String getTitle() {
+        if (!this.name.isEmpty()) {
+            return this.name;
+        } else {
+            if (!make.isEmpty() && model.isEmpty()) {
+                return make;
+            } else if (make.isEmpty() && !model.isEmpty()) {
+                return model;
+            } else {
+                return make + " " + model;
+            }
+        }
+    }
+
+    public String getMakeModel() {
+        if (this.name.isEmpty()) {
+            return "";
+        } else {
+            if (!make.isEmpty() && model.isEmpty()) {
+                return make;
+            } else if (make.isEmpty() && !model.isEmpty()) {
+                return model;
+            } else {
+                return make + " " + model;
+            }
+        }
+    }
 }

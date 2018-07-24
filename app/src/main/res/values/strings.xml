@@ -21,6 +21,9 @@
     <string name="title_activity_vehicle_list">Vehicle List</string>
     <string name="title_activity_vehicle_entity">Vehicle</string>
 
+    <!-- Vehicles List -->
+    <string name="no_vehicles_available">No Vehicles Available</string>
+
     <!-- Vehicle Entity -->
     <string name="hint_vehicle_name">Vehicle\'s Name</string>
     <string name="hint_vehicle_make">Make</string>

@@ -1,6 +1,5 @@
 package com.aiassoft.capstone.activities;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -40,14 +37,13 @@ import com.aiassoft.capstone.utilities.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VehicleEntity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class VehicleEntityActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntity.class.getSimpleName();
+    private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntityActivity.class.getSimpleName();
 
     private static final boolean USER_IS_GOING_TO_EXIT = false;
     private static final int REQUEST_TAKE_PHOTO = 0;
@@ -322,7 +318,7 @@ public class VehicleEntity extends AppCompatActivity implements AdapterView.OnIt
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface arg0, int arg1) {
-                        VehicleEntity.super.onBackPressed();
+                        VehicleEntityActivity.super.onBackPressed();
                     }
                 }).create().show();
     }

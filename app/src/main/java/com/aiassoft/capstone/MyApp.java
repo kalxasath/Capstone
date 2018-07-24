@@ -34,12 +34,6 @@ public class MyApp extends Application {
 
     public static final String APP_TAG = "Capstone: ";
 
-    /** a little speed up by keeping function results in static variables*/
-    public static final boolean isTablet = AppUtils.isTablet();
-    public static final boolean isRTL = AppUtils.isRTL();
-
-    private static boolean dataInitialized = false;
-
 
     /**
      * Initialize any resources here
@@ -60,15 +54,6 @@ public class MyApp extends Application {
      */
     public static Context getContext(){
         return mInstance.getApplicationContext();
-    }
-
-
-    public static void setDataInitialized(boolean b) {
-        dataInitialized = b;
-    }
-
-    public static boolean hasData() {
-        return dataInitialized;
     }
 
     @Override

@@ -13,5 +13,8 @@
     <color name="stepIndicator">#CCCCCC</color>
     <color name="stepIndicatorCurrent">#40000000</color>
 	
-    <color name="black_overlay">#66000000</color>	
+    <color name="black_overlay">#66000000</color>
+
+    <color name="ilv_title_background">#60000000</color>
+    <color name="ilv_title_text_color">#FFFFFFFF</color>
 </resources>

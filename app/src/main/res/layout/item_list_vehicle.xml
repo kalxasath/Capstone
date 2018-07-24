@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    card_view:cardElevation="6dp"
+    card_view:cardMaxElevation="12dp"
+    card_view:cardCornerRadius="12dp"
+
+    >
+
+        <ImageView
+            android:id="@+id/vehicle_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/jonathan_daniels_453915_unsplash_rsz"
+            />
+
+        <TextView
+            android:id="@+id/vehicle_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Peugeot 307sw"
+            android:textSize="@dimen/ilv_text_size"
+            android:textColor="@color/ilv_title_text_color"
+            android:background="@color/ilv_title_background"
+            android:layout_gravity="bottom|right"
+            android:padding="@dimen/ilv_padding"
+            />
+</android.support.v7.widget.CardView>

@@ -73,6 +73,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_VEHICLES_TABLE = "CREATE TABLE " +
                 VehiclesEntry.TABLE_NAME + " (" +
                 VehiclesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                VehiclesEntry.COLUMN_NAME_IMAGE + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_NAME + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MAKE + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MODEL + "  TEXT, " +

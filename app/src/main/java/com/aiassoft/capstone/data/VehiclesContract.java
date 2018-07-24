@@ -58,6 +58,7 @@ public class VehiclesContract {
 
         public static final String TABLE_NAME = "vehicles";
 
+        public static final String COLUMN_NAME_IMAGE = "image";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_MAKE = "make";
         public static final String COLUMN_NAME_MODEL = "model";
