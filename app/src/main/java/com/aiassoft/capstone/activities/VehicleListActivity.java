@@ -32,6 +32,7 @@ import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.adapters.VehiclesListAdapter;
 import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.model.Vehicle;
+import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
 
 import java.util.ArrayList;
@@ -59,8 +60,8 @@ public class VehicleListActivity extends AppCompatActivity
     ActionBarDrawerToggle mDrawerToggle;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
-    FloatingActionButton mFab;
-    android.support.design.widget.NavigationView mNavView;
+    @BindView(R.id.fab) FloatingActionButton mFab;
+    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
     /** The recycler view */
     @BindView(R.id.vehicle_list) RecyclerView mVehicleList;
@@ -88,7 +89,7 @@ public class VehicleListActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        mNavView = this.findViewById(R.id.nav_view);
+        //mNavView = this.findViewById(R.id.nav_view);
         //mNavView.setFocusable(true);
 
         //mToolbar = findViewById(R.id.toolbar);
@@ -107,7 +108,6 @@ public class VehicleListActivity extends AppCompatActivity
     }
 
     private void initFab() {
-        mFab = findViewById(R.id.fab);
         if (mFab != null) {
             mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
 
@@ -215,24 +215,12 @@ public class VehicleListActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
         mDrawer.closeDrawer(GravityCompat.START);
+
+        // Handle navigation view item clicks here.
+        if (DrawerMenu.navigate(this, item.getItemId()))
+            finish();
+
         return true;
     }
 

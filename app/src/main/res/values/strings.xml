@@ -4,6 +4,7 @@
 
     <!-- Developer Messages -->
     <string name="no_instances_for_you">No Instances for you!</string>
+    <string name="missing_xml_layout">Missing XML layout!</string>
 
     <!-- System Messages -->
     <string name="failed_to_insert_row_into">Failed to insert row into: </string>
@@ -14,10 +15,18 @@
     <!-- Menus -->
     <string name="action_done">Done</string>
 
+    <!-- Drawer's Menu -->
+    <string name="nav_vehicles_list">Vehicles List</string>
+    <string name="nav_expenses_list">Expenses List</string> <!-- The expenses list is a list of all expenses you've entered for your vehicles. -->
+    <string name="nav_search_youtube">Search Youtube</string>
+    <string name="nav_favorite_videos">Favorite Videos</string>
+    <!-- <string name=""></string> -->
+
     <!-- Content Descriptions -->
     <string name="up">Up</string>
 
     <!-- Activity Titles -->
+    <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_activity_vehicle_list">Vehicle List</string>
     <string name="title_activity_vehicle_entity">Vehicle</string>
 

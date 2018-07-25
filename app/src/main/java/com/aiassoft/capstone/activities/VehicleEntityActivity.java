@@ -117,7 +117,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         // Entity
         View.inflate(this, R.layout.activity_vehicle_entity, mLayoutContainer);
         // Fab
-        View.inflate(this, R.layout.fab_image_menu, mRootLayout);
+        View.inflate(this, R.layout.fab_classic, mRootLayout);
 
         // toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -153,7 +153,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         initTextWatcher();
         initSpinners();
 
-        setEntityTitle("Peugeot 307sw");
+        setEntityTitle("¯\\\\_(ツ)_/¯");
     }
 
     private void initSpinners() {
