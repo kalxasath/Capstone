@@ -5,6 +5,10 @@
     <!-- Developer Messages -->
     <string name="no_instances_for_you">No Instances for you!</string>
     <string name="missing_xml_layout">Missing XML layout!</string>
+    <string name="dashboard_xml_layout">Dashboard XML layout!</string>
+    <string name="expenses_xml_layout">Expenses XML layout!</string>
+    <string name="search_xml_layout">Search XML layout!</string>
+    <string name="favorites_xml_layout">Favorites XML layout!</string>
 
     <!-- System Messages -->
     <string name="failed_to_insert_row_into">Failed to insert row into: </string>
@@ -14,6 +18,7 @@
 
     <!-- Menus -->
     <string name="action_done">Done</string>
+    <string name="action_delete">Delete</string>
 
     <!-- Drawer's Menu -->
     <string name="nav_vehicles_list">Vehicles List</string>
@@ -29,6 +34,10 @@
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_activity_vehicle_list">Vehicle List</string>
     <string name="title_activity_vehicle_entity">Vehicle</string>
+    <string name="title_activity_expenses_list">Expenses List</string>
+    <string name="title_activity_expenses_entity">Expenses</string>
+    <string name="title_activity_search_youtube">Search Youtube</string>
+    <string name="title_activity_favorite_videos">Favorite Videos</string>
 
     <!-- Vehicles List -->
     <string name="no_vehicles_available">No Vehicles Available</string>
@@ -43,6 +52,19 @@
     <string name="hint_vehicle_notes">Notes</string>
 
     <string name="couldnt_insert_vehicle">Couldn\'t insert Vehicle</string>
+    <string name="vehicle_added">Vehicle added: </string>
+
+    <!-- Expenses Entity -->
+    <string name="hint_vehicle1_name">Vehicle\'s Name</string>
+    <string name="hint_vehicle1_make">Make</string>
+    <string name="hint_vehicle1_model">Model</string>
+    <string name="hint_vehicle1_plateno">PlateNo</string>
+    <string name="hint_vehicle1_initmileage">Initial Mileage</string>
+    <string name="hint_vehicle1_tankvolume">Tank Volume</string>
+    <string name="hint_vehicle1_notes">Notes</string>
+
+    <string name="couldnt_insert_expense">Couldn\'t insert Vehicle</string>
+    <string name="expense_added">Expense added: </string>
 
     <!-- Picture Chooser -->
     <string name="_x_select_image_source">Select Image Source</string>

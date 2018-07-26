@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.activities.ExpensesListActivity;
+import com.aiassoft.capstone.activities.FavoriteVideosActivity;
+import com.aiassoft.capstone.activities.SearchYoutubeActivity;
 import com.aiassoft.capstone.activities.VehicleListActivity;
 
 /**
@@ -25,15 +28,29 @@ public class DrawerMenu {
      * @param id
      */
     public static boolean navigate(Context context, int id) {
+        Intent intent;
+
         switch (id) {
             case R.id.nav_vehicles_list:
                 // Handle the vehicles list action
-                Intent intent = new Intent(context, VehicleListActivity.class);
+                intent = new Intent(context, VehicleListActivity.class);
                 context.startActivity(intent);
                 return true;
             case R.id.nav_expenses_list:
+                // Handle the expenses list action
+                intent = new Intent(context, ExpensesListActivity.class);
+                context.startActivity(intent);
+                return true;
             case R.id.nav_search_youtube:
+                // Handle the search youtube action
+                intent = new Intent(context, SearchYoutubeActivity.class);
+                context.startActivity(intent);
+                return true;
             case R.id.nav_favorite_videos:
+                // Handle the favorite videos action
+                intent = new Intent(context, FavoriteVideosActivity.class);
+                context.startActivity(intent);
+                return true;
         }
 
         return false;

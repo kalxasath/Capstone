@@ -22,7 +22,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.aiassoft.capstone.data.EventsContract.EventsEntry;
+import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
 import com.aiassoft.capstone.data.FavoriteVideosContract.FavoriteVideosEntry;
 import com.aiassoft.capstone.data.ImagesContract.ImagesEntry;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
@@ -94,20 +94,20 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(SQL_CREATE_VEHICLES_TABLE);
 
-        // Events
-        final String SQL_CREATE_EVENTS_TABLE = "CREATE TABLE " +
-                EventsEntry.TABLE_NAME + " (" +
-                EventsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                EventsEntry.COLUMN_NAME_VEHICLE_ID + "  INTEGER NOT NULL, " +
-                EventsEntry.COLUMN_NAME_EVENT_TYPE + "  INTEGER NOT NULL, " +
-                EventsEntry.COLUMN_NAME_SUBTYPE + "  INTEGER NOT NULL, " +
-                EventsEntry.COLUMN_NAME_DATE + "  TEXT, " +
-                EventsEntry.COLUMN_NAME_ODOMETER + "  INTEGER, " +
-                EventsEntry.COLUMN_NAME_COST + "  REAL, " +
-                EventsEntry.COLUMN_NAME_NOTES + "  TEXT " +
+        // Expenses
+        final String SQL_CREATE_EXPENSES_TABLE = "CREATE TABLE " +
+                ExpensesEntry.TABLE_NAME + " (" +
+                ExpensesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                ExpensesEntry.COLUMN_NAME_VEHICLE_ID + "  INTEGER NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_EVENT_TYPE + "  INTEGER NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_SUBTYPE + "  INTEGER NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_DATE + "  TEXT, " +
+                ExpensesEntry.COLUMN_NAME_ODOMETER + "  INTEGER, " +
+                ExpensesEntry.COLUMN_NAME_COST + "  REAL, " +
+                ExpensesEntry.COLUMN_NAME_NOTES + "  TEXT " +
                 ");";
 
-        sqLiteDatabase.execSQL(SQL_CREATE_EVENTS_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_EXPENSES_TABLE);
 
         // Images
         final String SQL_CREATE_IMAGES_TABLE = "CREATE TABLE " +

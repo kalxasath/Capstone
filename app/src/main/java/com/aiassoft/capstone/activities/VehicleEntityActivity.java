@@ -88,14 +88,6 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
     @BindView(R.id.notes_wrapper) TextInputLayout mNotesWrapper;
     @BindView(R.id.notes) TextInputEditText mNotes;
 
-//    TextInputLayout mNameWrapper;
-//    TextInputEditText mName;
-//    TextInputLayout mMakeWrapper;
-//    TextInputEditText mMake;
-//    TextInputLayout mModelWrapper;
-//    TextInputEditText mModel;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,7 +145,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         initTextWatcher();
         initSpinners();
 
-        setEntityTitle("¯\\\\_(ツ)_/¯");
+        setEntityTitle("¯\\_(ツ)_/¯");
     }
 
     private void initSpinners() {
@@ -236,7 +228,9 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_vehicle_entiry, menu);
+        getMenuInflater().inflate(R.menu.menu_entity_edit, menu);
+
+        menu.findItem(R.id.action_delete).setVisible(false);
         return true;
     }
 
@@ -256,7 +250,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
             case R.id.action_done :
                 //TODO check data validity
                 //TODO save the data
-                saveVehiclesData();
+                saveData();
                 //NavUtils.navigateUpFromSameTask(this); Did you forget to add the android.support.PARENT_ACTIVITY <meta-data>  element in your manifest?
                 finish();
                 return true;
@@ -265,7 +259,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         return super.onOptionsItemSelected(item);
     } // onOptionsItemSelected
 
-    private boolean saveVehiclesData() {
+    private boolean saveData() {
         /** We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
 
@@ -292,7 +286,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
             Toast.makeText(getBaseContext(), getString(R.string.couldnt_insert_vehicle),
                     Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getBaseContext(), "Vehicle added: " + uri,
+            Toast.makeText(getBaseContext(), getString(R.string.vehicle_added) + uri,
                     Toast.LENGTH_SHORT).show();
         }
 

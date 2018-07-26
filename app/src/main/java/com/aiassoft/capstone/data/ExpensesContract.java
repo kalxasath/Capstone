@@ -26,10 +26,10 @@ import com.aiassoft.capstone.R;
 
 /**
  * Created by gvryn on 24/06/2018.
- * Defining the EventsContract class
- * In this table will be stored the Events
+ * Defining the ExpensesContract class
+ * In this table will be stored the Expenses
  */
-public class EventsContract {
+public class ExpensesContract {
 
 
     // Define the possible paths for accessing data in this contract
@@ -42,35 +42,33 @@ public class EventsContract {
      * because the contract is simply a class filled,
      * with DB related constants that are all static.
      */
-    private EventsContract() {
+    private ExpensesContract() {
         throw new AssertionError(R.string.no_instances_for_you);
     }
 
     /**
      * Inner class that defines the events table contents
      */
-    public static final class EventsEntry implements BaseColumns {
+    public static final class ExpensesEntry implements BaseColumns {
         /** This final content URI will include the scheme, the authority,
          *  and our EVENTS path.
          */
         public static final Uri CONTENT_URI = Const.BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_EVENTS).build();
 
-        public static final String TABLE_NAME = "events";
+        public static final String TABLE_NAME = "expenses";
 
         public static final String COLUMN_NAME_VEHICLE_ID = "vehicleId";
 		/**
-		 * Event Types
-		 * Refuel, Bill, Service, Notes, Trip
+		 * Expenses Types
+		 * Refuel, Bill, Service
 		 */
         public static final String COLUMN_NAME_EVENT_TYPE = "eventType";
 		/**
-		 * Subtypes for Events
+		 * Subtypes for Expenses
 		 * Refuel: Full, Partial
 		 * Bill: Accessories, Insurance, Wash, Parking, Toll, Road Tax, MOT, Others
 		 * Service: Basic Service, Major Service, Change Oil, Change Tires
-		 * Notes: N/A
-		 * Trip: Begin Trip, End Trip
 		 */
         public static final String COLUMN_NAME_SUBTYPE = "subtype";
         public static final String COLUMN_NAME_DATE = "date";

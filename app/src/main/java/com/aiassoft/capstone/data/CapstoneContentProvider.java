@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 
 import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.R;
-import com.aiassoft.capstone.data.EventsContract.EventsEntry;
+import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
 import com.aiassoft.capstone.data.FavoriteVideosContract.FavoriteVideosEntry;
 import com.aiassoft.capstone.data.ImagesContract.ImagesEntry;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
@@ -83,9 +83,9 @@ public class CapstoneContentProvider extends ContentProvider {
         uriMatcher.addURI(Const.AUTHORITY, VehiclesContract.PATH_VEHICLES + "/#",
                 VEHICLE_WITH_ID);
         // Events
-        uriMatcher.addURI(Const.AUTHORITY, EventsContract.PATH_EVENTS, EVENTS);
+        uriMatcher.addURI(Const.AUTHORITY, ExpensesContract.PATH_EVENTS, EVENTS);
         /** single item */
-        uriMatcher.addURI(Const.AUTHORITY, EventsContract.PATH_EVENTS + "/#",
+        uriMatcher.addURI(Const.AUTHORITY, ExpensesContract.PATH_EVENTS + "/#",
                 EVENT_WITH_ID);
         // Images
         uriMatcher.addURI(Const.AUTHORITY, ImagesContract.PATH_IMAGES, IMAGES);
@@ -153,8 +153,8 @@ public class CapstoneContentProvider extends ContentProvider {
                 contentUri = VehiclesEntry.CONTENT_URI;
                 break;
             case EVENTS:
-                tableName = EventsEntry.TABLE_NAME;
-                contentUri = EventsEntry.CONTENT_URI;
+                tableName = ExpensesEntry.TABLE_NAME;
+                contentUri = ExpensesEntry.CONTENT_URI;
                 break;
             case IMAGES:
                 tableName = ImagesEntry.TABLE_NAME;
@@ -272,7 +272,7 @@ public class CapstoneContentProvider extends ContentProvider {
 
             case EVENTS:
                 /** Query for the EVENTS directory */
-                retCursor = db.query(EventsEntry.TABLE_NAME,
+                retCursor = db.query(ExpensesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
@@ -280,11 +280,11 @@ public class CapstoneContentProvider extends ContentProvider {
                 /** Query for one event in the EVENTS directory */
                 id = uri.getPathSegments().get(1);
 
-                mSelection = EventsEntry._ID + "=?";
+                mSelection = ExpensesEntry._ID + "=?";
 
                 mSelectionArgs = new String[]{id};
 
-                retCursor = db.query(EventsEntry.TABLE_NAME,
+                retCursor = db.query(ExpensesEntry.TABLE_NAME,
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
 
@@ -377,10 +377,10 @@ public class CapstoneContentProvider extends ContentProvider {
 
             case EVENT_WITH_ID:
                 id = uri.getPathSegments().get(1);
-                mSelection = EventsEntry._ID + "=?";
+                mSelection = ExpensesEntry._ID + "=?";
                 mSelectionArgs = new String[]{id};
 
-                deletedRecord =  db.delete(EventsEntry.TABLE_NAME, mSelection, mSelectionArgs);
+                deletedRecord =  db.delete(ExpensesEntry.TABLE_NAME, mSelection, mSelectionArgs);
 
                 break;
 
@@ -480,12 +480,12 @@ public class CapstoneContentProvider extends ContentProvider {
             case EVENTS:
                 // directory
                 return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
-                        + EventsContract.PATH_EVENTS;
+                        + ExpensesContract.PATH_EVENTS;
 
             case EVENT_WITH_ID:
                 // single item type
                 return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
-                        + EventsContract.PATH_EVENTS;
+                        + ExpensesContract.PATH_EVENTS;
 
             case IMAGES:
                 // directory

@@ -6,8 +6,49 @@
         <item>Hours</item>
     </string-array>
 
+    <string-array name="short_distance_unit_array">
+        <item>km</item>
+        <item>m</item>
+        <item>h</item>
+    </string-array>
+
     <string-array name="volume_unit_array">
         <item>Liters</item>
         <item>Gallons</item>
+    </string-array>
+
+    <string-array name="short_volume_unit_array">
+        <item>l</item>
+        <item>g</item>
+    </string-array>
+
+    <string-array name="expenses_types">
+        <item>Refuel</item>
+        <item>Bill</item>
+        <item>Service</item>
+    </string-array>
+
+    <string-array name="refuel_expenses_subtypes">
+        <item>Full</item>
+        <item>Partial</item>
+        <item>Service</item>
+    </string-array>
+
+    <string-array name="bill_expenses_subtypes">
+        <item>Wash</item>
+        <item>Parking</item>
+        <item>Toll</item>
+        <item>Insurance</item>
+        <item>Accessories</item>
+        <item>Road Tax</item>
+        <item>MOT</item>
+        <item>Others</item>
+    </string-array>
+
+    <string-array name="service_expenses_subtypes">
+        <item>Basic Service</item>
+        <item>Major Service</item>
+        <item>Change Oil</item>
+        <item>Change Tires</item>
     </string-array>
 </resources>
