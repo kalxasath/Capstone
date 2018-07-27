@@ -230,6 +230,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_entity_edit, menu);
 
+        // TODO: hide delete only if new entry
         menu.findItem(R.id.action_delete).setVisible(false);
         return true;
     }
@@ -254,6 +255,8 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
                 //NavUtils.navigateUpFromSameTask(this); Did you forget to add the android.support.PARENT_ACTIVITY <meta-data>  element in your manifest?
                 finish();
                 return true;
+
+            // TODO: implement delete method
         }
 
         return super.onOptionsItemSelected(item);

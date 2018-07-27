@@ -37,6 +37,10 @@
             android:label="@string/title_activity_expenses_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activities.ExpensesEntityActivity"
+            android:label="@string/title_activity_expenses_entity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".activities.SearchYoutubeActivity"
             android:label="@string/title_activity_search_youtube"
             android:theme="@style/AppTheme.NoActionBar" />

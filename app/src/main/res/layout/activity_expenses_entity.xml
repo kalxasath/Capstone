@@ -8,142 +8,126 @@
     tools:context="com.aiassoft.capstone.activities.ExpensesEntityActivity"
     >
 
-    <!-- name -->
+    <!-- vehicle -->
+    <TextView
+        android:id="@+id/vehicle_spinner_label"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/vehicle_spinner_label"
+        style="@style/SpinnerLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <Spinner
+        android:id="@+id/vehicle_spinner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@id/vehicle_spinner_label"
+        app:layout_constraintTop_toTopOf="@id/vehicle_spinner_label"
+        />
+
+    <!-- expense type -->
+    <TextView
+        android:id="@+id/expense_type_spinner_label"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        style="@style/SpinnerLabel"
+        android:text="@string/expense_type_spinner_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_spinner"
+        />
+    <Spinner
+        android:id="@+id/expense_type_spinner"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@id/expense_type_spinner_label"
+        app:layout_constraintTop_toTopOf="@+id/expense_type_spinner_label"
+        />
+
+    <!-- subtype -->
+    <TextView
+        android:id="@+id/subtype_spinner_label"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        style="@style/SpinnerLabel"
+        android:text="@string/subtype_spinner_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expense_type_spinner_label"
+        />
+    <Spinner
+        android:id="@+id/subtype_spinner"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@id/subtype_spinner_label"
+        app:layout_constraintTop_toTopOf="@+id/subtype_spinner_label"
+        />
+
+    <!-- date -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/name_wrapper"
+        android:id="@+id/date_wrapper"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_name"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:hint="@string/hint_expense_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtype_spinner"
         >
 
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/name"
+            android:id="@+id/date"
             android:inputType="textMultiLine"
             style="@style/EditFieldsTextSingleLine"
             />
 
     </android.support.design.widget.TextInputLayout>
 
-    <!-- make -->
+    <!-- odometer -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/make_wrapper"
+        android:id="@+id/odometer_wrapper"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_make"
+        android:hint="@string/hint_expense_odometer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_wrapper">
+        app:layout_constraintTop_toBottomOf="@+id/date_wrapper"
+        >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/make"
+            android:id="@+id/odometer"
             style="@style/EditFieldsTextSingleLine"
             />
 
     </android.support.design.widget.TextInputLayout>
 
-    <!-- model -->
+    <!-- amount -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/model_wrapper"
+        android:id="@+id/amount_wrapper"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_model"
+        android:hint="@string/hint_expense_amount"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/make_wrapper">
+        app:layout_constraintTop_toBottomOf="@+id/odometer_wrapper">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/model"
+            android:id="@+id/amount"
             style="@style/EditFieldsTextSingleLine"
             />
 
     </android.support.design.widget.TextInputLayout>
-
-    <!-- plateno -->
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/plateno_wrapper"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_plateno"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/model_wrapper">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/plateno"
-            style="@style/EditFieldsTextSingleLine"
-            />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <!-- initmilage -->
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/initial_mileage_wrapper"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_initmileage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/plateno_wrapper">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/initial_mileage"
-            android:inputType="number"
-            style="@style/EditFieldsTextSingleLine"
-            />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <Spinner
-        android:id="@+id/distance_unit_spinner"
-        android:layout_width="145dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/initial_mileage_wrapper"
-        app:layout_constraintStart_toEndOf="@+id/initial_mileage_wrapper" />
-
-    <!-- tankvolume -->
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/tank_volume_wrapper"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_tankvolume"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/initial_mileage_wrapper">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/tank_volume"
-            android:inputType="number"
-            style="@style/EditFieldsTextSingleLine"
-            />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <Spinner
-        android:id="@+id/volume_unit_spinner"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tank_volume_wrapper"
-        app:layout_constraintStart_toEndOf="@+id/tank_volume_wrapper" />
 
     <!-- notes -->
     <android.support.design.widget.TextInputLayout
@@ -153,9 +137,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:hint="@string/hint_vehicle_notes"
+        android:hint="@string/hint_expense_notes"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tank_volume_wrapper">
+        app:layout_constraintTop_toBottomOf="@+id/amount_wrapper">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/notes"

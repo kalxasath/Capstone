@@ -38,23 +38,19 @@ import butterknife.ButterKnife;
 
 public class ExpensesEntityActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntityActivity.class.getSimpleName();
+    // TODO: refactor the whole activity to support the expenses
+    // TODO: create a new xml layout
+    // TODO: Initialize the spinners
+    // TODO: add spinner for the vehicles
+    // TODO: change subtype spinner according the selected type spinner
+    // TODO: save the data
+    private static final String LOG_TAG = MyApp.APP_TAG + ExpensesEntityActivity.class.getSimpleName();
 
     private static final boolean USER_IS_GOING_TO_EXIT = false;
-    private static final int REQUEST_TAKE_PHOTO = 0;
-    private static final int REQUEST_PICK_PHOTO = 1;
 
-    private static final int TYPE_OF_DEFAULT = 0;
-    private static final int TYPE_OF_NAME = 1;
-    private static final int TYPE_OF_MAKE = 2;
-    private static final int TYPE_OF_MODEL = 3;
-
-    private static String mTempPhotoPath = null;
-    private static File mTempPhotoFile = null;
-
-    private static TextWatcher mTextWatcher = null;
-    private static ArrayAdapter<CharSequence> adapterDistanceUnit;
-    private static ArrayAdapter<CharSequence> adapterVolumeUnit;
+    private static ArrayAdapter<CharSequence> adapterVehicles;
+    private static ArrayAdapter<CharSequence> adapterExpenseType;
+    private static ArrayAdapter<CharSequence> adapterSubtype;
 
     private Context mContext;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -66,23 +62,15 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
     private ImageView mToolbarPhoto;
     private Toast mBacktoast;
 
-    @BindView(R.id.name_wrapper)
-    TextInputLayout mNameWrapper;
-    @BindView(R.id.name)
-    TextInputEditText mName;
-    @BindView(R.id.make_wrapper) TextInputLayout mMakeWrapper;
-    @BindView(R.id.make) TextInputEditText mMake;
-    @BindView(R.id.model_wrapper) TextInputLayout mModelWrapper;
-    @BindView(R.id.model) TextInputEditText mModel;
-    @BindView(R.id.plateno_wrapper) TextInputLayout mPlatenoWrapper;
-    @BindView(R.id.plateno) TextInputEditText mPlateno;
-    @BindView(R.id.initial_mileage_wrapper) TextInputLayout mInitialMileageWrapper;
-    @BindView(R.id.initial_mileage) TextInputEditText mInitialMileage;
-    @BindView(R.id.distance_unit_spinner)
-    Spinner mDistanceUnitSpinner;
-    @BindView(R.id.tank_volume_wrapper) TextInputLayout mTankVolumeWrapper;
-    @BindView(R.id.tank_volume) TextInputEditText mTankVolume;
-    @BindView(R.id.volume_unit_spinner) Spinner mVolumeUnitSpinner;
+    @BindView(R.id.vehicle_spinner) Spinner mVehicleSpinner;
+    @BindView(R.id.expense_type_spinner) Spinner mExpenseTypeSpinner;
+    @BindView(R.id.subtype_spinner) Spinner mSubtypeSpinner;
+    @BindView(R.id.date_wrapper) TextInputLayout mDateWrapper;
+    @BindView(R.id.date) TextInputEditText mDate;
+    @BindView(R.id.odometer_wrapper) TextInputLayout mOdometerWrapper;
+    @BindView(R.id.odometer) TextInputEditText mOdometer;
+    @BindView(R.id.amount_wrapper) TextInputLayout mAmountWrapper;
+    @BindView(R.id.amount) TextInputEditText mAmount;
     @BindView(R.id.notes_wrapper) TextInputLayout mNotesWrapper;
     @BindView(R.id.notes) TextInputEditText mNotes;
 
@@ -105,9 +93,7 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
         // Layout Content
         mLayoutContainer = this.findViewById(R.id.layout_container);
         // Entity
-        View.inflate(this, R.layout.activity_vehicle_entity, mLayoutContainer);
-        // Fab
-        View.inflate(this, R.layout.fab_classic, mRootLayout);
+        View.inflate(this, R.layout.activity_expenses_entity, mLayoutContainer);
 
         // toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -121,23 +107,6 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-/*
-        SpringFabMenu sfm = (SpringFabMenu)findViewById(R.id.fab);
-
-        sfm.setOnSpringFabMenuItemClickListener(new SpringFabMenu.OnSpringFabMenuItemClickListener() {
-            @Override
-            public void onSpringFabMenuItemClick(View view) {
-                switch (view.getId()) {
-                    case R.id.fab_camera:
-                        startCamera();
-                        break;
-                    case R.id.fab_gallery:
-                        startGallery();
-                        break;
-                }
-            }
-        });
-*/
         ButterKnife.bind(this);
 
         initSpinners();
@@ -146,26 +115,23 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
     }
 
     private void initSpinners() {
-        /*
         // Create an ArrayAdapter using the string array and a default spinner layout
-        adapterVolumeUnit = ArrayAdapter.createFromResource(this,
-                R.array.volume_unit_array, android.R.layout.simple_spinner_item);
+        adapterExpenseType = ArrayAdapter.createFromResource(this,
+                R.array.expenses_types, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        adapterVolumeUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterExpenseType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        mVolumeUnitSpinner.setAdapter(adapterVolumeUnit);
-        mVolumeUnitSpinner.setOnItemSelectedListener(this);
+        mExpenseTypeSpinner.setAdapter(adapterExpenseType);
+        mExpenseTypeSpinner.setOnItemSelectedListener(this);
 
-        adapterDistanceUnit = ArrayAdapter.createFromResource(this,
-                R.array.distance_unit_array, android.R.layout.simple_spinner_item);
-        adapterDistanceUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mDistanceUnitSpinner.setAdapter(adapterDistanceUnit);
-        mDistanceUnitSpinner.setOnItemSelectedListener(this);
-        */
+        adapterSubtype = ArrayAdapter.createFromResource(this,
+                R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
+        adapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSubtypeSpinner.setAdapter(adapterSubtype);
+        //mSubtypeSpinner.setOnItemSelectedListener(this);
     }
 
     private void setEntityTitle(String s) {
-
         mCollapsingToolbarLayout.setTitle(s);
     }
 
@@ -243,7 +209,25 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        if (parent.getId() == R.id.expense_type_spinner) {
+            switch (position) {
+                case 0:
+                    adapterSubtype = ArrayAdapter.createFromResource(this,
+                            R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
+                    break;
+                case 1:
+                    adapterSubtype = ArrayAdapter.createFromResource(this,
+                            R.array.bill_expenses_subtypes, android.R.layout.simple_spinner_item);
+                    break;
+                case 2:
+                    adapterSubtype = ArrayAdapter.createFromResource(this,
+                            R.array.service_expenses_subtypes, android.R.layout.simple_spinner_item);
+                    break;
+            }
+            adapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSubtypeSpinner.setAdapter(adapterSubtype);
+            mSubtypeSpinner.invalidate();
+        }
     }
 
     @Override

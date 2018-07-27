@@ -99,11 +99,11 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
                 ExpensesEntry.TABLE_NAME + " (" +
                 ExpensesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ExpensesEntry.COLUMN_NAME_VEHICLE_ID + "  INTEGER NOT NULL, " +
-                ExpensesEntry.COLUMN_NAME_EVENT_TYPE + "  INTEGER NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE+ "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_SUBTYPE + "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_DATE + "  TEXT, " +
                 ExpensesEntry.COLUMN_NAME_ODOMETER + "  INTEGER, " +
-                ExpensesEntry.COLUMN_NAME_COST + "  REAL, " +
+                ExpensesEntry.COLUMN_NAME_AMOUNT + "  REAL, " +
                 ExpensesEntry.COLUMN_NAME_NOTES + "  TEXT " +
                 ");";
 

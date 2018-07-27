@@ -51,19 +51,19 @@
     <string name="hint_vehicle_tankvolume">Tank Volume</string>
     <string name="hint_vehicle_notes">Notes</string>
 
-    <string name="couldnt_insert_vehicle">Couldn\'t insert Vehicle</string>
+    <string name="couldnt_insert_vehicle">Couldn\'t insert the Vehicle</string>
     <string name="vehicle_added">Vehicle added: </string>
 
     <!-- Expenses Entity -->
-    <string name="hint_vehicle1_name">Vehicle\'s Name</string>
-    <string name="hint_vehicle1_make">Make</string>
-    <string name="hint_vehicle1_model">Model</string>
-    <string name="hint_vehicle1_plateno">PlateNo</string>
-    <string name="hint_vehicle1_initmileage">Initial Mileage</string>
-    <string name="hint_vehicle1_tankvolume">Tank Volume</string>
-    <string name="hint_vehicle1_notes">Notes</string>
+    <string name="vehicle_spinner_label">Vehicle</string>
+    <string name="expense_type_spinner_label">Type</string>
+    <string name="subtype_spinner_label">Subtype</string>
+    <string name="hint_expense_date">Date</string>
+    <string name="hint_expense_odometer">Odometer</string>
+    <string name="hint_expense_amount">Amount</string>
+    <string name="hint_expense_notes">Notes</string>
 
-    <string name="couldnt_insert_expense">Couldn\'t insert Vehicle</string>
+    <string name="couldnt_insert_expense">Couldn\'t insert the Expense</string>
     <string name="expense_added">Expense added: </string>
 
     <!-- Picture Chooser -->

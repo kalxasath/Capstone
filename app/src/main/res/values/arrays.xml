@@ -31,7 +31,6 @@
     <string-array name="refuel_expenses_subtypes">
         <item>Full</item>
         <item>Partial</item>
-        <item>Service</item>
     </string-array>
 
     <string-array name="bill_expenses_subtypes">

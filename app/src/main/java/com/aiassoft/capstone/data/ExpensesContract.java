@@ -63,7 +63,7 @@ public class ExpensesContract {
 		 * Expenses Types
 		 * Refuel, Bill, Service
 		 */
-        public static final String COLUMN_NAME_EVENT_TYPE = "eventType";
+        public static final String COLUMN_NAME_EXPENSE_TYPE = "expenseType";
 		/**
 		 * Subtypes for Expenses
 		 * Refuel: Full, Partial
@@ -73,7 +73,7 @@ public class ExpensesContract {
         public static final String COLUMN_NAME_SUBTYPE = "subtype";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_ODOMETER = "odometer";
-        public static final String COLUMN_NAME_COST = "cost";
+        public static final String COLUMN_NAME_AMOUNT = "amount";
         public static final String COLUMN_NAME_NOTES = "notes";
     }
 

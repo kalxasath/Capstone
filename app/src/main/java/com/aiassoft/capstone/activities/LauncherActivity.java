@@ -16,7 +16,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, DashboardActivity.class);
+        Intent intent = new Intent(this, ExpensesEntityActivity.class);
         startActivity(intent);
         finish();
     }
