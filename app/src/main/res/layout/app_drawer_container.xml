@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_container"
-    tools:context="com.aiassoft.capstone.activities.VehicleListActivity">
+    tools:context="com.aiassoft.capstone.activities.VehiclesListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

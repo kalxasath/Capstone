@@ -2,12 +2,17 @@ package com.aiassoft.capstone.activities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextWatcher;
@@ -18,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +32,11 @@ import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.ExpensesContract;
 import com.aiassoft.capstone.data.VehiclesContract;
+import com.aiassoft.capstone.model.Vehicle;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +45,9 @@ import butterknife.ButterKnife;
  * Created by gvryn on 26/07/18.
  */
 
-public class ExpensesEntityActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ExpensesEntityActivity extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener,
+        LoaderManager.LoaderCallbacks<List<Vehicle>> {
 
     // TODO: refactor the whole activity to support the expenses
     // TODO: create a new xml layout
@@ -46,8 +57,12 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
     // TODO: save the data
     private static final String LOG_TAG = MyApp.APP_TAG + ExpensesEntityActivity.class.getSimpleName();
 
+    public static final int VEHICLES_LOADER_ID = 0;
+
     private static final boolean USER_IS_GOING_TO_EXIT = false;
 
+    List<Vehicle> mVehiclesListData = null;
+    List<CharSequence> mVehiclesList = null;
     private static ArrayAdapter<CharSequence> adapterVehicles;
     private static ArrayAdapter<CharSequence> adapterExpenseType;
     private static ArrayAdapter<CharSequence> adapterSubtype;
@@ -63,6 +78,7 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
     private Toast mBacktoast;
 
     @BindView(R.id.vehicle_spinner) Spinner mVehicleSpinner;
+    @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
     @BindView(R.id.expense_type_spinner) Spinner mExpenseTypeSpinner;
     @BindView(R.id.subtype_spinner) Spinner mSubtypeSpinner;
     @BindView(R.id.date_wrapper) TextInputLayout mDateWrapper;
@@ -109,12 +125,15 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
         }
         ButterKnife.bind(this);
 
+        fetchVehiclesList();
         initSpinners();
 
         setEntityTitle("¯\\_(ツ)_/¯");
     }
 
     private void initSpinners() {
+        mVehicleSpinner.setOnItemSelectedListener(this);
+
         // Create an ArrayAdapter using the string array and a default spinner layout
         adapterExpenseType = ArrayAdapter.createFromResource(this,
                 R.array.expenses_types, android.R.layout.simple_spinner_item);
@@ -128,10 +147,18 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
                 R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
         adapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSubtypeSpinner.setAdapter(adapterSubtype);
-        //mSubtypeSpinner.setOnItemSelectedListener(this);
+
+        mSubtypeSpinner.setOnItemSelectedListener(this);
     }
 
     private void setEntityTitle(String s) {
+        if (s == null) {
+            String v = mVehicleSpinner.getSelectedItem().toString();
+            String e = mExpenseTypeSpinner.getSelectedItem().toString();
+            String st = mSubtypeSpinner.getSelectedItem().toString();
+            s = e + ": " + st + " of " + v;
+            s = e;
+        }
         mCollapsingToolbarLayout.setTitle(s);
     }
 
@@ -172,17 +199,15 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
         ContentValues contentValues = new ContentValues();
 
         /** Put the Expenses data into the ContentValues */
-        /*
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME, mName.getText().toString());
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE, mMake.getText().toString());
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL, mModel.getText().toString());
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_PLATE_NO, mPlateno.getText().toString());
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_INITIALMILEAGE, Integer.valueOf(mInitialMileage.getText().toString()));
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT, mDistanceUnitSpinner.getSelectedItemId());
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_TANKVOLUME, Integer.valueOf(mTankVolume.getText().toString()));
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_VOLUME_UNIT, mVolumeUnitSpinner.getSelectedItemId());
-        contentValues.put(VehiclesContract.VehiclesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
-        */
+        int vehicleSpinnerItem = mVehicleSpinner.getSelectedItemPosition();
+        int vehicleId = mVehiclesListData.get(vehicleSpinnerItem).getId();
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, vehicleId);
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, mExpenseTypeSpinner.getSelectedItemId());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, mSubtypeSpinner.getSelectedItemId());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, mDate.getText().toString());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, Integer.valueOf(mOdometer.getText().toString()));
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, Float.valueOf(mAmount.getText().toString()));
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
 
         /**
          * Insert new Expenses data via a ContentResolver
@@ -207,26 +232,32 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
         super.onDestroy();
     }
 
+    /**
+     * Spinner section
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getId() == R.id.expense_type_spinner) {
-            switch (position) {
-                case 0:
-                    adapterSubtype = ArrayAdapter.createFromResource(this,
-                            R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
-                    break;
-                case 1:
-                    adapterSubtype = ArrayAdapter.createFromResource(this,
-                            R.array.bill_expenses_subtypes, android.R.layout.simple_spinner_item);
-                    break;
-                case 2:
-                    adapterSubtype = ArrayAdapter.createFromResource(this,
-                            R.array.service_expenses_subtypes, android.R.layout.simple_spinner_item);
-                    break;
-            }
-            adapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSubtypeSpinner.setAdapter(adapterSubtype);
-            mSubtypeSpinner.invalidate();
+        setEntityTitle(null);
+        switch (parent.getId()) {
+            case R.id.expense_type_spinner:
+                switch (position) {
+                    case 0:
+                        adapterSubtype = ArrayAdapter.createFromResource(this,
+                                R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
+                        break;
+                    case 1:
+                        adapterSubtype = ArrayAdapter.createFromResource(this,
+                                R.array.bill_expenses_subtypes, android.R.layout.simple_spinner_item);
+                        break;
+                    case 2:
+                        adapterSubtype = ArrayAdapter.createFromResource(this,
+                                R.array.service_expenses_subtypes, android.R.layout.simple_spinner_item);
+                        break;
+                }
+                adapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mSubtypeSpinner.setAdapter(adapterSubtype);
+                mSubtypeSpinner.invalidate();
+                break;
         }
     }
 
@@ -234,4 +265,160 @@ public class ExpensesEntityActivity extends AppCompatActivity implements Adapter
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    /**
+     * Vehicles loader
+     */
+    /**
+     * Fetch the vehicles list from the database
+     */
+    private void fetchVehiclesList() {
+        /*
+         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<List<Vehicle>> theVehicleDbLoader = loaderManager.getLoader(VEHICLES_LOADER_ID);
+
+        if (theVehicleDbLoader == null) {
+            loaderManager.initLoader(VEHICLES_LOADER_ID, null, this);
+        } else {
+            loaderManager.restartLoader(VEHICLES_LOADER_ID, null, this);
+        }
+
+    } // fetchVehiclesList
+
+    /**
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id The ID whose loader is to be created.
+     * @param loaderArgs The WEB URL for fetching the vehicles' data.
+     *
+     * @return Return a new Loader instance that is ready to start loading.
+     */
+    @Override
+    public Loader<List<Vehicle>> onCreateLoader(int id, final Bundle loaderArgs) {
+
+        return new AsyncTaskLoader<List<Vehicle>>(this) {
+
+            /* This Vehicle array will hold and help cache our vehicles list data */
+            List<Vehicle> mCachedVehiclesListData = null;
+
+            /**
+             * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
+             */
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+
+                if (mCachedVehiclesListData != null) {
+                    deliverResult(mCachedVehiclesListData);
+                } else {
+
+                    mLoadingIndicator.setVisibility(View.VISIBLE);
+                    mVehicleSpinner.setVisibility(View.INVISIBLE);
+
+                    forceLoad();
+                }
+            } // onStartLoading
+
+            /**
+             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
+             * from thevehicledb.org in the background.
+             *
+             * @return Vehicles' data from thevehicledb.org as a List of VehiclesReviewsListItem.
+             *         null if an error occurs
+             */
+            @Override
+            public List<Vehicle> loadInBackground() {
+
+                Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
+                uri = uri.buildUpon().build();
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+                if (cursor != null && cursor.getCount() != 0) {
+                    /** ArrayList to hold the vehicles list items */
+                    List<Vehicle> vehiclesListItems = new ArrayList<Vehicle>();
+                    Vehicle vehiclesListItem;
+
+                    while (cursor.moveToNext()) {
+                        vehiclesListItem = new Vehicle();
+                        vehiclesListItem.setId(cursor.getInt(cursor.getColumnIndex(VehiclesContract.VehiclesEntry._ID)));
+                        vehiclesListItem.setImage(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_IMAGE)));
+                        vehiclesListItem.setName(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME)));
+                        vehiclesListItem.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
+                        vehiclesListItem.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
+
+                        vehiclesListItems.add(vehiclesListItem);
+                    }
+
+                    cursor.close();
+
+                    return vehiclesListItems;
+                }
+
+                return null;
+            } // loadInBackground
+
+            /**
+             * Sends the result of the load to the registered listener.
+             *
+             * @param data The result of the load
+             */
+            public void deliverResult(List<Vehicle> data) {
+                mCachedVehiclesListData = data;
+                super.deliverResult(data);
+            } // deliverResult
+
+        }; // AsyncTaskLoader
+
+    } // Loader
+
+    /**
+     * Called when a previously created loader has finished its load.
+     *
+     * @param loader The Loader that has finished.
+     * @param data The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<List<Vehicle>> loader, List<Vehicle> data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mVehicleSpinner.setVisibility(View.VISIBLE);
+
+        if (data == null) {
+            //TODO: start activity load vehicle entity
+            Intent intent = new Intent(mContext, VehicleEntityActivity.class);
+            startActivity(intent);
+        } else {
+            mVehiclesListData = new ArrayList<Vehicle>();
+            mVehiclesListData.addAll(data);
+
+            mVehiclesList = new ArrayList<CharSequence>();
+            for(Vehicle v : mVehiclesListData) {
+               mVehiclesList.add(v.getName());
+            }
+            adapterVehicles = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, mVehiclesList);
+            adapterVehicles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mVehicleSpinner.setAdapter(adapterVehicles);
+            mVehicleSpinner.invalidate();
+        }
+    } // onLoadFinished
+
+    /**
+     * Called when a previously created loader is being reset, and thus
+     * making its data unavailable.  The application should at this point
+     * remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<List<Vehicle>> loader) {
+        /*
+         * We aren't using this method in this application, but we are required to Override
+         * it to implement the LoaderCallbacks<List<VehiclesReviewsListItem>> interface
+         */
+    }
+
+
 }

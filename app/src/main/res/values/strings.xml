@@ -53,6 +53,10 @@
 
     <string name="couldnt_insert_vehicle">Couldn\'t insert the Vehicle</string>
     <string name="vehicle_added">Vehicle added: </string>
+    <string name="deleted_vehicle">Vehicle is deleted</string>
+
+    <!-- Expenses List -->
+    <string name="no_expenses_available">No Expenses Available</string>
 
     <!-- Expenses Entity -->
     <string name="vehicle_spinner_label">Vehicle</string>

@@ -25,7 +25,7 @@
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.VehicleListActivity"
+            android:name=".activities.VehiclesListActivity"
             android:label="@string/title_activity_vehicle_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

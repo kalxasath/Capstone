@@ -36,7 +36,7 @@ public class Const {
     }
 
     /**
-     * themoviedb.org API KEY
+     * YOUTUBE API KEY
      */
     public static final String YOUTUBE_API_KEY = BuildConfig.YOUTUBE_API_KEY;
 
@@ -57,9 +57,11 @@ public class Const {
      */
     // The authority, which is how the code knows which Content Provider to access
     // The authority is defined in the Android Manifest.
-    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".contentprovider";
+    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID + ".contentprovider";
 
     // The base content URI = "content://" + <authority>
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    public static final String FILE_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
 }

@@ -41,7 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VehicleListActivity extends AppCompatActivity
+public class VehiclesListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         //View.OnClickListener,
         VehiclesListAdapter.VehiclesAdapterOnClickHandler,
@@ -64,7 +64,7 @@ public class VehicleListActivity extends AppCompatActivity
     @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
     /** The recycler view */
-    @BindView(R.id.vehicle_list) RecyclerView mVehicleList;
+    @BindView(R.id.vehicles_list) RecyclerView mVehiclesList;
 
     /** The recycler's view adapter */
     VehiclesListAdapter mVehiclesListAdapter;
@@ -72,8 +72,6 @@ public class VehicleListActivity extends AppCompatActivity
     @BindView(R.id.empty_view) TextView mEmptyView;
 
     @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
-
-//    @BindView(R.id.ll_error_message) LinearLayout mErrorMessageBlock;
 
 
 
@@ -85,7 +83,7 @@ public class VehicleListActivity extends AppCompatActivity
 
         // for fragment see https://stackoverflow.com/questions/2395769/how-to-programmatically-add-views-to-views
         mContainer = this.findViewById(R.id.layout_container);
-        View.inflate(this, R.layout.activity_vehicle_list, mContainer);
+        View.inflate(this, R.layout.activity_vehicles_list, mContainer);
 
         ButterKnife.bind(this);
 
@@ -102,7 +100,7 @@ public class VehicleListActivity extends AppCompatActivity
 
         initNavigation();
 
-        initVehicleListRecyclerView();
+        initVehiclesListRecyclerView();
 
         fetchVehiclesList(true);
     }
@@ -159,7 +157,7 @@ public class VehicleListActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void initVehicleListRecyclerView() {
+    private void initVehiclesListRecyclerView() {
         /*
          * The gridLayoutManager is responsible for measuring and positioning item views within a
          * RecyclerView into a grid.
@@ -172,15 +170,15 @@ public class VehicleListActivity extends AppCompatActivity
 
         }
         /* setLayoutManager associates the gridLayoutManager with our RecyclerView */
-        mVehicleList.setLayoutManager(gridLayoutManager);
+        mVehiclesList.setLayoutManager(gridLayoutManager);
 
-        mVehicleList.setItemAnimator(new DefaultItemAnimator());
+        mVehiclesList.setItemAnimator(new DefaultItemAnimator());
 
         /*
          * Use this setting to improve performance if you know that changes in content do not
          * change the child layout size in the RecyclerView
          */
-        mVehicleList.setHasFixedSize(true);
+        mVehiclesList.setHasFixedSize(true);
 
         /*
          * The RecipesListAdapter is responsible for linking our recipes' data with the Views that
@@ -189,7 +187,7 @@ public class VehicleListActivity extends AppCompatActivity
         mVehiclesListAdapter = new VehiclesListAdapter(this);
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
-        mVehicleList.setAdapter(mVehiclesListAdapter);
+        mVehiclesList.setAdapter(mVehiclesListAdapter);
 
     }
 
@@ -256,7 +254,7 @@ public class VehicleListActivity extends AppCompatActivity
      * Fetch the vehicles' data from the database
      */
     private void fetchVehiclesList(Boolean invalidateCache) {
-        /* Create a bundle to pass the web url to the loader */
+        /* Create a bundle to pass parameters to the loader */
         Bundle loaderArgs = new Bundle();
         loaderArgs.putBoolean(LOADER_EXTRA_IC, invalidateCache);
 
@@ -422,7 +420,7 @@ public class VehicleListActivity extends AppCompatActivity
      */
     private void showVehiclesListView() {
         mEmptyView.setVisibility(View.INVISIBLE);
-        mVehicleList.setVisibility(View.VISIBLE);
+        mVehiclesList.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -431,7 +429,7 @@ public class VehicleListActivity extends AppCompatActivity
      */
     private void showEmptyView() {
         mEmptyView.setVisibility(View.VISIBLE);
-        mVehicleList.setVisibility(View.INVISIBLE);
+        mVehiclesList.setVisibility(View.INVISIBLE);
     }
 
     /**

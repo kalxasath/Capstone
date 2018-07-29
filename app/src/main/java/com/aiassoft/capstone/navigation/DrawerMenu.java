@@ -7,7 +7,7 @@ import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.activities.ExpensesListActivity;
 import com.aiassoft.capstone.activities.FavoriteVideosActivity;
 import com.aiassoft.capstone.activities.SearchYoutubeActivity;
-import com.aiassoft.capstone.activities.VehicleListActivity;
+import com.aiassoft.capstone.activities.VehiclesListActivity;
 
 /**
  * Created by gvryn on 25/07/18.
@@ -33,7 +33,7 @@ public class DrawerMenu {
         switch (id) {
             case R.id.nav_vehicles_list:
                 // Handle the vehicles list action
-                intent = new Intent(context, VehicleListActivity.class);
+                intent = new Intent(context, VehiclesListActivity.class);
                 context.startActivity(intent);
                 return true;
             case R.id.nav_expenses_list:

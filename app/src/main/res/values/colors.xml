@@ -17,4 +17,9 @@
 
     <color name="ilv_title_background">#60000000</color>
     <color name="ilv_title_text_color">#FFFFFFFF</color>
+
+
+    <color name="vli_cardBackgroundColor">#EEEEEE</color>
+
+    <color name="ile_cardBackgroundColor">#EEEEEE</color>
 </resources>

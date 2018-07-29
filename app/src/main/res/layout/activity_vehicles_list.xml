@@ -11,10 +11,10 @@
         android:layout_marginTop="?actionBarSize"
         >
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/vehicle_list"
+            android:id="@+id/vehicles_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".activities.VehicleListActivity"
+            tools:context=".activities.VehiclesListActivity"
             android:gravity="center"
             android:visibility="visible"
             android:paddingBottom="72dp"

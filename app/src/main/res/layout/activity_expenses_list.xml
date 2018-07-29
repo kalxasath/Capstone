@@ -10,14 +10,34 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
         >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/expenses_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".activities.ExpensesListActivity"
+            android:gravity="center"
+            android:visibility="visible"
+            android:paddingBottom="72dp"
+            android:clipToPadding="false"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_list_vehicle"
+            />
 
         <TextView
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:visibility="visible"
-            android:text="@string/expenses_xml_layout" />
+            android:visibility="gone"
+            android:text="@string/no_expenses_available" />
+
+        <!-- The waiting spinner -->
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            android:layout_height="42dp"
+            android:layout_width="42dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
     </FrameLayout>
 </merge>

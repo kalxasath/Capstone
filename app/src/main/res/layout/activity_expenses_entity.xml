@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.aiassoft.capstone.activities.ExpensesEntityActivity"
+    tools:context=".activities.ExpensesEntityActivity"
     >
 
     <!-- vehicle -->
@@ -18,14 +18,24 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
+    <!-- The waiting spinner -->
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:visibility="visible"
+        app:layout_constraintLeft_toRightOf="@id/vehicle_spinner_label"
+        app:layout_constraintTop_toTopOf="@id/vehicle_spinner_label" />
     <Spinner
         android:id="@+id/vehicle_spinner"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@id/vehicle_spinner_label"
         app:layout_constraintTop_toTopOf="@id/vehicle_spinner_label"
+        android:visibility="invisible"
         />
 
     <!-- expense type -->
@@ -42,7 +52,6 @@
         android:id="@+id/expense_type_spinner"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@id/expense_type_spinner_label"
         app:layout_constraintTop_toTopOf="@+id/expense_type_spinner_label"
@@ -62,7 +71,6 @@
         android:id="@+id/subtype_spinner"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@id/subtype_spinner_label"
         app:layout_constraintTop_toTopOf="@+id/subtype_spinner_label"

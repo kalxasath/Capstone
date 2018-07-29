@@ -78,24 +78,24 @@ public class CapstoneContentProvider extends ContentProvider {
          * directory
          */
         // Vehicles
-        uriMatcher.addURI(Const.AUTHORITY, VehiclesContract.PATH_VEHICLES, VEHICLES);
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, VehiclesContract.PATH_VEHICLES, VEHICLES);
         /** single item */
-        uriMatcher.addURI(Const.AUTHORITY, VehiclesContract.PATH_VEHICLES + "/#",
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, VehiclesContract.PATH_VEHICLES + "/#",
                 VEHICLE_WITH_ID);
         // Events
-        uriMatcher.addURI(Const.AUTHORITY, ExpensesContract.PATH_EVENTS, EVENTS);
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EVENTS, EVENTS);
         /** single item */
-        uriMatcher.addURI(Const.AUTHORITY, ExpensesContract.PATH_EVENTS + "/#",
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EVENTS + "/#",
                 EVENT_WITH_ID);
         // Images
-        uriMatcher.addURI(Const.AUTHORITY, ImagesContract.PATH_IMAGES, IMAGES);
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ImagesContract.PATH_IMAGES, IMAGES);
         /** single item */
-        uriMatcher.addURI(Const.AUTHORITY, ImagesContract.PATH_IMAGES + "/#",
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ImagesContract.PATH_IMAGES + "/#",
                 IMAGE_WITH_ID);
         // Favorite Videos
-        uriMatcher.addURI(Const.AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS, FAVORITE_VIDEOS);
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS, FAVORITE_VIDEOS);
         /** single item */
-        uriMatcher.addURI(Const.AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS + "/#",
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS + "/#",
                 FAVORITE_VIDEO_WITH_ID);
 
         return uriMatcher;
@@ -469,47 +469,47 @@ public class CapstoneContentProvider extends ContentProvider {
         switch (match) {
             case VEHICLES:
                 // directory
-                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + VehiclesContract.PATH_VEHICLES;
 
             case VEHICLE_WITH_ID:
                 // single item type
-                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + VehiclesContract.PATH_VEHICLES;
 
             case EVENTS:
                 // directory
-                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + ExpensesContract.PATH_EVENTS;
 
             case EVENT_WITH_ID:
                 // single item type
-                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + ExpensesContract.PATH_EVENTS;
 
             case IMAGES:
                 // directory
-                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + ImagesContract.PATH_IMAGES;
 
             case IMAGE_WITH_ID:
                 // single item type
-                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + ImagesContract.PATH_IMAGES;
 
             case FAVORITE_VIDEOS:
                 // directory
-                return "vnd.android.cursor.dir" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
 
             case FAVORITE_VIDEO_WITH_ID:
                 // directory
-                return "vnd.android.cursor.item" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
 
             case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
                 // single item type
-                return "vnd.android.cursor.youtube" + "/" + Const.AUTHORITY + "/"
+                return "vnd.android.cursor.youtube" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
 
             /** default exception */

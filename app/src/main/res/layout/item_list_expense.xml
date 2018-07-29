@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/ile_card_view_margin_start_end"
+    android:layout_marginEnd="@dimen/ile_card_view_margin_start_end"
+    android:layout_marginTop="@dimen/ile_card_view_margin_top_bottom"
+    android:layout_marginBottom="@dimen/ile_card_view_margin_top_bottom"
+    android:background="@color/ile_cardBackgroundColor"
+    card_view:cardElevation="@dimen/ile_card_view_elevation"
+    card_view:cardMaxElevation="@dimen/ile_card_view_max_elevation"
+    card_view:cardCornerRadius="@dimen/ile_card_view_corner_radious"
+
+    >
+
+        <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.aiassoft.capstone.activities.VehicleEntityActivity"
+            >
+
+        <TextView
+            android:id="@+id/vehicle_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Peugeot 307sw"
+            android:textSize="@dimen/ile_vehicle_title_text_size"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="bottom|right"
+            android:padding="@dimen/ile_vehicle_title_padding"
+            />
+
+        </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

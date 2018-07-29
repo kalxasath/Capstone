@@ -13,6 +13,24 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
-    <dimen name="ilv_padding">10dp</dimen>
-    <dimen name="ilv_text_size">28sp</dimen>
+    <!-- ilv = Item List Vehicle -->
+    <dimen name="ilv_card_view_height">200dp</dimen>
+    <dimen name="ilv_card_view_margin_start_end">12dp</dimen>
+    <dimen name="ilv_card_view_margin_top_bottom">6dp</dimen>
+    <dimen name="ilv_card_view_elevation">6dp</dimen>
+    <dimen name="ilv_card_view_max_elevation">12dp</dimen>
+    <dimen name="ilv_card_view_corner_radious">12dp</dimen>
+
+    <dimen name="ilv_title_padding">10dp</dimen>
+    <dimen name="ilv_title_text_size">28sp</dimen>
+
+    <!-- ile = Item List Expense -->
+    <dimen name="ile_card_view_margin_start_end">12dp</dimen>
+    <dimen name="ile_card_view_margin_top_bottom">6dp</dimen>
+    <dimen name="ile_card_view_elevation">6dp</dimen>
+    <dimen name="ile_card_view_max_elevation">12dp</dimen>
+    <dimen name="ile_card_view_corner_radious">12dp</dimen>
+
+    <dimen name="ile_vehicle_title_padding">10dp</dimen>
+    <dimen name="ile_vehicle_title_text_size">14sp</dimen>
 </resources>
