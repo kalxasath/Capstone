@@ -22,20 +22,91 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             tools:context="com.aiassoft.capstone.activities.VehicleEntityActivity"
             >
 
-        <TextView
-            android:id="@+id/vehicle_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Peugeot 307sw"
-            android:textSize="@dimen/ile_vehicle_title_text_size"
-            android:textColor="@color/colorPrimary"
-            android:layout_gravity="bottom|right"
-            android:padding="@dimen/ile_vehicle_title_padding"
-            />
+                <TextView
+                    android:id="@+id/vehicle_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Peugeot 307sw"
+                    android:textSize="@dimen/ile_vehicle_title_text_size"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginStart="@dimen/ile_margin_start_end"
+                    android:layout_marginEnd="@dimen/ile_margin_start_end"
+                    android:layout_marginTop="@dimen/ile_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/expense_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="14/06/2018"
+                    android:textSize="@dimen/ile_vehicle_title_text_size"
+                    android:textColor="@color/textPrimaryContent"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginStart="@dimen/ile_margin_start_end"
+                    android:layout_marginEnd="@dimen/ile_margin_start_end"
+                    android:layout_marginTop="@dimen/ile_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+                    />
+
+                <TextView
+                    android:id="@+id/expense_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Bill"
+                    android:textSize="@dimen/ile_vehicle_title_text_size"
+                    android:textColor="@color/textPrimaryContent"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginStart="@dimen/ile_margin_start_end"
+                    android:layout_marginEnd="@dimen/ile_margin_start_end"
+                    android:layout_marginTop="@dimen/ile_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+                    app:layout_constraintStart_toEndOf="@id/expense_date"
+                    app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+                    />
+
+                <TextView
+                    android:id="@+id/expense_subtype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Accessories"
+                    android:textSize="@dimen/ile_vehicle_title_text_size"
+                    android:textColor="@color/textPrimaryContent"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginStart="@dimen/ile_margin_start_end"
+                    android:layout_marginEnd="@dimen/ile_margin_start_end"
+                    android:layout_marginTop="@dimen/ile_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+                    app:layout_constraintStart_toEndOf="@id/expense_type"
+                    app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+                    />
+
+                <TextView
+                    android:id="@+id/expense_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="58.36"
+                    android:textSize="@dimen/ile_vehicle_title_text_size"
+                    android:textColor="@color/textPrimaryContent"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginStart="@dimen/ile_margin_start_end"
+                    android:layout_marginEnd="@dimen/ile_margin_start_end"
+                    android:layout_marginTop="@dimen/ile_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+                    app:layout_constraintStart_toEndOf="@id/expense_subtype"
+                    app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+                    />
 
         </android.support.constraint.ConstraintLayout>
 

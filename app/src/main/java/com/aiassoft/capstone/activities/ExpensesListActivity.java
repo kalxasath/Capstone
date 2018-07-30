@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
@@ -62,14 +63,11 @@ public class ExpensesListActivity extends AppCompatActivity
 
     Context mContext;
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawer;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
+    @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
     /** The recycler view */
@@ -101,6 +99,7 @@ public class ExpensesListActivity extends AppCompatActivity
 
         setSupportActionBar(mToolbar);
 
+
         initFab();
 
         initDrawer();
@@ -128,8 +127,6 @@ public class ExpensesListActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
-        //mDrawer = findViewById(R.id.drawer_layout);
-        //mDrawer.setFocusable(true);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -137,14 +134,6 @@ public class ExpensesListActivity extends AppCompatActivity
                 super.onDrawerOpened(drawerView);
                 //This is not working properly
                 mNavView.requestFocus();
-                /*
-                if(mNavView.requestFocus()){
-                    NavigationMenuView navigationMenuView = (NavigationMenuView)mNavView.getFocusedChild();
-                    navigationMenuView.setPressed(true);
-
-                    //navigationMenuView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                }
-                */
             }
 
             @Override
@@ -237,7 +226,6 @@ public class ExpensesListActivity extends AppCompatActivity
 
         return super.onKeyUp(keyCode, event);
     }
-
 
     /**
      * Fetch the expenses' data from the database

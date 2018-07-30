@@ -103,7 +103,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         // Root Content Layout
         mRootLayout = this.findViewById(R.id.root_layout);
         // Toolbar layout, to set the title
-        mCollapsingToolbarLayout = findViewById(R.id.toolbar_layout);
+        mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
         // Layout Content
         mLayoutContainer = this.findViewById(R.id.layout_container);
         // Entity

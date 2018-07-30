@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_menu_dashboard"
+            android:title="@string/nav_dashboard" />
+        <item
             android:id="@+id/nav_vehicles_list"
             android:icon="@drawable/ic_menu_vehicle_list"
             android:title="@string/nav_vehicles_list" />
@@ -16,24 +20,5 @@
             android:id="@+id/nav_search_youtube"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/nav_search_youtube" />
-        <item
-            android:id="@+id/nav_favorite_videos"
-            android:icon="@drawable/ic_menu_favorite_videos"
-            android:title="@string/nav_favorite_videos" />
     </group>
-
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
-
 </menu>

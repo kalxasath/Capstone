@@ -31,6 +31,7 @@
     <dimen name="ile_card_view_max_elevation">12dp</dimen>
     <dimen name="ile_card_view_corner_radious">12dp</dimen>
 
-    <dimen name="ile_vehicle_title_padding">10dp</dimen>
-    <dimen name="ile_vehicle_title_text_size">14sp</dimen>
+    <dimen name="ile_margin_start_end">10dp</dimen>
+    <dimen name="ile_margin_top_bottom">5dp</dimen>
+    <dimen name="ile_vehicle_title_text_size">16sp</dimen>
 </resources>

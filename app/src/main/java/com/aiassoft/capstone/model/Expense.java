@@ -1,5 +1,7 @@
 package com.aiassoft.capstone.model;
 
+import android.content.Context;
+
 import com.aiassoft.capstone.R;
 
 /**
@@ -69,12 +71,32 @@ public class Expense {
         return expenseType;
     }
 
+    public String getExpenseTypeStr(Context context) {
+        return context.getResources()
+                .getStringArray(R.array.expenses_types)[this.expenseType];
+    }
+
     public void setExpenseType(int expenseType) {
         this.expenseType = expenseType;
     }
 
     public int getSubtype() {
         return subtype;
+    }
+
+    public String getSubtypeStr(Context context) {
+        switch (this.expenseType) {
+            case 0:
+                return context.getResources()
+                        .getStringArray(R.array.refuel_expenses_subtypes)[this.subtype];
+            case 1:
+                return context.getResources()
+                        .getStringArray(R.array.bill_expenses_subtypes)[this.subtype];
+            case 2:
+                return context.getResources()
+                        .getStringArray(R.array.service_expenses_subtypes)[this.subtype];
+        }
+        return "";
     }
 
     public void setSubtype(int subtype) {

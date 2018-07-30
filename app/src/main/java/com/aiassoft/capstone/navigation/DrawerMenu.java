@@ -46,11 +46,7 @@ public class DrawerMenu {
                 intent = new Intent(context, SearchYoutubeActivity.class);
                 context.startActivity(intent);
                 return true;
-            case R.id.nav_favorite_videos:
-                // Handle the favorite videos action
-                intent = new Intent(context, FavoriteVideosActivity.class);
-                context.startActivity(intent);
-                return true;
+
         }
 
         return false;

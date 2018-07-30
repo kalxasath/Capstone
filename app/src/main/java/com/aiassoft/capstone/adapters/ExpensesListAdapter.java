@@ -59,6 +59,10 @@ public class ExpensesListAdapter extends RecyclerView.Adapter<ExpensesListAdapte
 
         /* The Views to display the Expense's Data */
         @BindView(R.id.vehicle_title) TextView mVehicleTitle;
+        @BindView(R.id.expense_date) TextView mExpenseDate;
+        @BindView(R.id.expense_type) TextView mExpenseType;
+        @BindView(R.id.expense_subtype) TextView mExpenseSubtype;
+        @BindView(R.id.expense_amount) TextView mExpenseAmount;
 
         public ExpensesAdapterViewHolder(View view) {
             super(view);
@@ -105,23 +109,19 @@ public class ExpensesListAdapter extends RecyclerView.Adapter<ExpensesListAdapte
      * details for this particular position, using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param ExpensesAdapterViewHolder The ViewHolder which should be updated to represent the
+     * @param viewHolder The ViewHolder which should be updated to represent the
      *                                contents of the item at the given position in the data set.
      * @param position                The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(ExpensesAdapterViewHolder ExpensesAdapterViewHolder, int position) {
-        ExpensesAdapterViewHolder.mVehicleTitle.setText(mExpensesData.get(position).getVehicle());
-        /*
-        String image = mExpensesData.get(position).getImage();
-
-        Picasso.with(ExpensesAdapterViewHolder.mExpenseImage.getContext())
-                .load(R.drawable.jonathan_daniels_453915_unsplash_rsz)
-                .placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
-                .into(ExpensesAdapterViewHolder.mExpenseImage);
-
-        ExpensesAdapterViewHolder.mExpenseTitle.setText(mExpensesData.get(position).getTitle());
-        */
+    public void onBindViewHolder(ExpensesAdapterViewHolder viewHolder, int position) {
+        viewHolder.mVehicleTitle.setText(mExpensesData.get(position).getVehicle());
+        viewHolder.mExpenseDate.setText(mExpensesData.get(position).getDate());
+        viewHolder.mExpenseType.setText(mExpensesData.get(position)
+                .getExpenseTypeStr(viewHolder.mExpenseType.getContext()));
+        viewHolder.mExpenseSubtype.setText(mExpensesData.get(position)
+                .getSubtypeStr(viewHolder.mExpenseSubtype.getContext()));
+        viewHolder.mExpenseAmount.setText(String.valueOf(mExpensesData.get(position).getAmount()));
     }
 
     /**

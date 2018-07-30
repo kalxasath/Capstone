@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Capstone</string>
+    <string name="vehicle_expenses_tacking">Vehicle Expenses Tracking</string>
+    <string name="creator">by George Vrynios</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
     <!-- Developer Messages -->
@@ -21,10 +23,10 @@
     <string name="action_delete">Delete</string>
 
     <!-- Drawer's Menu -->
+    <string name="nav_dashboard">Dashboard</string>
     <string name="nav_vehicles_list">Vehicles List</string>
     <string name="nav_expenses_list">Expenses List</string> <!-- The expenses list is a list of all expenses you've entered for your vehicles. -->
     <string name="nav_search_youtube">Search Youtube</string>
-    <string name="nav_favorite_videos">Favorite Videos</string>
     <!-- <string name=""></string> -->
 
     <!-- Content Descriptions -->
