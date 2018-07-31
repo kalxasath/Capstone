@@ -5,15 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.navigation.DrawerMenu;
@@ -26,19 +30,19 @@ import butterknife.ButterKnife;
  */
 
 public class SearchYoutubeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        SearchView.OnQueryTextListener {
+
     Context mContext;
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawer;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     ActionBarDrawerToggle mDrawerToggle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
+    @BindView(R.id.fab) FloatingActionButton mFab;
     @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
+    SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
         setContentView(R.layout.app_drawer);
         mContext = this;
 
-        // for fragment see https://stackoverflow.com/questions/2395769/how-to-programmatically-add-views-to-views
         mContainer = this.findViewById(R.id.layout_container);
         View.inflate(this, R.layout.activity_search_youtube, mContainer);
 
@@ -79,14 +82,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
                 super.onDrawerOpened(drawerView);
                 //This is not working properly
                 mNavView.requestFocus();
-                /*
-                if(mNavView.requestFocus()){
-                    NavigationMenuView navigationMenuView = (NavigationMenuView)mNavView.getFocusedChild();
-                    navigationMenuView.setPressed(true);
-
-                    //navigationMenuView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                }
-                */
             }
 
             @Override
@@ -138,6 +133,34 @@ public class SearchYoutubeActivity extends AppCompatActivity
         return super.onKeyUp(keyCode, event);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.menu_search, menu);
 
+        MenuItem mSearch = menu.findItem(R.id.action_search);
+
+        mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setQueryHint("Search");
+
+        mSearchView.setOnQueryTextListener(this);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Snackbar.make(mSearchView, "TextSubmit " + query, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+        Toast.makeText(this, "TextSubmit " + query, Toast.LENGTH_LONG).show();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Snackbar.make(mSearchView, "TextChange " + newText, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+        Toast.makeText(this, "TextChange " + newText, Toast.LENGTH_LONG).show();
+        return false;
+    }
 }

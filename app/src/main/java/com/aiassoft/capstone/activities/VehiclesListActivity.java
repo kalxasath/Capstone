@@ -81,7 +81,6 @@ public class VehiclesListActivity extends AppCompatActivity
         setContentView(R.layout.app_drawer);
         mContext = this;
 
-        // for fragment see https://stackoverflow.com/questions/2395769/how-to-programmatically-add-views-to-views
         mContainer = this.findViewById(R.id.layout_container);
         View.inflate(this, R.layout.activity_vehicles_list, mContainer);
 

@@ -17,7 +17,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/fabian_blank_pelskgra2nu_unsplash_round" />
+        app:srcCompat="@drawable/dhiva_krishna_unsplash_round" />
 
     <TextView
         android:layout_width="match_parent"

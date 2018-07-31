@@ -44,10 +44,6 @@
             android:name=".activities.SearchYoutubeActivity"
             android:label="@string/title_activity_search_youtube"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.FavoriteVideosActivity"
-            android:label="@string/title_activity_favorite_videos"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- Register the DatabaseContentProvider -->
         <!-- Set name, authorities, and exported attributes -->

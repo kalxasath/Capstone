@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.activities.DashboardActivity;
 import com.aiassoft.capstone.activities.ExpensesListActivity;
-import com.aiassoft.capstone.activities.FavoriteVideosActivity;
 import com.aiassoft.capstone.activities.SearchYoutubeActivity;
 import com.aiassoft.capstone.activities.VehiclesListActivity;
 
@@ -31,6 +31,11 @@ public class DrawerMenu {
         Intent intent;
 
         switch (id) {
+            case R.id.nav_dashboard:
+                // Handle the dashboard action
+                intent = new Intent(context, DashboardActivity.class);
+                context.startActivity(intent);
+                return true;
             case R.id.nav_vehicles_list:
                 // Handle the vehicles list action
                 intent = new Intent(context, VehiclesListActivity.class);
