@@ -30,6 +30,8 @@ import butterknife.ButterKnife;
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //TODO: in every image add the tag android:contentDescription="movie_poster_content_description"
+
     Context mContext;
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;

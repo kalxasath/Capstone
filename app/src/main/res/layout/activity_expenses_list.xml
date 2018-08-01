@@ -20,7 +20,7 @@
             android:paddingBottom="72dp"
             android:clipToPadding="false"
             app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_list_vehicle"
+            tools:listitem="@layout/item_list_expense"
             />
 
         <TextView

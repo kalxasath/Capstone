@@ -8,15 +8,15 @@
     <string name="no_instances_for_you">No Instances for you!</string>
     <string name="missing_xml_layout">Missing XML layout!</string>
     <string name="dashboard_xml_layout">Dashboard XML layout!</string>
-    <string name="expenses_xml_layout">Expenses XML layout!</string>
-    <string name="search_xml_layout">Search XML layout!</string>
-    <string name="favorites_xml_layout">Favorites XML layout!</string>
 
     <!-- System Messages -->
     <string name="failed_to_insert_row_into">Failed to insert row into: </string>
     <string name="unknown_uri">Unknown URI: </string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="refresh">Refresh</string>
+    <string name="error_check_your_network_connectivity">Please check your network connectivity!</string>
+    <string name="youtube_player_not_found">An associated Youtube player couldn\'t be found!</string>
 
     <!-- Menus -->
     <string name="action_done">Done</string>
@@ -71,6 +71,10 @@
 
     <string name="couldnt_insert_expense">Couldn\'t insert the Expense</string>
     <string name="expense_added">Expense added: </string>
+    
+    <!-- Search Youtube -->
+    <string name="no_video_results">No video results</string>
+    <string name="no_video_results_for">No video results for</string>
 
     <!-- Picture Chooser -->
     <string name="_x_select_image_source">Select Image Source</string>

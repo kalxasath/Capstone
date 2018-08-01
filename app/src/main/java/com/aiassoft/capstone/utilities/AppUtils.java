@@ -21,6 +21,7 @@ package com.aiassoft.capstone.utilities;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -97,6 +98,14 @@ public final class AppUtils {
 
     public static void showToast(String msg) {
         Toast.makeText(MyApp.getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showSnackbar(View view, String msg) {
+        Snackbar.make(view, msg, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showSnackbar(View view, int redId) {
+        Snackbar.make(view, redId, Snackbar.LENGTH_LONG).show();
     }
 }
 
