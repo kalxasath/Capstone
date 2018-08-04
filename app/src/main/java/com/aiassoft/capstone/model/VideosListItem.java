@@ -30,8 +30,11 @@ public class VideosListItem {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VideosListItem.class.getSimpleName();
 
-    private int id;
-    private String posterPath;
+    private String videoId;
+    private String title;
+    private String description;
+    private String thumbnail;
+    private int page;
 
     /**
      * No args constructor for use in serialization
@@ -39,30 +42,52 @@ public class VideosListItem {
     public VideosListItem() {
     }
 
-    /**
-     * Constructor to initialize all the class fields from the parameters
-     * @param id         The Video Id
-     * @param posterPath The Poster Path / video poster image thumbnail
-     */
-    public VideosListItem(int id, int page, String posterPath) {
-        this.id = id;
-        this.posterPath = posterPath;
+    public VideosListItem(String videoId, String title, String description, String thumbnail, int page) {
+        this.videoId = videoId;
+        this.title = title;
+        this.description = description;
+        this.thumbnail = thumbnail;
+        this.page = page;
     }
 
-    public int getId() {
-        return id;
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getVideoId() {
+        return videoId;
     }
 
-    public String getPosterPath() {
-        return posterPath;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 
 }

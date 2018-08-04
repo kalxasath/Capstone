@@ -61,7 +61,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
      * The interface that receives OnClick messages
      */
     public interface VideosAdapterOnClickHandler {
-        void onClick(int videoId);
+        void onClick(String videoId);
     }
 
     /**
@@ -81,7 +81,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             implements View.OnClickListener {
 
         /* This ImageView is used to display the Video's Poster */
-        @BindView(R.id.iv_video_poster) ImageView mVideoPoster;
+        //@BindView(R.id.iv_video_poster) ImageView mVideoPoster;
 
         @BindView(R.id.video_title) TextView mVideoTitle;
 
@@ -99,7 +99,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            int selectedVideo = mVideosData.get(adapterPosition).getId();
+            String selectedVideo = mVideosData.get(adapterPosition).getVideoId();
             mClickHandler.onClick(selectedVideo);
         }
     }
@@ -136,7 +136,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
      */
     @Override
     public void onBindViewHolder(VideosAdapterViewHolder videosAdapterViewHolder, int position) {
-        String s = mVideosData.get(position).getPosterPath();
+        String s = mVideosData.get(position).getThumbnail();
         /*
         Picasso.with(videosAdapterViewHolder.mVideoPoster.getContext())
                 .load(NetworkUtils.buildPosterUrl(s))

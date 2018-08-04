@@ -21,12 +21,20 @@ package com.aiassoft.capstone.utilities;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.aiassoft.capstone.BuildConfig;
 import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.model.VideosListItem;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import static com.aiassoft.capstone.utilities.AppUtils.showToast;
 
@@ -55,7 +63,7 @@ public class YoutubeUtils {
     public static final String YOUTUBE_PARAM_FIELDS = "fields";
 
 
-
+    ////// Build Http Requests //////
 
     public static Uri buildHttpGoogleApisYoutubeSearchVideoUri(String query) {
         Uri builtUri = Uri.parse(GOOGLEAPIS_YOUTUBE_URL + YOUTUBE_CMD_SEARCH)
@@ -95,6 +103,51 @@ public class YoutubeUtils {
 
         return builtUri;
     }
+
+    ////// Parse JSON Data //////
+
+    public static ArrayList<VideosListItem> parseSearchResults(String json) {
+        Log.d(LOG_TAG, json);
+        /* ArrayList to hold the movie reviews list items */
+
+        ArrayList<VideosListItem> videosListItems = new ArrayList<>();
+        VideosListItem videosListItem;
+
+        try {
+            /** Creates a new JSONObject with name/value mappings from the json string */
+            JSONObject searchResults = new JSONObject(json);
+            JSONObject pageInfo =  searchResults.optJSONObject("pageInfo");
+
+            /** Get the movie reviews' data array */
+            JSONArray items =  searchResults.optJSONArray("items");
+
+            int maxResults = items.length();
+            for (int i=0; i<maxResults; i++) {
+                /** Get the movie's data */
+                JSONObject item = items.optJSONObject(i);
+                JSONObject id = item.optJSONObject("id");
+                JSONObject video = item.optJSONObject("snippet");
+                JSONObject thumbnails = item.optJSONObject("thumbnails");
+                JSONObject high = thumbnails.optJSONObject("high");
+
+                videosListItem = new VideosListItem();
+                videosListItem.setVideoId(id.optString("videoId"));
+                videosListItem.setTitle(video.optString("title"));
+                videosListItem.setDescription(video.optString("description"));
+                videosListItem.setThumbnail(high.optString("url"));
+                videosListItem.setPage(pageInfo.optInt("resultsPerPage"));
+
+                videosListItems.add(videosListItem);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return videosListItems;
+    }
+
+
+    ////// Start Youtube Player //////
 
     /**
      * Play the video via the youtube app, if the app doesn't exists

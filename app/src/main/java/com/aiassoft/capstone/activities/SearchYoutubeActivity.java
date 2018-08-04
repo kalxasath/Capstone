@@ -350,8 +350,8 @@ public class SearchYoutubeActivity extends AppCompatActivity
                 try {
                     URL theWebUrl = new URL(loaderWebUrlString);
 
-                    /** if succeed returns a List of VideosReviewsListItem objects */
-                    return JsonUtils.parseVideosListJson(
+                    /** if succeed returns a List of VideosListItem objects */
+                    return YoutubeUtils.parseSearchResults(
                             NetworkUtils.getResponseFromHttpUrl(theWebUrl));
 
                 } catch (Exception e) {
@@ -360,7 +360,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
                     return null;
                 }
 
-                return null;
             } // loadInBackground
 
             /**
@@ -428,7 +427,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
      * @param videoId the Id from the selected video
      */
     @Override
-    public void onClick(int videoId) {
+    public void onClick(String videoId) {
         /* Prepare to call the detail activity, to show the video's details */
         // TODO: call video player activity ? see the original code how to play video
 //        Intent intent = new Intent(this, DetailActivity.class);
