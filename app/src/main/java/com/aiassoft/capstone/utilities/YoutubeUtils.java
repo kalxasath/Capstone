@@ -127,14 +127,17 @@ public class YoutubeUtils {
                 JSONObject item = items.optJSONObject(i);
                 JSONObject id = item.optJSONObject("id");
                 JSONObject video = item.optJSONObject("snippet");
-                JSONObject thumbnails = item.optJSONObject("thumbnails");
+                JSONObject thumbnails = video.optJSONObject("thumbnails");
                 JSONObject high = thumbnails.optJSONObject("high");
 
                 videosListItem = new VideosListItem();
                 videosListItem.setVideoId(id.optString("videoId"));
                 videosListItem.setTitle(video.optString("title"));
                 videosListItem.setDescription(video.optString("description"));
-                videosListItem.setThumbnail(high.optString("url"));
+                if (i==0)
+                    videosListItem.setThumbnail("https://url");
+                else
+                    videosListItem.setThumbnail(high.optString("url"));
                 videosListItem.setPage(pageInfo.optInt("resultsPerPage"));
 
                 videosListItems.add(videosListItem);
@@ -153,14 +156,14 @@ public class YoutubeUtils {
      * Play the video via the youtube app, if the app doesn't exists
      * it will play it via the web browser
      * @param context the context to be used to start the activity
-     * @param key     the video key / id
+     * @param videoId the video id
      */
-    public static void watchYoutubeVideo(Context context, String key){
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, buildAppYoutubeWatchVideoUri(key));
+    public static void watchYoutubeVideo(Context context, String videoId){
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, buildAppYoutubeWatchVideoUri(videoId));
         if (appIntent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(appIntent);
         } else {
-            Intent webIntent = new Intent(Intent.ACTION_VIEW, buildHttpYoutubeWatchVideoUri(key));
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, buildHttpYoutubeWatchVideoUri(videoId));
             if (webIntent.resolveActivity(context.getPackageManager()) != null) {
                 context.startActivity(webIntent);
             } else {

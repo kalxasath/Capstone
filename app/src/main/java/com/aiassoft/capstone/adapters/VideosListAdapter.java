@@ -24,12 +24,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.model.VideosListItem;
 import com.aiassoft.capstone.utilities.NetworkUtils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,12 +46,14 @@ import butterknife.ButterKnife;
  * {@link VideosListAdapter} exposes a list of videos to a
  * {@link android.support.v7.widget.RecyclerView}
  */
-public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.VideosAdapterViewHolder> {
+public class VideosListAdapter
+        extends RecyclerView.Adapter<VideosListAdapter.VideosAdapterViewHolder> {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VideosListAdapter.class.getSimpleName();
 
     /* This array holds a list of video objects */
     private ArrayList<VideosListItem> mVideosData = new ArrayList<>();
+    private TextView mLastTextViewWithRunningMarquee = null;
 
     /**
      * Defining an on-click handler to make it easy for an Activity
@@ -80,15 +84,19 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     public class VideosAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        /* This ImageView is used to display the Video's Poster */
-        //@BindView(R.id.iv_video_poster) ImageView mVideoPoster;
-
+        /* This ImageView is used to display the Video's thumbnail */
+        @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
+        @BindView(R.id.video_thumbnail) ImageView mVideoThumbnail;
+        @BindView(R.id.play_circle) ImageView mPlay_circle;
         @BindView(R.id.video_title) TextView mVideoTitle;
 
         public VideosAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);
+            mVideoThumbnail.setOnClickListener(this);
+            mPlay_circle.setOnClickListener(this);
+            mVideoTitle.setOnClickListener(this);
         }
 
         /**
@@ -98,9 +106,19 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
          */
         @Override
         public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
-            String selectedVideo = mVideosData.get(adapterPosition).getVideoId();
-            mClickHandler.onClick(selectedVideo);
+            if (mLastTextViewWithRunningMarquee != null)
+                mLastTextViewWithRunningMarquee.setSelected(false);
+
+            mLastTextViewWithRunningMarquee = ((android.support.v7.widget.CardView)v.getParent())
+                    .findViewById(R.id.video_title);
+            mLastTextViewWithRunningMarquee.setSelected(true);
+
+            if (v.getId() == R.id.play_circle) {
+                int adapterPosition = getAdapterPosition();
+                String selectedVideo = mVideosData.get(adapterPosition).getVideoId();
+                mClickHandler.onClick(selectedVideo);
+            } else {
+            }
         }
     }
 
@@ -135,13 +153,45 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
      * @param position                The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(VideosAdapterViewHolder videosAdapterViewHolder, int position) {
+    public void onBindViewHolder(final VideosAdapterViewHolder videosAdapterViewHolder, int position) {
+        setThumbnailLoadingIndicator(videosAdapterViewHolder);
+
         String s = mVideosData.get(position).getThumbnail();
-        /*
-        Picasso.with(videosAdapterViewHolder.mVideoPoster.getContext())
-                .load(NetworkUtils.buildPosterUrl(s))
-                .into(videosAdapterViewHolder.mVideoPoster);
-        */
+
+        final Callback loadedCallback = new Callback() {
+            @Override
+            public void onSuccess() {
+                videosAdapterViewHolder.mLoadingIndicator.setVisibility(View.INVISIBLE);
+                videosAdapterViewHolder.mVideoThumbnail.setVisibility(View.VISIBLE);
+                videosAdapterViewHolder.mPlay_circle.setVisibility(View.VISIBLE);
+                videosAdapterViewHolder.mVideoTitle.setVisibility(View.VISIBLE);
+            }
+            @Override public void onError() {
+                videosAdapterViewHolder.mLoadingIndicator.setVisibility(View.INVISIBLE);
+                videosAdapterViewHolder.mVideoThumbnail.setVisibility(View.VISIBLE);
+                videosAdapterViewHolder.mVideoThumbnail.setImageDrawable(
+                        videosAdapterViewHolder.mVideoThumbnail
+                                .getResources().getDrawable(R.drawable.no_video_available));
+            }
+        };
+        videosAdapterViewHolder.mVideoThumbnail.setTag(loadedCallback);
+
+        Picasso.with(videosAdapterViewHolder.mVideoThumbnail.getContext())
+                .load(s)
+                .centerCrop()
+                .fit()
+                //.placeholder(R.drawable.progress_animation)
+                //.error(R.drawable.no_video_available)
+                .into(videosAdapterViewHolder.mVideoThumbnail, loadedCallback);
+
+        videosAdapterViewHolder.mVideoTitle.setText(mVideosData.get(position).getTitle());
+    }
+
+    private void setThumbnailLoadingIndicator(final VideosAdapterViewHolder videosAdapterViewHolder) {
+        videosAdapterViewHolder.mLoadingIndicator.setVisibility(View.VISIBLE);
+        videosAdapterViewHolder.mVideoThumbnail.setVisibility(View.INVISIBLE);
+        videosAdapterViewHolder.mPlay_circle.setVisibility(View.INVISIBLE);
+        videosAdapterViewHolder.mVideoTitle.setVisibility(View.INVISIBLE);
     }
 
     /**

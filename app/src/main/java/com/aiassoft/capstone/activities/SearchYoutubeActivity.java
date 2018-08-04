@@ -44,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
+import static com.aiassoft.capstone.utilities.YoutubeUtils.watchYoutubeVideo;
 
 /**
  * Created by gvryn on 26/07/18.
@@ -165,7 +166,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
          * The gridLayoutManager is responsible for measuring and positioning item views within a
          * RecyclerView into a grid.
          */
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 1);
 
         /* setLayoutManager associates the gridLayoutManager with our RecyclerView */
         mVideosList.setLayoutManager(gridLayoutManager);
@@ -428,11 +429,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
      */
     @Override
     public void onClick(String videoId) {
-        /* Prepare to call the detail activity, to show the video's details */
-        // TODO: call video player activity ? see the original code how to play video
-//        Intent intent = new Intent(this, DetailActivity.class);
-//        intent.putExtra(DetailActivity.EXTRA_MOVIE_ID, videoId);
-//        startActivity(intent);
+        watchYoutubeVideo(mContext, videoId);
     }
 
     /**
