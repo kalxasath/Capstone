@@ -30,8 +30,6 @@ import android.support.annotation.NonNull;
 import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
-import com.aiassoft.capstone.data.FavoriteVideosContract.FavoriteVideosEntry;
-import com.aiassoft.capstone.data.ImagesContract.ImagesEntry;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 
 /**
@@ -52,13 +50,9 @@ public class CapstoneContentProvider extends ContentProvider {
      */
     public static final int VEHICLES = 10;
     public static final int VEHICLE_WITH_ID = 11;
-    public static final int EVENTS = 20;
-    public static final int EVENT_WITH_ID = 21;
-    public static final int IMAGES = 30;
-    public static final int IMAGE_WITH_ID = 31;
-    public static final int FAVORITE_VIDEOS = 40;
-    public static final int FAVORITE_VIDEO_WITH_ID = 41;
-    public static final int FAVORITE_VIDEO_WITH_YOUTUBE_ID = 42;
+    public static final int EXPENSES = 20;
+    public static final int EXPENSES_WITH_ID = 21;
+
 
     /**
      * Now let's actually build our UriMatcher and associate these constants with the correct URI.
@@ -83,33 +77,24 @@ public class CapstoneContentProvider extends ContentProvider {
         uriMatcher.addURI(Const.CONTENT_AUTHORITY, VehiclesContract.PATH_VEHICLES + "/#",
                 VEHICLE_WITH_ID);
         // Events
-        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EVENTS, EVENTS);
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EXPENSES, EXPENSES);
         /** single item */
-        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EVENTS + "/#",
-                EVENT_WITH_ID);
-        // Images
-        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ImagesContract.PATH_IMAGES, IMAGES);
-        /** single item */
-        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ImagesContract.PATH_IMAGES + "/#",
-                IMAGE_WITH_ID);
-        // Favorite Videos
-        uriMatcher.addURI(Const.CONTENT_AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS, FAVORITE_VIDEOS);
-        /** single item */
-        uriMatcher.addURI(Const.CONTENT_AUTHORITY, FavoriteVideosContract.PATH_FAVORITE_VIDEOS + "/#",
-                FAVORITE_VIDEO_WITH_ID);
+        uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EXPENSES + "/#",
+                EXPENSES_WITH_ID);
+
 
         return uriMatcher;
 
     } // UriMatcher buildUriMatcher()
 
     /**
-     * initialize the Popular Movies Content Provider
+     * initialize the Capstone Content Provider
      * @return true
      */
     @Override
     public boolean onCreate() {
         /** Create the DBHelper */
-        mDBHelper = new CapstoneDBHelper(getContext());
+        mDBHelper  = new CapstoneDBHelper(getContext());
 
         return true;
     }
@@ -152,17 +137,9 @@ public class CapstoneContentProvider extends ContentProvider {
                 tableName = VehiclesEntry.TABLE_NAME;
                 contentUri = VehiclesEntry.CONTENT_URI;
                 break;
-            case EVENTS:
+            case EXPENSES:
                 tableName = ExpensesEntry.TABLE_NAME;
                 contentUri = ExpensesEntry.CONTENT_URI;
-                break;
-            case IMAGES:
-                tableName = ImagesEntry.TABLE_NAME;
-                contentUri = ImagesEntry.CONTENT_URI;
-                break;
-            case FAVORITE_VIDEOS:
-                tableName = FavoriteVideosEntry.TABLE_NAME;
-                contentUri = FavoriteVideosEntry.CONTENT_URI;
                 break;
             default:
                 /** Default case throws an UnsupportedOperationException */
@@ -270,14 +247,14 @@ public class CapstoneContentProvider extends ContentProvider {
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
 
-            case EVENTS:
-                /** Query for the EVENTS directory */
+            case EXPENSES:
+                /** Query for the EXPENSES directory */
                 retCursor = db.query(ExpensesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
-            case EVENT_WITH_ID:
-                /** Query for one event in the EVENTS directory */
+            case EXPENSES_WITH_ID:
+                /** Query for one event in the EXPENSES directory */
                 id = uri.getPathSegments().get(1);
 
                 mSelection = ExpensesEntry._ID + "=?";
@@ -285,54 +262,6 @@ public class CapstoneContentProvider extends ContentProvider {
                 mSelectionArgs = new String[]{id};
 
                 retCursor = db.query(ExpensesEntry.TABLE_NAME,
-                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
-                break;
-
-            case IMAGES:
-                /** Query for the IMAGES directory */
-                retCursor = db.query(ImagesEntry.TABLE_NAME,
-                        projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-
-            case IMAGE_WITH_ID:
-                /** Query for one event in the IMAGES directory */
-                id = uri.getPathSegments().get(1);
-
-                mSelection = ImagesEntry._ID + "=?";
-
-                mSelectionArgs = new String[]{id};
-
-                retCursor = db.query(ImagesEntry.TABLE_NAME,
-                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
-                break;
-
-            case FAVORITE_VIDEOS:
-                /** Query for the FAVORITE_VIDEOS directory */
-                retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
-                        projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-
-            case FAVORITE_VIDEO_WITH_ID:
-                /** Query for one movie in the FAVORITE_VIDEOS directory with its db id */
-                id = uri.getPathSegments().get(1);
-
-                mSelection = FavoriteVideosEntry._ID + "=?";
-
-                mSelectionArgs = new String[]{id};
-
-                retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
-                        projection, mSelection, mSelectionArgs, null, null, sortOrder);
-                break;
-
-            case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
-                /** Query for one movie in the FAVORITE_VIDEOS directory with its youtube id */
-                id = uri.getPathSegments().get(1);
-
-                mSelection = FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + "=?";
-
-                mSelectionArgs = new String[]{id};
-
-                retCursor = db.query(FavoriteVideosEntry.TABLE_NAME,
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
 
@@ -375,40 +304,12 @@ public class CapstoneContentProvider extends ContentProvider {
 
                 break;
 
-            case EVENT_WITH_ID:
+            case EXPENSES_WITH_ID:
                 id = uri.getPathSegments().get(1);
                 mSelection = ExpensesEntry._ID + "=?";
                 mSelectionArgs = new String[]{id};
 
                 deletedRecord =  db.delete(ExpensesEntry.TABLE_NAME, mSelection, mSelectionArgs);
-
-                break;
-
-            case IMAGE_WITH_ID:
-                id = uri.getPathSegments().get(1);
-                mSelection = ImagesEntry._ID + "=?";
-                mSelectionArgs = new String[]{id};
-
-                deletedRecord =  db.delete(ImagesEntry.TABLE_NAME, mSelection, mSelectionArgs);
-
-                break;
-
-            case FAVORITE_VIDEO_WITH_ID:
-                id = uri.getPathSegments().get(1);
-                mSelection = FavoriteVideosEntry._ID + "=?";
-                mSelectionArgs = new String[]{id};
-
-                deletedRecord =  db.delete(FavoriteVideosEntry.TABLE_NAME, mSelection, mSelectionArgs);
-
-                break;
-
-            case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
-                id = uri.getPathSegments().get(1);
-                mSelection = FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + "=?";
-                mSelectionArgs = new String[]{id};
-
-                deletedRecord =  db.delete(FavoriteVideosEntry.TABLE_NAME
-                        , mSelection, mSelectionArgs);
 
                 break;
 
@@ -477,40 +378,15 @@ public class CapstoneContentProvider extends ContentProvider {
                 return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + VehiclesContract.PATH_VEHICLES;
 
-            case EVENTS:
+            case EXPENSES:
                 // directory
                 return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + ExpensesContract.PATH_EVENTS;
+                        + ExpensesContract.PATH_EXPENSES;
 
-            case EVENT_WITH_ID:
+            case EXPENSES_WITH_ID:
                 // single item type
                 return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + ExpensesContract.PATH_EVENTS;
-
-            case IMAGES:
-                // directory
-                return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + ImagesContract.PATH_IMAGES;
-
-            case IMAGE_WITH_ID:
-                // single item type
-                return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + ImagesContract.PATH_IMAGES;
-
-            case FAVORITE_VIDEOS:
-                // directory
-                return "vnd.android.cursor.dir" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
-
-            case FAVORITE_VIDEO_WITH_ID:
-                // directory
-                return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
-
-            case FAVORITE_VIDEO_WITH_YOUTUBE_ID:
-                // single item type
-                return "vnd.android.cursor.youtube" + "/" + Const.CONTENT_AUTHORITY + "/"
-                        + FavoriteVideosContract.PATH_FAVORITE_VIDEOS;
+                        + ExpensesContract.PATH_EXPENSES;
 
             /** default exception */
             default:

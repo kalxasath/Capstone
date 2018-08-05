@@ -8,6 +8,9 @@
     <string name="no_instances_for_you">No Instances for you!</string>
     <string name="missing_xml_layout">Missing XML layout!</string>
     <string name="dashboard_xml_layout">Dashboard XML layout!</string>
+    <string name="insert_fake_data">Insert fake data into the database... Please wait!</string>
+    <string name="finished_inserting_fake_data">Fake data inserted successfully</string>
+    <string name="inserting_fake_data_failed">Inserting fake data failed</string>
 
     <!-- System Messages -->
     <string name="failed_to_insert_row_into">Failed to insert row into: </string>
@@ -27,6 +30,8 @@
     <string name="nav_vehicles_list">Vehicles List</string>
     <string name="nav_expenses_list">Expenses List</string> <!-- The expenses list is a list of all expenses you've entered for your vehicles. -->
     <string name="nav_search_youtube">Search Youtube</string>
+    <string name="nav_database_utilities">Database utilities</string>
+    <string name="nav_db_fill_fake_data">Fill database with fake data</string>
     <!-- <string name=""></string> -->
 
     <!-- Content Descriptions -->
@@ -45,6 +50,7 @@
     <string name="no_vehicles_available">No Vehicles Available</string>
 
     <!-- Vehicle Entity -->
+    <string name="add_new_vehicle">Add new vehicle</string>
     <string name="hint_vehicle_name">Vehicle\'s Name</string>
     <string name="hint_vehicle_make">Make</string>
     <string name="hint_vehicle_model">Model</string>
@@ -66,6 +72,7 @@
     <string name="subtype_spinner_label">Subtype</string>
     <string name="hint_expense_date">Date</string>
     <string name="hint_expense_odometer">Odometer</string>
+    <string name="hint_fuel_quantity">Fuel Quantity</string>
     <string name="hint_expense_amount">Amount</string>
     <string name="hint_expense_notes">Notes</string>
 
@@ -75,12 +82,17 @@
     <!-- Search Youtube -->
     <string name="no_video_results">No video results</string>
     <string name="no_video_results_for">No video results for</string>
+    <string name="youtube_search">Search</string>
 
     <!-- Picture Chooser -->
     <string name="_x_select_image_source">Select Image Source</string>
 
     <!-- Errors -->
     <string name="error_while_creating_file">Error occurred while creating the Image File</string>
+
+    <!-- Dialogs -->
+    <string name="date_picker_accept">Accept</string>
+    <string name="date_picker_title">GV Title GV</string>
 
 
     <!-- Dummy Large Text -->

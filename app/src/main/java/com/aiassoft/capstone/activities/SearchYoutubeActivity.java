@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +17,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
@@ -35,7 +34,6 @@ import com.aiassoft.capstone.model.VideosListItem;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.NetworkUtils;
 import com.aiassoft.capstone.utilities.YoutubeUtils;
-import com.google.android.gms.common.util.JsonUtils;
 
 import java.net.URL;
 import java.util.List;
@@ -67,7 +65,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
      * Used to identify the WEB URL that is being used in the loader.loadInBackground
      * to get the videos' data from youtube.com
      */
-    private static final String LOADER_EXTRA = "search_url";
+    private static final String LOADER_EXTRA_SEARCH_QUERY = "search_data";
 
     /* The Videos List Adapter */
     private VideosListAdapter mVideosListAdapter;
@@ -83,6 +81,8 @@ public class SearchYoutubeActivity extends AppCompatActivity
     @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
     SearchView mSearchView;
+    MenuItem mSearchMenuItem;
+    SearchView mSearchViewMI;
 
     /** The views in the xml file */
     /** The recycler view */
@@ -201,7 +201,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId()))
+        if (DrawerMenu.navigate(this, item.getItemId(), mNavView))
             finish();
 
         return true;
@@ -233,10 +233,10 @@ public class SearchYoutubeActivity extends AppCompatActivity
 
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
-        MenuItem mSearch = menu.findItem(R.id.action_search);
+        mSearchMenuItem = menu.findItem(R.id.action_search);
 
-        mSearchView = (SearchView) mSearch.getActionView();
-        mSearchView.setQueryHint("Search");
+        mSearchView = (SearchView) mSearchMenuItem.getActionView();
+        mSearchView.setQueryHint(getString(R.string.youtube_search));
 
         mSearchView.setOnQueryTextListener(this);
 
@@ -244,21 +244,23 @@ public class SearchYoutubeActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String searchQuery) {
 //        Snackbar.make(mSearchView, "TextSubmit " + query, Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show();
 //        Toast.makeText(this, "TextSubmit " + query, Toast.LENGTH_LONG).show();
 
+        invalidateOptionsMenu();
+        //mSearchMenuItem.collapseActionView();
         invalidateData();
-        fetchVideosList();
+        fetchVideosList(searchQuery);
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Snackbar.make(mSearchView, "TextChange " + newText, Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-        Toast.makeText(this, "TextChange " + newText, Toast.LENGTH_LONG).show();
+//        Snackbar.make(mSearchView, "TextChange " + newText, Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show();
+//        Toast.makeText(this, "TextChange " + newText, Toast.LENGTH_LONG).show();
         return false;
     }
 
@@ -269,10 +271,10 @@ public class SearchYoutubeActivity extends AppCompatActivity
     /**
      * Fetch the videos' data from youtube.com
      */
-    private void fetchVideosList() {
+    private void fetchVideosList(String searchQuery) {
         /* Create a bundle to pass the web url to the loader */
         Bundle loaderArgs = new Bundle();
-        //loaderArgs.putString(LOADER_EXTRA, MyApp.videosListSortBy.getAccessType().toString());
+        loaderArgs.putString(LOADER_EXTRA_SEARCH_QUERY, searchQuery);
 
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
@@ -340,13 +342,13 @@ public class SearchYoutubeActivity extends AppCompatActivity
             public List<VideosListItem> loadInBackground() {
 
                 // Get the access type argument that is passed on loader initialization */
-//                String accessType = loaderArgs.getString(LOADER_EXTRA);
-//                if (accessType == null || TextUtils.isEmpty(accessType)) {
-//                    /* If null or empty string is passed, return immediately */
-//                    return null;
-//                }
+                String searchQuery = loaderArgs.getString(LOADER_EXTRA_SEARCH_QUERY);
+                if (searchQuery == null || TextUtils.isEmpty(searchQuery)) {
+                    /* If null or empty string is passed, return immediately */
+                    return null;
+                }
 
-                String loaderWebUrlString = YoutubeUtils.buildHttpGoogleApisYoutubeSearchVideoUri("Peugeot 307").toString();
+                String loaderWebUrlString = YoutubeUtils.buildHttpGoogleApisYoutubeSearchVideoUri(searchQuery).toString();
                 /** try to fetch the data from the network */
                 try {
                     URL theWebUrl = new URL(loaderWebUrlString);
@@ -464,14 +466,14 @@ public class SearchYoutubeActivity extends AppCompatActivity
      */
     public void onRefreshButtonClick(View view) {
         /* Again check if we are connected to the internet */
-        if (NetworkUtils.isOnline()) {
-            /* If the network connectivity is restored
-             * show the Videos List to hide the error block, and
-             * fetch videos' data from the internet
-             */
-            showVideosListView();
-            fetchVideosList();
-        }
+//        if (NetworkUtils.isOnline()) {
+//            /* If the network connectivity is restored
+//             * show the Videos List to hide the error block, and
+//             * fetch videos' data from the internet
+//             */
+//            showVideosListView();
+//            fetchVideosList();
+//        }
     } // onRefreshButtonClick
 
 }

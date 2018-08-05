@@ -110,10 +110,11 @@ public class DashboardActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //item.setChecked(true);
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId()))
+        if (DrawerMenu.navigate(this, item.getItemId(), mNavView))
             finish();
 
         return true;

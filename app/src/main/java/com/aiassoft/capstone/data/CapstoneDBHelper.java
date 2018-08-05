@@ -18,13 +18,14 @@
 
 package com.aiassoft.capstone.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 
+import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
-import com.aiassoft.capstone.data.FavoriteVideosContract.FavoriteVideosEntry;
-import com.aiassoft.capstone.data.ImagesContract.ImagesEntry;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 
 /**
@@ -64,7 +65,8 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
          * At the moment we have only one version of our database
          * so we don't need to implement any version change here
          */
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavoriteVideosEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + VehiclesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ExpensesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 	
@@ -77,18 +79,11 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
                 VehiclesEntry.COLUMN_NAME_NAME + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MAKE + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_MODEL + "  TEXT, " +
-                //VehiclesEntry.COLUMN_NAME_VIN + "  TEXT," +
                 VehiclesEntry.COLUMN_NAME_PLATE_NO + "  TEXT, " +
                 VehiclesEntry.COLUMN_NAME_INITIALMILEAGE + "  INTEGER, " +
                 VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT + "  INTEGER, " +
-                //VehiclesEntry.COLUMN_NAME_PURCHASEDATE + "  TEXT, " +
-                //VehiclesEntry.COLUMN_NAME_PURCHASEMILEAGE + "  INTEGER ," +
-                //VehiclesEntry.COLUMN_NAME_PURCHASEPRICE + "  REAL, " +
-                //VehiclesEntry.COLUMN_NAME_SELLDATE + "  TEXT, " +
-                //VehiclesEntry.COLUMN_NAME_SEELPRICE + "  REAL, " +
                 VehiclesEntry.COLUMN_NAME_TANKVOLUME + "  INTEGER, " +
                 VehiclesEntry.COLUMN_NAME_VOLUME_UNIT + "  INTEGER, " +
-                //VehiclesEntry.COLUMN_NAME_FUEL_TYPE + "  INTEGER, " +
                 VehiclesEntry.COLUMN_NAME_NOTES + "  TEXT " +
                 ");";
 
@@ -101,38 +96,15 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
                 ExpensesEntry.COLUMN_NAME_VEHICLE_ID + "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE+ "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_SUBTYPE + "  INTEGER NOT NULL, " +
-                ExpensesEntry.COLUMN_NAME_DATE + "  TEXT, " +
-                ExpensesEntry.COLUMN_NAME_ODOMETER + "  INTEGER, " +
-                ExpensesEntry.COLUMN_NAME_AMOUNT + "  REAL, " +
+                ExpensesEntry.COLUMN_NAME_DATE + "  DATETIME NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_ODOMETER + "  INTEGER NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY + "  REAL NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_AMOUNT + "  REAL NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_NOTES + "  TEXT " +
                 ");";
 
         sqLiteDatabase.execSQL(SQL_CREATE_EXPENSES_TABLE);
 
-        // Images
-        final String SQL_CREATE_IMAGES_TABLE = "CREATE TABLE " +
-                ImagesEntry.TABLE_NAME + " (" +
-                ImagesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                ImagesEntry.COLUMN_NAME_ENTITY_KIND + "  INTEGER NOT NULL, " +
-                ImagesEntry.COLUMN_NAME_ENTITY_ID + "  INTEGER NOT NULL, " +
-                ImagesEntry.COLUMN_NAME_PATH + "  TEXT " +
-                ");";
-
-        sqLiteDatabase.execSQL(SQL_CREATE_IMAGES_TABLE);
-
-        // FavoriteVideos
-        final String SQL_CREATE_FAVORITEVIDEOS_TABLE = "CREATE TABLE " +
-                FavoriteVideosEntry.TABLE_NAME + " (" +
-                FavoriteVideosEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                FavoriteVideosEntry.COLUMN_NAME_YOUTOUBE_ID + " INTEGER NOT NULL, " +
-                FavoriteVideosEntry.COLUMN_NAME_TITLE + "  TEXT, " +
-                FavoriteVideosEntry.COLUMN_NAME_DESCRIPTION + "  TEXT, " +
-                FavoriteVideosEntry.COLUMN_NAME_THUMBNAIL_DEFAULT + "  TEXT, " +
-                FavoriteVideosEntry.COLUMN_NAME_THUMBNAIL_MEDIUM + "  TEXT, " +
-                FavoriteVideosEntry.COLUMN_NAME_THUMBNAIL_HIGH + "  TEXT " +
-                ");";
-
-        sqLiteDatabase.execSQL(SQL_CREATE_FAVORITEVIDEOS_TABLE);
     }
-	
+
 }

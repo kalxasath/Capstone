@@ -35,7 +35,7 @@ public class ExpensesContract {
     // Define the possible paths for accessing data in this contract
     // This is the path for the "Events" directory, that will be appended
     // to the base content URI
-    public static final String PATH_EVENTS = "Events";
+    public static final String PATH_EXPENSES = "Events";
 
     /**
      * We never need to create an instance of the contract class
@@ -51,10 +51,10 @@ public class ExpensesContract {
      */
     public static final class ExpensesEntry implements BaseColumns {
         /** This final content URI will include the scheme, the authority,
-         *  and our EVENTS path.
+         *  and our EXPENSES path.
          */
         public static final Uri CONTENT_URI = Const.BASE_CONTENT_URI.buildUpon()
-                .appendPath(PATH_EVENTS).build();
+                .appendPath(PATH_EXPENSES).build();
 
         public static final String TABLE_NAME = "expenses";
 
@@ -73,6 +73,7 @@ public class ExpensesContract {
         public static final String COLUMN_NAME_SUBTYPE = "subtype";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_ODOMETER = "odometer";
+        public static final String COLUMN_NAME_FUEL_QUANTITY = "fuelQty";
         public static final String COLUMN_NAME_AMOUNT = "amount";
         public static final String COLUMN_NAME_NOTES = "notes";
     }

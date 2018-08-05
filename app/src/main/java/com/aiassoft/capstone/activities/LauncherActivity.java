@@ -16,7 +16,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, SearchYoutubeActivity.class);
+        Intent intent = new Intent(this, ExpensesListActivity.class);
         startActivity(intent);
         finish();
     }

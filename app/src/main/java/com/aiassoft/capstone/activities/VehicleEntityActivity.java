@@ -33,7 +33,6 @@ import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 import com.aiassoft.capstone.utilities.FileUtils;
-//import com.rany.albeg.wein.springfabmenu.SpringFabMenu;
 
 import java.io.File;
 import java.io.IOException;
@@ -145,7 +144,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         initTextWatcher();
         initSpinners();
 
-        setEntityTitle("¯\\_(ツ)_/¯");
+        setEntityTitle(getString(R.string.add_new_vehicle));
     }
 
     private void initSpinners() {

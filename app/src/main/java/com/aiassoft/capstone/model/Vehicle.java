@@ -18,8 +18,6 @@
 
 package com.aiassoft.capstone.model;
 
-import com.aiassoft.capstone.R;
-
 /**
  * Created by gvryn on 25/06/18.
  *
@@ -31,17 +29,11 @@ public class Vehicle {
     private String name;
     private String make;
     private String model;
-    private String vin;
     private String plateNo;
     private int initialMileage;
     private int distanceUnit;
-    private String purchaseDate;
-    private int purchaseMileage;
-    private float purchasePrice;
-    private String sellDate;
-    private float sellPrice;
     private int tankVolume;
-    private int fuelType;
+    private int volumeUnit;
     private String notes;
 
     /**
@@ -50,26 +42,18 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(int id, String image, String name, String make, String model, String vin, String plateNo,
-                   int initialMileage, int distanceUnit, String purchaseDate, int purchaseMileage,
-                   float purchasePrice, String sellDate, float sellPrice, int tankVolume,
-                   int fuelType, String notes) {
+    public Vehicle(int id, String image, String name, String make, String model, String plateNo,
+                   int initialMileage, int distanceUnit, int tankVolume, int volumeUnit, String notes) {
         this.id = id;
         this.image = image;
         this.name = name;
         this.make = make;
         this.model = model;
-        this.vin = vin;
         this.plateNo = plateNo;
         this.initialMileage = initialMileage;
         this.distanceUnit = distanceUnit;
-        this.purchaseDate = purchaseDate;
-        this.purchaseMileage = purchaseMileage;
-        this.purchasePrice = purchasePrice;
-        this.sellDate = sellDate;
-        this.sellPrice = sellPrice;
         this.tankVolume = tankVolume;
-        this.fuelType = fuelType;
+        this.volumeUnit = volumeUnit;
         this.notes = notes;
     }
 
@@ -113,14 +97,6 @@ public class Vehicle {
         this.model = model;
     }
 
-    public String getVin() {
-        return vin;
-    }
-
-    public void setVin(String vin) {
-        this.vin = vin;
-    }
-
     public String getPlateNo() {
         return plateNo;
     }
@@ -145,60 +121,18 @@ public class Vehicle {
         this.distanceUnit = distanceUnit;
     }
 
-    public String getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(String purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public int getPurchaseMileage() {
-        return purchaseMileage;
-    }
-
-    public void setPurchaseMileage(int purchaseMileage) {
-        this.purchaseMileage = purchaseMileage;
-    }
-
-    public float getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(float purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public String getSellDate() {
-        return sellDate;
-    }
-
-    public void setSellDate(String sellDate) {
-        this.sellDate = sellDate;
-    }
-
-    public float getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(float sellPrice) {
-        this.sellPrice = sellPrice;
-    }
-
-    public int getTankVolume() {
-        return tankVolume;
-    }
+    public int getTankVolume() { return tankVolume; }
 
     public void setTankVolume(int tankVolume) {
         this.tankVolume = tankVolume;
     }
 
-    public int getFuelType() {
-        return fuelType;
+    public int getVolumeUnit() {
+        return volumeUnit;
     }
 
-    public void setFuelType(int fuelType) {
-        this.fuelType = fuelType;
+    public void setVolumeUnit(int volumeUnit) {
+        this.volumeUnit = volumeUnit;
     }
 
     public String getNotes() {

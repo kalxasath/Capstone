@@ -15,6 +15,7 @@ public class Expense {
     private int subtype;
     private String date;
     private int odometer;
+    private float fuelQuantity;
     private float amount;
     private String notes;
 
@@ -27,24 +28,26 @@ public class Expense {
     }
 
     public Expense(int id, int vehicleId, int expenseType, int subtype, String date, int odometer,
-                   float amount, String notes) {
+                   float fuelQuantity, float amount, String notes) {
         this.id = id;
         this.vehicleId = vehicleId;
         this.expenseType = expenseType;
         this.subtype = subtype;
         this.date = date;
+        this.fuelQuantity = fuelQuantity;
         this.odometer = odometer;
         this.amount = amount;
         this.notes = notes;
     }
 
     public Expense(int id, int vehicleId, int expenseType, int subtype, String date, int odometer,
-                   float amount, String notes, String vehicle) {
+                   float fuelQuantity, float amount, String notes, String vehicle) {
         this.id = id;
         this.vehicleId = vehicleId;
         this.expenseType = expenseType;
         this.subtype = subtype;
         this.date = date;
+        this.fuelQuantity = fuelQuantity;
         this.odometer = odometer;
         this.amount = amount;
         this.notes = notes;
@@ -118,6 +121,13 @@ public class Expense {
     public void setOdometer(int odometer) {
         this.odometer = odometer;
     }
+
+    public float getFuelQuantity() {
+        return fuelQuantity;
+    }
+
+    public void setFuelQuantity(float fuelQuantity) { this.fuelQuantity = fuelQuantity; }
+
 
     public float getAmount() {
         return amount;

@@ -62,18 +62,11 @@ public class VehiclesContract {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_MAKE = "make";
         public static final String COLUMN_NAME_MODEL = "model";
-        public static final String COLUMN_NAME_VIN = "vin";
         public static final String COLUMN_NAME_PLATE_NO = "plateNo";
         public static final String COLUMN_NAME_INITIALMILEAGE = "initialMileage";
         public static final String COLUMN_NAME_DINSTANCE_UNIT = "distanceUnit";
-        public static final String COLUMN_NAME_PURCHASEDATE = "purchaseDate";
-        public static final String COLUMN_NAME_PURCHASEMILEAGE = "purchaseMileage";
-        public static final String COLUMN_NAME_PURCHASEPRICE = "purchasePrice";
-        public static final String COLUMN_NAME_SELLDATE = "sellDate";
-        public static final String COLUMN_NAME_SEELPRICE = "sellPrice";
         public static final String COLUMN_NAME_TANKVOLUME = "tankVolume";
         public static final String COLUMN_NAME_VOLUME_UNIT = "volumeUnit";
-        public static final String COLUMN_NAME_FUEL_TYPE = "fuelType";
         public static final String COLUMN_NAME_NOTES = "notes";
     }
 

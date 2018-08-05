@@ -15,13 +15,13 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -32,9 +32,9 @@ import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.ExpensesContract;
 import com.aiassoft.capstone.data.VehiclesContract;
+import com.aiassoft.capstone.dialogs.DatePickerDialog;
 import com.aiassoft.capstone.model.Vehicle;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,14 +47,10 @@ import butterknife.ButterKnife;
 
 public class ExpensesEntityActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener,
-        LoaderManager.LoaderCallbacks<List<Vehicle>> {
+        LoaderManager.LoaderCallbacks<List<Vehicle>>,
+        View.OnClickListener,
+        DatePickerDialog.OpenDatePickerDialogOnSelectedDateHandler {
 
-    // TODO: refactor the whole activity to support the expenses
-    // TODO: create a new xml layout
-    // TODO: Initialize the spinners
-    // TODO: add spinner for the vehicles
-    // TODO: change subtype spinner according the selected type spinner
-    // TODO: save the data
     private static final String LOG_TAG = MyApp.APP_TAG + ExpensesEntityActivity.class.getSimpleName();
 
     public static final int VEHICLES_LOADER_ID = 0;
@@ -66,6 +62,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
     private static ArrayAdapter<CharSequence> adapterVehicles;
     private static ArrayAdapter<CharSequence> adapterExpenseType;
     private static ArrayAdapter<CharSequence> adapterSubtype;
+    private static String[] mVolumeUnits;
 
     private Context mContext;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -77,14 +74,23 @@ public class ExpensesEntityActivity extends AppCompatActivity
     private ImageView mToolbarPhoto;
     private Toast mBacktoast;
 
+    private DatePickerDialog mDatePickerDialog;
+    private int mDay;
+    private int mMonth;
+    private int mYear;
+
     @BindView(R.id.vehicle_spinner) Spinner mVehicleSpinner;
     @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
     @BindView(R.id.expense_type_spinner) Spinner mExpenseTypeSpinner;
     @BindView(R.id.subtype_spinner) Spinner mSubtypeSpinner;
     @BindView(R.id.date_wrapper) TextInputLayout mDateWrapper;
     @BindView(R.id.date) TextInputEditText mDate;
+    @BindView(R.id.btn_open_date_picker) Button mButtonOpenDatePicker;
     @BindView(R.id.odometer_wrapper) TextInputLayout mOdometerWrapper;
     @BindView(R.id.odometer) TextInputEditText mOdometer;
+    @BindView(R.id.fuel_quantity_wrapper) TextInputLayout mFuelQuantityWrapper;
+    @BindView(R.id.fuel_quantity) TextInputEditText mFuelQuantity;
+    @BindView(R.id.volume_unit) TextView mVolumeUnit;
     @BindView(R.id.amount_wrapper) TextInputLayout mAmountWrapper;
     @BindView(R.id.amount) TextInputEditText mAmount;
     @BindView(R.id.notes_wrapper) TextInputLayout mNotesWrapper;
@@ -125,7 +131,17 @@ public class ExpensesEntityActivity extends AppCompatActivity
         }
         ButterKnife.bind(this);
 
+        mVolumeUnits = getResources().getStringArray(R.array.volume_unit_array);
+
+        mDatePickerDialog = new DatePickerDialog();
+
+        mButtonOpenDatePicker.setOnClickListener(this);
+
+
+        /** Fetch the Vehicles from the database */
         fetchVehiclesList();
+
+        /** Initialize the Spinners */
         initSpinners();
 
         setEntityTitle("¯\\_(ツ)_/¯");
@@ -153,10 +169,10 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
     private void setEntityTitle(String s) {
         if (s == null) {
-            String v = mVehicleSpinner.getSelectedItem().toString();
+            //String v = mVehicleSpinner.getAdapter() == null ? "" : mVehicleSpinner.getSelectedItem().toString();
             String e = mExpenseTypeSpinner.getSelectedItem().toString();
-            String st = mSubtypeSpinner.getSelectedItem().toString();
-            s = e + ": " + st + " of " + v;
+            //String st = mSubtypeSpinner.getSelectedItem().toString();
+            //s = e + ": " + st + " of " + v;
             s = e;
         }
         mCollapsingToolbarLayout.setTitle(s);
@@ -204,8 +220,11 @@ public class ExpensesEntityActivity extends AppCompatActivity
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, vehicleId);
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, mExpenseTypeSpinner.getSelectedItemId());
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, mSubtypeSpinner.getSelectedItemId());
+        // TODO: convert date to String to store to SQLite
+        // TODO: create DateUtils with functions for conversions
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, mDate.getText().toString());
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, Integer.valueOf(mOdometer.getText().toString()));
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, Float.valueOf(mFuelQuantity.getText().toString()));
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, Float.valueOf(mAmount.getText().toString()));
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
 
@@ -258,6 +277,12 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 mSubtypeSpinner.setAdapter(adapterSubtype);
                 mSubtypeSpinner.invalidate();
                 break;
+
+            case R.id.vehicle_spinner:
+                int vehicleSpinnerItem = mVehicleSpinner.getSelectedItemPosition();
+                int volumeUnit = mVehiclesListData.get(vehicleSpinnerItem).getVolumeUnit();
+                ((TextView) mRootLayout.findViewById(R.id.volume_unit)).setText(mVolumeUnits[volumeUnit]);
+                break;
         }
     }
 
@@ -265,6 +290,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 
     /**
      * Vehicles loader
@@ -421,4 +447,21 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void OnSelectedDate(int day, int month, int year) {
+        mDay = day;
+        mMonth = month;
+        mYear = year;
+
+        //TODO: convert date to string, put it to the date view
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_open_date_picker) {
+            //TODO:mDatePickerDialog.setDate();
+
+            mDatePickerDialog.show(getSupportFragmentManager(), "");
+        }
+    }
 }
