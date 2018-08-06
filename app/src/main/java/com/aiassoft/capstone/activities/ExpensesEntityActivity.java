@@ -35,11 +35,21 @@ import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.dialogs.DatePickerDialog;
 import com.aiassoft.capstone.model.Vehicle;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.aiassoft.capstone.utilities.DateUtils.getAppLocalizedPattern;
+import static com.aiassoft.capstone.utilities.DateUtils.getDate;
+import static com.aiassoft.capstone.utilities.DateUtils.getDbDate;
+import static com.aiassoft.capstone.utilities.DateUtils.getDisplayDate;
+import static com.aiassoft.capstone.utilities.DateUtils.getDisplayFormat;
 
 /**
  * Created by gvryn on 26/07/18.
@@ -145,6 +155,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
         initSpinners();
 
         setEntityTitle("¯\\_(ツ)_/¯");
+
+        initData();
     }
 
     private void initSpinners() {
@@ -176,6 +188,36 @@ public class ExpensesEntityActivity extends AppCompatActivity
             s = e;
         }
         mCollapsingToolbarLayout.setTitle(s);
+    }
+
+    private void initData() {
+        /*
+        String d = getDate();
+        Locale locale = Locale.getDefault();
+
+        String d1 = "2018-06-07";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd");
+        Date date = null;
+        Boolean dateIsInvalid = false;
+        try {
+            date = simpleDateFormat.parse(d1);
+        } catch (ParseException e) {
+            dateIsInvalid = true;
+        }
+        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(mContext);
+        String deviceDate = dateFormat.format(date);
+
+        java.text.DateFormat dateFormat2 = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
+
+        mDate.setText(getDate());
+        */
+        String dbDate = "2018-06-07";
+        String displayDate = getDisplayDate(getDate(dbDate, getAppLocalizedPattern()));
+        String displayFormat = getDisplayFormat();
+        //TODO: add dateformat to dates tag
+
+        mDate.setText(displayDate);
+        mDate.setEnabled(false);
     }
 
     @Override

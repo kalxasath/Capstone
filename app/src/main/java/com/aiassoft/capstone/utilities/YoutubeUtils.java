@@ -45,6 +45,10 @@ public class YoutubeUtils {
 
     private static final String LOG_TAG = MyApp.APP_TAG + YoutubeUtils.class.getSimpleName();
 
+    private YoutubeUtils() {
+        throw new AssertionError(R.string.no_instances_for_you);
+    }
+
     /**
      * youtube definitions
      */

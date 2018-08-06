@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.aiassoft.capstone.MyApp;
+import com.aiassoft.capstone.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,11 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static final String LOG_TAG = MyApp.APP_TAG + NetworkUtils.class.getSimpleName();
+
+    private NetworkUtils() {
+        throw new AssertionError(R.string.no_instances_for_you);
+    }
+
 
     /**
      * This method returns the entire result from the HTTP response.

@@ -96,7 +96,7 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
                 ExpensesEntry.COLUMN_NAME_VEHICLE_ID + "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE+ "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_SUBTYPE + "  INTEGER NOT NULL, " +
-                ExpensesEntry.COLUMN_NAME_DATE + "  DATETIME NOT NULL, " +
+                ExpensesEntry.COLUMN_NAME_DATE + "  TEXT NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_ODOMETER + "  INTEGER NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY + "  REAL NOT NULL, " +
                 ExpensesEntry.COLUMN_NAME_AMOUNT + "  REAL NOT NULL, " +
