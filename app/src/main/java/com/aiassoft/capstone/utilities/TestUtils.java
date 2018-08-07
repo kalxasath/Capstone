@@ -32,20 +32,23 @@ public final class TestUtils {
 
         showSnackbar(view, view.getContext().getString(R.string.insert_fake_data));
 
-        boolean erroneous = insertFakeVehicles(db);
+        int erroneous = insertFakeVehicles(db);
 
-        if (! erroneous)
+        if (erroneous == 0)
             erroneous = insertFakeExpenses(db);
 
+        String error;
+        if (erroneous == 0)
+            error = view.getContext().getString(R.string.finished_inserting_fake_data);
+        else
+            error = view.getContext().getString(R.string.inserting_fake_data_failed) +
+                    ": " + view.getContext().getString(erroneous);
 
-
-        showSnackbar(view, view.getContext()
-                .getString(erroneous ? R.string.inserting_fake_data_failed :
-                        R.string.finished_inserting_fake_data));
+        showSnackbar(view, error);
     }
 
-    private static boolean insertFakeVehicles(SQLiteDatabase db) {
-        boolean erroneous = false;
+    private static int insertFakeVehicles(SQLiteDatabase db) {
+        int erroneous = 0;
 
         //create a list of fake vehicles
         List<ContentValues> list = new ArrayList<ContentValues>();
@@ -92,6 +95,8 @@ public final class TestUtils {
             db.beginTransaction();
             //clear the table first
             db.delete (VehiclesContract.VehiclesEntry.TABLE_NAME,null,null);
+            db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + VehiclesContract.VehiclesEntry.TABLE_NAME + "'");
+
             //go through the list and add one by one
             for(ContentValues c:list){
                 db.insert(VehiclesContract.VehiclesEntry.TABLE_NAME, null, c);
@@ -101,7 +106,7 @@ public final class TestUtils {
         catch (SQLException e) {
             //too bad :(
             e.printStackTrace();
-            erroneous = true;
+            erroneous = R.string.failed_to_insert_vehicles;
         }
         finally
         {
@@ -112,8 +117,8 @@ public final class TestUtils {
     }
 
     // TODO: add Fake expenses
-    private static boolean insertFakeExpenses(SQLiteDatabase db) {
-        boolean erroneous = false;
+    private static int insertFakeExpenses(SQLiteDatabase db) {
+        int erroneous = 0;
 
         List<ContentValues> list = new ArrayList<ContentValues>();
 
@@ -121,10 +126,323 @@ public final class TestUtils {
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "01/07/2018");
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 100);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 55);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 55);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-04-16");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 200485);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 45.88);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 31.84);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-04-21");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 200811);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 33.38);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 24.00);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-04-29");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 201160);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 39.42);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 27.40);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-05-01");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 201430);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 24.52);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 19.1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-05-06");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 201780);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 35.25);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 24.2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-05-14");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 202158);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 39.99);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-05-20");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 202513);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 38.01);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 26.8);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-05-28");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 202922);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 42.55);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 30.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-05");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 203290);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 42.34);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.82);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-11");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 203652);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 36.38);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 26.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-18");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 204053);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 41.13);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.21);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-24");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 204377);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 35.46);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 25);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-02");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 204699);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 34.04);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 24.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-08");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205045);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 42.72);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 32.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-13");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205358);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 30.69);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 21.94);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-16");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205591);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 28.91);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 26.6);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-20");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205848);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 10.87);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 10.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-22");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205982);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 26.57);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 19.00);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-28");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 206300);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 30.7);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 21.95);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-08-02");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 206669);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 30.21);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 21.60);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+
+        // Toll
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-01");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 20.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-12");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 28.0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        // Parking
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-12");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 6.2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        // Service
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 4);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-06");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 203310);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 60);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "Power Generator");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 2);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-07");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 202026);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 145);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 3);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-04-19");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.46);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 3);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-05-19");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.46);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 3);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-06-19");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.46);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+        list.add(cv);
+
+        cv = new ContentValues();
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 1);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 3);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-19");
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 0);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.46);
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
         list.add(cv);
 
@@ -134,6 +452,8 @@ public final class TestUtils {
             db.beginTransaction();
             //clear the table first
             db.delete (ExpensesContract.ExpensesEntry.TABLE_NAME,null,null);
+            db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + ExpensesContract.ExpensesEntry.TABLE_NAME + "'");
+
             //go through the list and add one by one
             for(ContentValues c:list){
                 db.insert(ExpensesContract.ExpensesEntry.TABLE_NAME, null, c);
@@ -143,7 +463,7 @@ public final class TestUtils {
         catch (SQLException e) {
             //too bad :(
             e.printStackTrace();
-            erroneous = true;
+            erroneous = R.string.failed_to_insert_expenses;
         }
         finally
         {
@@ -152,5 +472,6 @@ public final class TestUtils {
 
         return erroneous;
     }
+
 
 }

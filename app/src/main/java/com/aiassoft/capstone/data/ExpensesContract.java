@@ -33,9 +33,9 @@ public class ExpensesContract {
 
 
     // Define the possible paths for accessing data in this contract
-    // This is the path for the "Events" directory, that will be appended
+    // This is the path for the "Expenses" directory, that will be appended
     // to the base content URI
-    public static final String PATH_EXPENSES = "Events";
+    public static final String PATH_EXPENSES = "Expenses";
 
     /**
      * We never need to create an instance of the contract class

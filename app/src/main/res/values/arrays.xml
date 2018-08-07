@@ -49,5 +49,6 @@
         <item>Major Service</item>
         <item>Change Oil</item>
         <item>Change Tires</item>
+        <item>Damage</item>
     </string-array>
 </resources>

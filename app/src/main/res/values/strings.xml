@@ -11,6 +11,9 @@
     <string name="insert_fake_data">Insert fake data into the database... Please wait!</string>
     <string name="finished_inserting_fake_data">Fake data inserted successfully</string>
     <string name="inserting_fake_data_failed">Inserting fake data failed</string>
+    <string name="failed_to_insert_vehicles">Failed to insert Vehicles</string>
+    <string name="failed_to_insert_expenses">Failed to insert Expenses</string>
+    <string name="failed_to_reset_sqlite_sequences">Failed to reset Sqlite Sequences</string>
 
     <!-- System Messages -->
     <string name="failed_to_insert_row_into">Failed to insert row into: </string>

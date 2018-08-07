@@ -310,7 +310,8 @@ public class ExpensesListActivity extends AppCompatActivity
 
                 Uri uri = ExpensesContract.ExpensesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                Cursor cursor = getContentResolver().query(uri, null, null, null,
+                        ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE + " desc");
 
 
                 if (cursor != null && cursor.getCount() != 0) {
@@ -334,7 +335,7 @@ public class ExpensesListActivity extends AppCompatActivity
                         Cursor vcursor = getContentResolver().query(uri, null, null, null, null);
 
                         if (vcursor ==  null || vcursor.getCount() == 0) {
-                            expensesListItem.setVehicle(getString(R.string.deleted_vehicle));
+                            expensesListItem.setVehicle(getString(R.string.deleted_vehicle) + ":" + stringId);
                         } else {
                             vcursor.moveToFirst();
                             String s = vcursor.getString(vcursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME));
