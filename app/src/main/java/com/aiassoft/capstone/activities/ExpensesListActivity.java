@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
@@ -31,7 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aiassoft.capstone.R;
-import com.aiassoft.capstone.adapters.ExpensesListAdapter;
 import com.aiassoft.capstone.adapters.ExpensesListAdapter;
 import com.aiassoft.capstone.data.ExpensesContract;
 import com.aiassoft.capstone.data.VehiclesContract;
@@ -314,7 +312,7 @@ public class ExpensesListActivity extends AppCompatActivity
                         ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE + " desc");
 
 
-                if (cursor != null && cursor.getCount() != 0) {
+                if (cursor != null && cursor.getCount() > 0) {
                     /** ArrayList to hold the expenses list items */
                     List<Expense> expensesListItems = new ArrayList<Expense>();
                     Expense expensesListItem;

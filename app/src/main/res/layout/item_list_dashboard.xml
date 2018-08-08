@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/ile_card_view_margin_start_end"
+    android:layout_marginEnd="@dimen/ile_card_view_margin_start_end"
+    android:layout_marginTop="@dimen/ile_card_view_margin_top_bottom"
+    android:layout_marginBottom="@dimen/ile_card_view_margin_top_bottom"
+    android:background="@color/ile_cardBackgroundColor"
+    card_view:cardElevation="@dimen/ile_card_view_elevation"
+    card_view:cardMaxElevation="@dimen/ile_card_view_max_elevation"
+    card_view:cardCornerRadius="@dimen/ile_card_view_corner_radious"
+
+    >
+
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        tools:context="com.aiassoft.capstone.activities.VehicleEntityActivity"
+        >
+
+        <TextView
+            android:id="@+id/vehicle_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Peugeot 307sw"
+            android:textSize="@dimen/ile_vehicle_title_text_size"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="bottom|right"
+            android:layout_marginStart="@dimen/ile_margin_start_end"
+            android:layout_marginEnd="@dimen/ile_margin_start_end"
+            android:layout_marginTop="@dimen/ile_margin_top_bottom"
+            android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/dashboard_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="14/06/2018"
+            android:textSize="@dimen/ile_vehicle_title_text_size"
+            android:textColor="@color/textPrimaryContent"
+            android:layout_gravity="bottom|right"
+            android:layout_marginStart="@dimen/ile_margin_start_end"
+            android:layout_marginEnd="@dimen/ile_margin_start_end"
+            android:layout_marginTop="@dimen/ile_margin_top_bottom"
+            android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+            />
+
+        <TextView
+            android:id="@+id/dashboard_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Bill"
+            android:textSize="@dimen/ile_vehicle_title_text_size"
+            android:textColor="@color/textPrimaryContent"
+            android:layout_gravity="bottom|right"
+            android:layout_marginStart="@dimen/ile_margin_start_end"
+            android:layout_marginEnd="@dimen/ile_margin_start_end"
+            android:layout_marginTop="@dimen/ile_margin_top_bottom"
+            android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+            app:layout_constraintStart_toEndOf="@id/dashboard_date"
+            app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+            />
+
+        <TextView
+            android:id="@+id/dashboard_subtype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Accessories"
+            android:textSize="@dimen/ile_vehicle_title_text_size"
+            android:textColor="@color/textPrimaryContent"
+            android:layout_gravity="bottom|right"
+            android:layout_marginStart="@dimen/ile_margin_start_end"
+            android:layout_marginEnd="@dimen/ile_margin_start_end"
+            android:layout_marginTop="@dimen/ile_margin_top_bottom"
+            android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+            app:layout_constraintStart_toEndOf="@id/dashboard_type"
+            app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+            />
+
+        <TextView
+            android:id="@+id/dashboard_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="58.36"
+            android:textSize="@dimen/ile_vehicle_title_text_size"
+            android:textColor="@color/textPrimaryContent"
+            android:layout_gravity="bottom|right"
+            android:layout_marginStart="@dimen/ile_margin_start_end"
+            android:layout_marginEnd="@dimen/ile_margin_start_end"
+            android:layout_marginTop="@dimen/ile_margin_top_bottom"
+            android:layout_marginBottom="@dimen/ile_margin_top_bottom"
+            app:layout_constraintStart_toEndOf="@id/dashboard_subtype"
+            app:layout_constraintTop_toBottomOf="@id/vehicle_title"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

@@ -87,6 +87,9 @@
     <string name="no_video_results_for">No video results for</string>
     <string name="youtube_search">Search</string>
 
+    <!-- Dashboard -->
+    <string name="no_dashboard_data_available">No Data</string>
+
     <!-- Picture Chooser -->
     <string name="_x_select_image_source">Select Image Source</string>
 

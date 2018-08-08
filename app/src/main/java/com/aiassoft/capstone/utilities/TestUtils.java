@@ -298,16 +298,16 @@ public final class TestUtils {
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
         list.add(cv);
 
-        cv = new ContentValues();
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 1);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-20");
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205848);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 10.87);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 10.0);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
-        list.add(cv);
+//        cv = new ContentValues();
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, 0);
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 1);
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-20");
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205848);
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 10.87);
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 10.0);
+//        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
+//        list.add(cv);
 
         cv = new ContentValues();
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, 1);
@@ -315,8 +315,8 @@ public final class TestUtils {
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, 0);
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, "2018-07-22");
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, 205982);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 26.57);
-        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 19.00);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, 36.57);
+        cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, 29.00);
         cv.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, "");
         list.add(cv);
 
