@@ -14,13 +14,13 @@
             android:id="@+id/dashboard_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".activities.ExpensesListActivity"
+            tools:context=".activities.DashboardActivity"
             android:gravity="center"
             android:visibility="visible"
             android:paddingBottom="72dp"
             android:clipToPadding="false"
             app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_list_expense"
+            tools:listitem="@layout/item_list_dashboard"
             />
 
         <TextView

@@ -23,6 +23,8 @@
 
     <color name="ile_cardBackgroundColor">#EEEEEE</color>
 
+    <color name="ild_cardBackgroundColor">#EEEEEE</color>
+
     <color name="centerColor">#009688</color>
     <color name="endColor">#00695C</color>
     <color name="startColor">#4DB6AC</color>

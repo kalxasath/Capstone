@@ -33,21 +33,13 @@
     </string-array>
 
     <string-array name="bill_expenses_subtypes">
-        <item>Wash</item>
         <item>Parking</item>
         <item>Toll</item>
         <item>Insurance</item>
-        <item>Accessories</item>
-        <item>Road Tax</item>
-        <item>MOT</item>
-        <item>Others</item>
     </string-array>
 
     <string-array name="service_expenses_subtypes">
         <item>Basic Service</item>
-        <item>Major Service</item>
-        <item>Change Oil</item>
-        <item>Change Tires</item>
         <item>Damage</item>
     </string-array>
 </resources>

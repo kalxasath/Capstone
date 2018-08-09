@@ -59,10 +59,10 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
 
         /* The Views to display the Dashboard's Data */
         @BindView(R.id.vehicle_title) TextView mVehicleTitle;
-        @BindView(R.id.dashboard_date) TextView mDashboardDate;
-        @BindView(R.id.dashboard_type) TextView mDashboardType;
-        @BindView(R.id.dashboard_subtype) TextView mDashboardSubtype;
-        @BindView(R.id.dashboard_amount) TextView mDashboardAmount;
+//        @BindView(R.id.dashboard_date) TextView mDashboardDate;
+//        @BindView(R.id.dashboard_type) TextView mDashboardType;
+//        @BindView(R.id.dashboard_subtype) TextView mDashboardSubtype;
+//        @BindView(R.id.dashboard_amount) TextView mDashboardAmount;
 
         public DashboardAdapterViewHolder(View view) {
             super(view);

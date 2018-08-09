@@ -11,12 +11,23 @@ import com.aiassoft.capstone.R;
 public class Dashboard {
     private int vehicleId;
     private String name;
-    private int expenseType;
-    private int subtype;
-    private int minOdometer;
-    private int maxOdometer;
-    private float fuelQuantity;
-    private float amount;
+    private int kmDriven;
+
+    private float refuelTotalCost;
+    private float refuelTotalQty;
+    private String refuelTotalLkm;
+    private String refuelTotalCkm;
+
+    private float expenseParkingCost;
+    private float expenseTollCost;
+    private float expenseInsuranceCost;
+    private float expenseTotalCost;
+    private String expenseCkmCost;
+
+    private float serviceBasicCost;
+    private float serviceDamageCost;
+    private float serviceTotalCost;
+    private String serviceCkmCost;
 
     /**
      * No args constructor for use in serialization ¯\_(ツ)_/¯
@@ -24,16 +35,78 @@ public class Dashboard {
     public Dashboard() {
     }
 
-    public Dashboard(int vehicleId, String name, int expenseType, int subtype, int minOdometer,
-                     int maxOdometer, float fuelQuantity, float amount, String notes) {
+    public Dashboard(int vehicleId, String name, int kmDriven,
+                     float refuelTotalCost, float refuelTotalQty, String refuelTotalLkm,
+                     String refuelTotalCkm, float expenseParkingCost, float expenseTollCost,
+                     float expenseInsuranceCost, float expenseTotalCost, String expenseCkmCost,
+                     float serviceBasicCost, float serviceDamageCost, float serviceTotalCost,
+                     String serviceCkmCost ) {
+
         this.vehicleId = vehicleId;
         this.name = name;
-        this.expenseType = expenseType;
-        this.subtype = subtype;
-        this.minOdometer = minOdometer;
-        this.maxOdometer = maxOdometer;
-        this.fuelQuantity = fuelQuantity;
-        this.amount = amount;
+        this.kmDriven = kmDriven;
+
+        this.refuelTotalQty = refuelTotalQty;
+        this.refuelTotalCost = refuelTotalCost;
+        this.refuelTotalLkm = refuelTotalLkm;
+        this.refuelTotalCkm = refuelTotalCkm;
+
+        this.expenseParkingCost = expenseParkingCost;
+        this.expenseTollCost = expenseTollCost;
+        this.expenseInsuranceCost = expenseInsuranceCost;
+        this.expenseTotalCost = expenseTotalCost;
+        this.expenseCkmCost = expenseCkmCost;
+
+        this.serviceBasicCost = serviceBasicCost;
+        this.serviceDamageCost = serviceDamageCost;
+        this.serviceTotalCost = serviceTotalCost;
+        this.serviceCkmCost = serviceCkmCost;
+    }
+
+    public void addExpense(int expenseType, int subtype, float qty, float amount) {
+        switch (expenseType) {
+            case 0:
+                refuelTotalQty += qty;
+                refuelTotalCost += amount;
+                break;
+            case 1:
+                switch (subtype) {
+                    case 0:
+                        expenseParkingCost += amount;
+                        break;
+                    case 1:
+                        expenseTollCost += amount;
+                        break;
+                    case 2:
+                        expenseInsuranceCost += amount;
+                        break;
+                }
+                break;
+            case 2:
+                switch (subtype) {
+                    case 0:
+                        serviceBasicCost += amount;
+                        break;
+                    case 1:
+                        serviceDamageCost += amount;
+                        break;
+                }
+                break;
+        }
+    }
+
+    public void calcTotals() {
+        expenseTotalCost = expenseParkingCost + expenseTollCost + expenseInsuranceCost;
+        serviceTotalCost = serviceBasicCost + serviceDamageCost;
+
+        if (kmDriven > 0) {
+            refuelTotalLkm = String.format("%.2f", (refuelTotalQty / kmDriven));
+            refuelTotalCkm = String.format("%.2f", (refuelTotalCost / kmDriven));
+
+            expenseCkmCost = String.format("%.2f", (expenseTotalCost / kmDriven));
+
+            serviceCkmCost = String.format("%.2f", (serviceTotalCost/ kmDriven));
+        }
     }
 
     public int getVehicleId() {
@@ -52,69 +125,109 @@ public class Dashboard {
         this.name = name;
     }
 
-    public int getExpenseType() {
-        return expenseType;
+    public int getKmDriven() {
+        return kmDriven;
     }
 
-    public String getExpenseTypeStr(Context context) {
-        return context.getResources()
-                .getStringArray(R.array.expenses_types)[this.expenseType];
+    public void setKmDriven(int kmDriven) {
+        this.kmDriven = kmDriven;
     }
 
-    public void setExpenseType(int expenseType) {
-        this.expenseType = expenseType;
+    public float getRefuelTotalCost() {
+        return refuelTotalCost;
     }
 
-    public int getSubtype() {
-        return subtype;
+    public void setRefuelTotalCost(float refuelTotalCost) { this.refuelTotalCost = refuelTotalCost; }
+
+    public float getRefuelTotalQty() {
+        return refuelTotalQty;
     }
 
-    public String getSubtypeStr(Context context) {
-        switch (this.expenseType) {
-            case 0:
-                return context.getResources()
-                        .getStringArray(R.array.refuel_expenses_subtypes)[this.subtype];
-            case 1:
-                return context.getResources()
-                        .getStringArray(R.array.bill_expenses_subtypes)[this.subtype];
-            case 2:
-                return context.getResources()
-                        .getStringArray(R.array.service_expenses_subtypes)[this.subtype];
-        }
-        return "";
+    public void setRefuelTotalQty(float refuelTotalQty) { this.refuelTotalQty = refuelTotalQty; }
+
+    public String getRefuelTotalLkm() {
+        return refuelTotalLkm;
     }
 
-    public void setSubtype(int subtype) {
-        this.subtype = subtype;
+    public void setRefuelTotalLkm(String refuelTotalLkm) {
+        this.refuelTotalLkm = refuelTotalLkm;
     }
 
-    public int getMinOdometer() {
-        return minOdometer;
+
+    public String getRefuelTotalCkm() {
+        return refuelTotalCkm;
     }
 
-    public void setMinOdometer(int minOdometer) {
-        this.minOdometer = minOdometer;
+    public void setRefuelTotalCkm(String refuelTotalCkm) {
+        this.refuelTotalCkm = refuelTotalCkm;
     }
 
-    public int getMaxOdometer() {
-        return maxOdometer;
+    public float getExpenseParkingCost() {
+        return expenseParkingCost;
     }
 
-    public void setMaxOdometer(int maxOdometer) {
-        this.maxOdometer = maxOdometer;
+    public void setExpenseParkingCost(float expenseParkingCost) { this.expenseParkingCost = expenseParkingCost; }
+
+    public float getExpenseTollCost() {
+        return expenseTollCost;
     }
 
-    public float getFuelQuantity() {
-        return fuelQuantity;
+    public void setExpenseTollCost(float expenseTollCost) { this.expenseTollCost = expenseTollCost; }
+
+    public float getExpenseInsuranceCost() {
+        return expenseInsuranceCost;
     }
 
-    public void setFuelQuantity(float fuelQuantity) { this.fuelQuantity = fuelQuantity; }
-
-    public float getAmount() {
-        return amount;
+    public void setExpenseInsuranceCost(float expenseInsuranceCost) {
+        this.expenseInsuranceCost = expenseInsuranceCost;
     }
 
-    public void setAmount(float amount) { this.amount = amount; }
+    public float getExpenseTotalCost() {
+        return expenseTotalCost;
+    }
 
+    public void setExpenseTotalCost(float expenseTotalCost) {
+        this.expenseTotalCost = expenseTotalCost;
+    }
+
+    public String getExpenseCkmCost() {
+        return expenseCkmCost;
+    }
+
+    public void setExpenseCkmCost(String expenseCkmCost) {
+        this.expenseCkmCost = expenseCkmCost;
+    }
+
+    public float getServiceBasicCost() {
+        return serviceBasicCost;
+    }
+
+    public void setServiceBasicCost(float serviceBasicCost) {
+        this.serviceBasicCost = serviceBasicCost;
+    }
+
+    public float getServiceDamageCost() {
+        return serviceDamageCost;
+    }
+
+    public void setServiceDamageCost(float serviceDamageCost) {
+        this.serviceDamageCost = serviceDamageCost;
+    }
+
+    public float getServiceTotalCost() {
+        return serviceTotalCost;
+    }
+
+    public void setServiceTotalCost(float serviceTotalCost) {
+        this.serviceTotalCost = serviceTotalCost;
+    }
+
+    public String getServiceCkmCost() {
+        return serviceCkmCost;
+    }
+
+    public void setServiceCkmCost(String serviceCkmCost) {
+        this.serviceCkmCost = serviceCkmCost;
+    }
 
 }

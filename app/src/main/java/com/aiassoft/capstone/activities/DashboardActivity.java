@@ -307,90 +307,78 @@ public class DashboardActivity extends AppCompatActivity
              */
             @Override
             public List<Dashboard> loadInBackground() {
+                /** ArrayList to hold the dashboard list items */
+                List<Dashboard> dashboardListItems = new ArrayList<Dashboard>();
+                Dashboard dashboardListItem;
+
                 CapstoneDBHelper dbHelper;
 
                 dbHelper = new CapstoneDBHelper(getContext());
 
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                String sql = "select e.vehicleId, v.Name, e.expenseType, e.subtype, " +
-                        "m.mnOdo, m.mxOdo, sum(e.fuelQty) as sFuelQty, " +
-                        "sum(e.amount) as sAmount " +
-                        "from expenses as e " +
-                        "inner join vehicles as v on v._id = e.vehicleId " +
-                        "inner join (" +
-                        "      select e.vehicleId, min(e.odometer) as mnOdo, max(e.odometer) as mxOdo " +
+                // Read the available Vehicles
+                String sqlVehicles = "select v._id as vehicleId, v.Name, m.minOdo, m.maxOdo " +
+                        "from vehicles as v " +
+                        "left outer join ( " +
+                        "      select e.vehicleId, min(e.odometer) as minOdo, " +
+                        "             max(e.odometer) as maxOdo " +
                         "      from expenses as e " +
-                        "      where e.date between ? and ? " +
-                        "        and e.expenseType = 0 " +
+                        "      where e.expenseType = 0 " +
                         "      group by e.vehicleId " +
-                        ") m on m.vehicleId = e.vehicleId " +
-                        "where e.date between ? and ? " +
-                        "group by e.vehicleId, v.Name, e.expenseType, e.subtype " +
-                        "order by e.vehicleId ";
-                //Cursor cursor = db.rawQuery(sql, null);
-                Cursor cursor = db.rawQuery(sql, new String[] {"2018-01-01", "2018-12-31", "2018-01-01", "2018-12-31"});
+                        ") as m on m.vehicleId = v._id ";
 
-                if (cursor != null && cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        String name = cursor.getString(cursor.getColumnIndex("name"));
-//                        int minOdometer = cursor.getInt(cursor.getColumnIndex("mbOdo"));
-//                        int maxOdometer = cursor.getInt(cursor.getColumnIndex("mxOdo"));
-//                        float fuelQty = cursor.getFloat(cursor.getColumnIndex("sFuelQty"));
-//                        float amount = cursor.getFloat(cursor.getColumnIndex("sAmount"));
+                Cursor cVehicles = db.rawQuery(sqlVehicles, null);
+
+                if (cVehicles != null && cVehicles.getCount() > 0) {
+
+                    while (cVehicles.moveToNext()) {
+                        dashboardListItem = new Dashboard();
+
+                        int vehicleId = cVehicles.getInt(cVehicles.getColumnIndex("vehicleId"));
+                        String name = cVehicles.getString(cVehicles.getColumnIndex("name"));
+                        int minOdo = cVehicles.getInt(cVehicles.getColumnIndex("minOdo"));
+                        int maxOdo = cVehicles.getInt(cVehicles.getColumnIndex("maxOdo"));
+
+                        dashboardListItem.setVehicleId(vehicleId);
+                        dashboardListItem.setName(name);
+                        dashboardListItem.setKmDriven(maxOdo-minOdo);
+
+
+                        String sqlExpenses = "select e.expenseType, e.subtype, " +
+                                "sum(e.amount) as amount, sum(e.fuelQty) as qty " +
+                                "from expenses as e " +
+                                "where e.vehicleId = ? " +
+                                "group by e.expenseType, e.subtype ";
+
+                        Cursor cExpenses = db.rawQuery(sqlExpenses, new String[] {vehicleId + ""});
+
+                        if (cExpenses != null && cExpenses.getCount() > 0) {
+
+                            while (cExpenses.moveToNext()) {
+                                int expenseType = cExpenses.getInt(cExpenses.getColumnIndex("expenseType"));
+                                int subtype = cExpenses.getInt(cExpenses.getColumnIndex("subtype"));
+                                float qty = cExpenses.getFloat(cExpenses.getColumnIndex("qty"));
+                                float amount = cExpenses.getFloat(cExpenses.getColumnIndex("amount"));
+
+                                dashboardListItem.addExpense(expenseType,subtype, qty, amount);
+                            }
+
+                            cExpenses.close();
+                        }
+                        dashboardListItem.calcTotals();
+                        dashboardListItems.add(dashboardListItem);
                     }
 
-                    cursor.close();
+                    cVehicles.close();
                 }
+
 
 //                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
 //                if (invalidateCache)
                     mCachedDashboardListData = null;
 
-//                Uri uri = DashboardContract.DashboardEntry.CONTENT_URI;
-//                uri = uri.buildUpon().build();
-//                Cursor cursor = getContentResolver().query(uri, null, null, null,
-//                        DashboardContract.DashboardEntry.COLUMN_NAME_DATE + " desc");
-
-
-//                if (cursor != null && cursor.getCount() != 0) {
-//                    /** ArrayList to hold the dashboard list items */
-//                    List<Dashboard> dashboardListItems = new ArrayList<Dashboard>();
-//                    Dashboard dashboardListItem;
-//
-//                    while (cursor.moveToNext()) {
-//                        dashboardListItem = new Dashboard();
-//                        dashboardListItem.setMinOdometer(cursor.getInt(cursor.getColumnIndex(DashboardContract.DashboardEntry._ID)));
-//                        dashboardListItem.setVehicleId(cursor.getInt(cursor.getColumnIndex(DashboardContract.DashboardEntry.COLUMN_NAME_VEHICLE_ID)));
-//                        dashboardListItem.setDashboardType(cursor.getInt(cursor.getColumnIndex(DashboardContract.DashboardEntry.COLUMN_NAME_EXPENSE_TYPE)));
-//                        dashboardListItem.setSubtype(cursor.getInt(cursor.getColumnIndex(DashboardContract.DashboardEntry.COLUMN_NAME_SUBTYPE)));
-//                        dashboardListItem.setName(cursor.getString(cursor.getColumnIndex(DashboardContract.DashboardEntry.COLUMN_NAME_DATE)));
-//                        dashboardListItem.setMaxOdometer(cursor.getInt(cursor.getColumnIndex(DashboardContract.DashboardEntry.COLUMN_NAME_ODOMETER)));
-//                        dashboardListItem.setAmount(cursor.getFloat(cursor.getColumnIndex(DashboardContract.DashboardEntry.COLUMN_NAME_AMOUNT)));
-
-//                        String stringId = "" + dashboardListItem.getVehicleId();
-//                        uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
-//                        uri = uri.buildUpon().appendPath(stringId).build();
-//                        Cursor vcursor = getContentResolver().query(uri, null, null, null, null);
-//
-//                        if (vcursor ==  null || vcursor.getCount() == 0) {
-//                            dashboardListItem.setVehicle(getString(R.string.deleted_vehicle) + ":" + stringId);
-//                        } else {
-//                            vcursor.moveToFirst();
-//                            String s = vcursor.getString(vcursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME));
-//                            dashboardListItem.setVehicle(vcursor.getString(vcursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME)));
-//                        }
-//                        vcursor.close();
-//
-//                        dashboardListItems.add(dashboardListItem);
-//                    }
-//
-//                    cursor.close();
-//
-//                    return dashboardListItems;
-//                }
-
-                return null;
+                return dashboardListItems;
             } // loadInBackground
 
             /**
