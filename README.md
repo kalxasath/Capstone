@@ -7,6 +7,10 @@
 
 # Capstone Project
 
+<h1 align=center>
+<img src="Logo/horizontal.png" width=80%>
+</h1>
+
 Final Project
 
 ## Project Overview
