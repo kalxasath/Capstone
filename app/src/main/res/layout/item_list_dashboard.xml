@@ -90,7 +90,7 @@
             android:textSize="@dimen/ild_vehicle_title_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/km_driven_title"
-            tools:text="Refuel"
+            android:text="@string/dashboard_refuel_title"
             />
 
         <TextView
@@ -106,7 +106,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refuel_title"
-            tools:text="Total Cost"
+            android:text="@string/dashboard_total_cost_title"
             />
 
         <TextView
@@ -138,7 +138,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refuel_total_cost_title"
-            tools:text="Total Liters"
+            android:text="Total Liters"
             />
 
         <TextView
@@ -170,7 +170,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refuel_total_qty_title"
-            tools:text="l/km"
+            tools:text="l/100 km"
             />
 
         <TextView
@@ -202,7 +202,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refuel_total_lkm_title"
-            tools:text="cost/km"
+            tools:text="cost/100 km"
             />
 
         <TextView
@@ -236,7 +236,7 @@
             android:textSize="@dimen/ild_vehicle_title_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refuel_total_ckm_title"
-            tools:text="Expenses"
+            android:text="@string/dashboard_expenses_title"
             />
 
         <TextView
@@ -252,7 +252,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expenses_title"
-            tools:text="Parking"
+            android:text="@string/dashboard_parking_title"
             />
 
         <TextView
@@ -284,7 +284,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expense_parking_title"
-            tools:text="Toll"
+            android:text="@string/dashboard_toll_title"
             />
 
         <TextView
@@ -316,7 +316,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expense_toll_title"
-            tools:text="Insurance"
+            android:text="@string/dashboard_insurance_title"
             />
 
         <TextView
@@ -348,7 +348,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expense_insurane_title"
-            tools:text="Total"
+            android:text="@string/dashboard_total_title"
             />
 
         <TextView
@@ -380,7 +380,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expense_total_title"
-            tools:text="cost/km"
+            tools:text="cost/100 km"
             />
 
         <TextView
@@ -414,7 +414,7 @@
             android:textSize="@dimen/ild_vehicle_title_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/expense_ckm_title"
-            tools:text="Service"
+            android:text="@string/dashboard_service_title"
             />
 
         <TextView
@@ -430,7 +430,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/service_title"
-            tools:text="Basic"
+            android:text="@string/dashboard_basic_title"
             />
 
         <TextView
@@ -462,7 +462,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/service_basic_title"
-            tools:text="Damage"
+            android:text="@string/dashboard_damage_title"
             />
 
         <TextView
@@ -494,7 +494,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/service_damage_title"
-            tools:text="Total"
+            android:text="@string/dashboard_total_title"
             />
 
         <TextView
@@ -526,7 +526,7 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/service_total_title"
-            tools:text="cost/km"
+            tools:text="cost/100 km"
             />
 
         <TextView

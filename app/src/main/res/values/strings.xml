@@ -89,6 +89,21 @@
 
     <!-- Dashboard -->
     <string name="no_dashboard_data_available">No Data</string>
+    <string name="dashboard_driven_title">Driven</string>
+    <string name="dashboard_total_cost_title">Total Cost</string>
+    <string name="dashboard_total_fuel_title">Total</string>
+    <string name="dashboard_fuel_per100_title">/100</string>
+    <string name="dashboard_cost_per100_title">cost/100</string>
+    <string name="dashboard_parking_title">Parking</string>
+    <string name="dashboard_toll_title">Toll</string>
+    <string name="dashboard_insurance_title">Insurance</string>
+    <string name="dashboard_total_title">Total</string>
+    <string name="dashboard_basic_title">Basic</string>
+    <string name="dashboard_damage_title">Damage</string>
+    <string name="dashboard_refuel_title">Refuel</string>
+    <string name="dashboard_expenses_title">Expenses</string>
+    <string name="dashboard_service_title">Service</string>
+
 
     <!-- Picture Chooser -->
     <string name="_x_select_image_source">Select Image Source</string>
