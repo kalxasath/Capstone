@@ -38,19 +38,11 @@ public class Const {
     /**
      * YOUTUBE API KEY
      */
-    public static final String YOUTUBE_API_KEY = BuildConfig.YOUTUBE_API_KEY;
-
-    /**
-     * youtube definitions
-     */
-    public static final String YOUTUBE_APP_URI = "vnd.youtube:";
-    public static final String YOUTUBE_WATCH_URL = "https://www.youtube.com/watch";
-    public static final String YOUTUBE_PARAM_WATCH_VIDEO = "v";
 
     /**
      * This ID will be used to identify the Loader responsible for loading our list.
      */
-    public static final int MOVIES_LOADER_ID = 0;
+    //public static final int MOVIES_LOADER_ID = 0;
 
     /**
      * Contract's & Content Provider's definitions
@@ -62,6 +54,6 @@ public class Const {
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String FILE_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
+//    public static final String FILE_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
 }

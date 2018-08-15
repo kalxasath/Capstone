@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	>
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/vehicles_list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		tools:context=".activities.VehiclesListActivity"
+		android:gravity="center"
+		android:visibility="visible"
+		android:paddingBottom="72dp"
+		android:clipToPadding="false"
+		app:layoutManager="LinearLayoutManager"
+		tools:listitem="@layout/item_list_vehicle"
+		/>
+
+	<TextView
+		android:id="@+id/empty_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center"
+		android:visibility="gone"
+		android:text="@string/no_vehicles_available" />
+
+	<!-- The waiting spinner -->
+	<ProgressBar
+		android:id="@+id/loading_indicator"
+		android:layout_height="42dp"
+		android:layout_width="42dp"
+		android:layout_gravity="center"
+		android:visibility="invisible" />
+
+</FrameLayout>

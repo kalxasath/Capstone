@@ -52,6 +52,7 @@ public class YoutubeUtils {
     /**
      * youtube definitions
      */
+    public static final String YOUTUBE_API_KEY = BuildConfig.YOUTUBE_API_KEY;
     public static final String YOUTUBE_APP_URI = "vnd.youtube:";
     public static final String YOUTUBE_WATCH_URL = "https://www.youtube.com/watch";
     public static final String YOUTUBE_PARAM_WATCH_VIDEO = "v";
@@ -88,9 +89,9 @@ public class YoutubeUtils {
      * @return    The URI to watch the video
      */
     public static Uri buildHttpYoutubeWatchVideoUri(String key) {
-        Uri builtUri = Uri.parse(Const.YOUTUBE_WATCH_URL
+        Uri builtUri = Uri.parse(YOUTUBE_WATCH_URL
         ).buildUpon()
-                .appendQueryParameter(Const.YOUTUBE_PARAM_WATCH_VIDEO, key)
+                .appendQueryParameter(YOUTUBE_PARAM_WATCH_VIDEO, key)
                 .build();
         return builtUri;
     }
@@ -103,7 +104,7 @@ public class YoutubeUtils {
      * @return    The URI to watch the video
      */
     public static Uri buildAppYoutubeWatchVideoUri(String key) {
-        Uri builtUri = Uri.parse(Const.YOUTUBE_APP_URI + key).buildUpon().build();
+        Uri builtUri = Uri.parse(YOUTUBE_APP_URI + key).buildUpon().build();
 
         return builtUri;
     }

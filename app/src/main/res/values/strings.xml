@@ -14,6 +14,7 @@
     <string name="failed_to_insert_vehicles">Failed to insert Vehicles</string>
     <string name="failed_to_insert_expenses">Failed to insert Expenses</string>
     <string name="failed_to_reset_sqlite_sequences">Failed to reset Sqlite Sequences</string>
+    <string name="you_broke_up_the_app">Dear developer, you broke up the app, restart a full working Baking App and see the magic happens on my widgets ;)</string>
 
     <!-- System Messages -->
     <string name="failed_to_insert_row_into">Failed to insert row into: </string>
@@ -89,11 +90,12 @@
 
     <!-- Dashboard -->
     <string name="no_dashboard_data_available">No Data</string>
-    <string name="dashboard_driven_title">Driven</string>
+    <string name="total_running_costs">%1$s - Total Running Costs</string>
+    <string name="dashboard_driven_title">%1$s Driven</string>
     <string name="dashboard_total_cost_title">Total Cost</string>
     <string name="dashboard_total_fuel_title">Total</string>
-    <string name="dashboard_fuel_per100_title">/100</string>
-    <string name="dashboard_cost_per100_title">cost/100</string>
+    <string name="dashboard_fuel_per100_title">%1$s/100 %2$s</string>
+    <string name="dashboard_cost_per100_title">cost/100 %1$s</string>
     <string name="dashboard_parking_title">Parking</string>
     <string name="dashboard_toll_title">Toll</string>
     <string name="dashboard_insurance_title">Insurance</string>
@@ -104,6 +106,8 @@
     <string name="dashboard_expenses_title">Expenses</string>
     <string name="dashboard_service_title">Service</string>
 
+    <!-- Widget -->
+    <string name="select_vehicle_for_widget">Select Vehicle for Widget</string>
 
     <!-- Picture Chooser -->
     <string name="_x_select_image_source">Select Image Source</string>

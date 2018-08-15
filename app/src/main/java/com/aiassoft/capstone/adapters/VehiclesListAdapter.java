@@ -67,6 +67,8 @@ public class VehiclesListAdapter extends RecyclerView.Adapter<VehiclesListAdapte
             super(view);
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);
+            mVehicleImage.setOnClickListener(this);
+            mVehicleTitle.setOnClickListener(this);
         }
 
         /**

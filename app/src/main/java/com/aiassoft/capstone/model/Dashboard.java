@@ -1,9 +1,5 @@
 package com.aiassoft.capstone.model;
 
-import android.content.Context;
-
-import com.aiassoft.capstone.R;
-
 /**
  * Created by gvryn on 08/08/18.
  */
@@ -11,19 +7,25 @@ import com.aiassoft.capstone.R;
 public class Dashboard {
     private int vehicleId;
     private String name;
+    private int distanceUnit;
+    private int volumeUnit;
+    public boolean hasData;
     private int kmDriven;
 
+    public boolean hasRefuelData;
     private float refuelTotalCost;
     private float refuelTotalQty;
     private String refuelTotalLkm;
     private String refuelTotalCkm;
 
+    public boolean hasExpensesData;
     private float expenseParkingCost;
     private float expenseTollCost;
     private float expenseInsuranceCost;
     private float expenseTotalCost;
     private String expenseCkmCost;
 
+    public boolean hasServiceData;
     private float serviceBasicCost;
     private float serviceDamageCost;
     private float serviceTotalCost;
@@ -33,9 +35,13 @@ public class Dashboard {
      * No args constructor for use in serialization ¯\_(ツ)_/¯
      */
     public Dashboard() {
+        this.hasData = false;
+        this.hasRefuelData = false;
+        this.hasExpensesData = false;
+        this.hasServiceData = false;
     }
 
-    public Dashboard(int vehicleId, String name, int kmDriven,
+    public Dashboard(int vehicleId, String name, int distanceUnit, int volumeUnit, int kmDriven,
                      float refuelTotalCost, float refuelTotalQty, String refuelTotalLkm,
                      String refuelTotalCkm, float expenseParkingCost, float expenseTollCost,
                      float expenseInsuranceCost, float expenseTotalCost, String expenseCkmCost,
@@ -44,6 +50,8 @@ public class Dashboard {
 
         this.vehicleId = vehicleId;
         this.name = name;
+        this.distanceUnit = distanceUnit;
+        this.volumeUnit = volumeUnit;
         this.kmDriven = kmDriven;
 
         this.refuelTotalQty = refuelTotalQty;
@@ -66,10 +74,12 @@ public class Dashboard {
     public void addExpense(int expenseType, int subtype, float qty, float amount) {
         switch (expenseType) {
             case 0:
+                this.hasRefuelData = true;
                 refuelTotalQty += qty;
                 refuelTotalCost += amount;
                 break;
             case 1:
+                this.hasExpensesData = true;
                 switch (subtype) {
                     case 0:
                         expenseParkingCost += amount;
@@ -83,6 +93,7 @@ public class Dashboard {
                 }
                 break;
             case 2:
+                this.hasServiceData = true;
                 switch (subtype) {
                     case 0:
                         serviceBasicCost += amount;
@@ -100,12 +111,17 @@ public class Dashboard {
         serviceTotalCost = serviceBasicCost + serviceDamageCost;
 
         if (kmDriven > 0) {
-            refuelTotalLkm = String.format("%.2f", (refuelTotalQty / kmDriven));
-            refuelTotalCkm = String.format("%.2f", (refuelTotalCost / kmDriven));
+            refuelTotalLkm = String.format("%.2f", (refuelTotalQty / kmDriven * 100));
+            refuelTotalCkm = String.format("%.2f", (refuelTotalCost / kmDriven * 100));
 
-            expenseCkmCost = String.format("%.2f", (expenseTotalCost / kmDriven));
+            expenseCkmCost = String.format("%.2f", (expenseTotalCost / kmDriven * 100));
 
-            serviceCkmCost = String.format("%.2f", (serviceTotalCost/ kmDriven));
+            serviceCkmCost = String.format("%.2f", (serviceTotalCost/ kmDriven * 100));
+        } else {
+            refuelTotalLkm = "0.00";
+            refuelTotalCkm = "0.00";
+            expenseCkmCost = "0.00";
+            serviceCkmCost = "0.00";
         }
     }
 
@@ -123,6 +139,22 @@ public class Dashboard {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getDistanceUnit() {
+        return distanceUnit;
+    }
+
+    public void setDistanceUnit(int distanceUnit) {
+        this.distanceUnit = distanceUnit;
+    }
+
+    public int getVolumeUnit() {
+        return volumeUnit;
+    }
+
+    public void setVolumeUnit(int volumeUnit) {
+        this.volumeUnit = volumeUnit;
     }
 
     public int getKmDriven() {
@@ -228,6 +260,38 @@ public class Dashboard {
 
     public void setServiceCkmCost(String serviceCkmCost) {
         this.serviceCkmCost = serviceCkmCost;
+    }
+
+    public boolean getHasData() {
+        return hasData;
+    }
+
+    public void setHasData(boolean hasData) {
+        this.hasData = hasData;
+    }
+
+    public boolean getHasRefuelData() {
+        return hasRefuelData;
+    }
+
+    public void setHasRefuelData(boolean hasRefuelData) {
+        this.hasRefuelData = hasRefuelData;
+    }
+
+    public boolean getHasExpensesData() {
+        return hasExpensesData;
+    }
+
+    public void setHasExpensesData(boolean hasExpensesData) {
+        this.hasExpensesData = hasExpensesData;
+    }
+
+    public boolean getHasServiceData() {
+        return hasServiceData;
+    }
+
+    public void setHasServiceData(boolean hasServiceData) {
+        this.hasServiceData = hasServiceData;
     }
 
 }

@@ -2,19 +2,15 @@ package com.aiassoft.capstone.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -34,7 +30,6 @@ import android.widget.TextView;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.adapters.DashboardListAdapter;
 import com.aiassoft.capstone.data.CapstoneDBHelper;
-import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.model.Dashboard;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
@@ -44,8 +39,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.aiassoft.capstone.MyApp.getContext;
 
 /**
  * Created by gvryn on 25/07/18.
@@ -318,7 +311,8 @@ public class DashboardActivity extends AppCompatActivity
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 // Read the available Vehicles
-                String sqlVehicles = "select v._id as vehicleId, v.Name, m.minOdo, m.maxOdo " +
+                String sqlVehicles = "select v._id as vehicleId, v.Name, v.distanceUnit, " +
+                        "v.volumeUnit, m.minOdo, m.maxOdo " +
                         "from vehicles as v " +
                         "left outer join ( " +
                         "      select e.vehicleId, min(e.odometer) as minOdo, " +
@@ -337,11 +331,15 @@ public class DashboardActivity extends AppCompatActivity
 
                         int vehicleId = cVehicles.getInt(cVehicles.getColumnIndex("vehicleId"));
                         String name = cVehicles.getString(cVehicles.getColumnIndex("name"));
+                        int distanceUnit = cVehicles.getInt(cVehicles.getColumnIndex("distanceUnit"));
+                        int volumeUnit = cVehicles.getInt(cVehicles.getColumnIndex("volumeUnit"));
                         int minOdo = cVehicles.getInt(cVehicles.getColumnIndex("minOdo"));
                         int maxOdo = cVehicles.getInt(cVehicles.getColumnIndex("maxOdo"));
 
                         dashboardListItem.setVehicleId(vehicleId);
                         dashboardListItem.setName(name);
+                        dashboardListItem.setDistanceUnit(distanceUnit);
+                        dashboardListItem.setVolumeUnit(volumeUnit);
                         dashboardListItem.setKmDriven(maxOdo-minOdo);
 
 
@@ -354,6 +352,8 @@ public class DashboardActivity extends AppCompatActivity
                         Cursor cExpenses = db.rawQuery(sqlExpenses, new String[] {vehicleId + ""});
 
                         if (cExpenses != null && cExpenses.getCount() > 0) {
+
+                            dashboardListItem.hasData = true;
 
                             while (cExpenses.moveToNext()) {
                                 int expenseType = cExpenses.getInt(cExpenses.getColumnIndex("expenseType"));
@@ -387,7 +387,7 @@ public class DashboardActivity extends AppCompatActivity
              * @param data The result of the load
              */
             public void deliverResult(List<Dashboard> data) {
-                mCachedDashboardListData = data;
+//                mCachedDashboardListData = data;
                 super.deliverResult(data);
             } // deliverResult
 

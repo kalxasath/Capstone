@@ -1,6 +1,7 @@
 package com.aiassoft.capstone.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,15 +60,45 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
 
         /* The Views to display the Dashboard's Data */
         @BindView(R.id.vehicle_title) TextView mVehicleTitle;
-//        @BindView(R.id.dashboard_date) TextView mDashboardDate;
-//        @BindView(R.id.dashboard_type) TextView mDashboardType;
-//        @BindView(R.id.dashboard_subtype) TextView mDashboardSubtype;
-//        @BindView(R.id.dashboard_amount) TextView mDashboardAmount;
+        @BindView(R.id.km_driven_title) TextView mKmDrivenTitle;
+        @BindView(R.id.km_driven) TextView mKmDriven;
+
+        @BindView(R.id.refuel_title) TextView mRefuelTitle;
+        @BindView(R.id.refuel_total_cost_title) TextView mRefuelTotalCostTitle;
+        @BindView(R.id.refuel_total_cost) TextView mRefuelTotalCost;
+        @BindView(R.id.refuel_total_qty_title) TextView mRefuelTotalQtyTitle;
+        @BindView(R.id.refuel_total_qty) TextView mRefuelTotalQty;
+        @BindView(R.id.refuel_total_lkm_title) TextView mRefuelTotalLkmTitle;
+        @BindView(R.id.refuel_total_lkm) TextView mRefuelTotalLkm;
+        @BindView(R.id.refuel_total_ckm_title) TextView mRefuelTotalCkmTitle;
+        @BindView(R.id.refuel_total_ckm) TextView mRefuelTotalCkm;
+
+        @BindView(R.id.expenses_title) TextView mExpensesTitle;
+        @BindView(R.id.expense_parking_title) TextView mExpenseParkingTitle;
+        @BindView(R.id.expense_parking_cost) TextView mExpenseParkingCost;
+        @BindView(R.id.expense_toll_title) TextView mExpenseTollTitle;
+        @BindView(R.id.expense_toll_cost) TextView mExpenseTollCost;
+        @BindView(R.id.expense_insurane_title) TextView mExpenseInsuraneTitle;
+        @BindView(R.id.expense_insurane_cost) TextView mExpenseInsuraneCost;
+        @BindView(R.id.expense_total_title) TextView mExpenseTotalTitle;
+        @BindView(R.id.expense_total_cost) TextView mExpenseTotalCost;
+        @BindView(R.id.expense_ckm_title) TextView mExpenseCkmTitle;
+        @BindView(R.id.expense_ckm_cost) TextView mExpenseCkmCost;
+
+        @BindView(R.id.service_title) TextView mServiceTitle;
+        @BindView(R.id.service_basic_title) TextView mServiceBasicTitle;
+        @BindView(R.id.service_basic_cost) TextView mServiceBasicCost;
+        @BindView(R.id.service_damage_title) TextView mServiceDamageTitle;
+        @BindView(R.id.service_damage_cost) TextView mServiceDamageCost;
+        @BindView(R.id.service_total_title) TextView mServiceTotalTitle;
+        @BindView(R.id.service_total_cost) TextView mServiceTotalCost;
+        @BindView(R.id.service_ckm_title) TextView mServiceCkmTitle;
+        @BindView(R.id.service_ckm_cost) TextView mServiceCkmCost;
 
         public DashboardAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            view.setOnClickListener(this);
+//            view.setOnClickListener(this);
         }
 
         /**
@@ -115,13 +146,73 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
      */
     @Override
     public void onBindViewHolder(DashboardAdapterViewHolder viewHolder, int position) {
-//        viewHolder.mVehicleTitle.setText(mDashboardData.get(position).getVehicle());
-//        viewHolder.mDashboardDate.setText(mDashboardData.get(position).getName());
-//        viewHolder.mDashboardType.setText(mDashboardData.get(position)
-//                .getDashboardTypeStr(viewHolder.mDashboardType.getContext()));
-//        viewHolder.mDashboardSubtype.setText(mDashboardData.get(position)
-//                .getSubtypeStr(viewHolder.mDashboardSubtype.getContext()));
-//        viewHolder.mDashboardAmount.setText(String.valueOf(mDashboardData.get(position).getAmount()));
+        Context context = MyApp.getContext();
+        Resources res = context.getResources();
+        Dashboard data = mDashboardData.get(position);
+
+        //viewHolder.mVehicleTitle.getContext().getString(R.string.total_running_costs)
+        viewHolder.mVehicleTitle.setText(String.format(
+                context.getString(R.string.total_running_costs), data.getName()));
+        if (! data.hasData) {
+            vhvSetResVisibility(viewHolder, View.GONE);
+            viewHolder.mKmDrivenTitle.setVisibility(View.GONE);
+            viewHolder.mKmDriven.setText(R.string.no_dashboard_data_available);
+        } else {
+            viewHolder.mKmDrivenTitle.setVisibility(View.VISIBLE);
+            viewHolder.mKmDrivenTitle.setText(String.format(
+                    context.getString(R.string.dashboard_driven_title),
+                    res.getStringArray(R.array.short_distance_unit_array)[data.getDistanceUnit()]
+            ));
+            viewHolder.mKmDriven.setText(String.valueOf(data.getKmDriven()));
+
+            if (! data.hasRefuelData) {
+                vhvSetRefuelVisibility(viewHolder, View.GONE);
+            } else {
+                vhvSetRefuelVisibility(viewHolder, View.VISIBLE);
+                viewHolder.mRefuelTotalCost.setText(String.format("%.2f", data.getRefuelTotalCost()));
+                viewHolder.mRefuelTotalQty.setText(String.format("%.2f", data.getRefuelTotalQty()));
+                viewHolder.mRefuelTotalLkmTitle.setText(String.format(
+                        context.getString(R.string.dashboard_fuel_per100_title),
+                        res.getStringArray(R.array.short_volume_unit_array)[data.getVolumeUnit()],
+                        res.getStringArray(R.array.short_distance_unit_array)[data.getDistanceUnit()]
+                ));
+                viewHolder.mRefuelTotalLkm.setText(data.getRefuelTotalLkm());
+                viewHolder.mRefuelTotalCkmTitle.setText(String.format(
+                        context.getString(R.string.dashboard_cost_per100_title),
+                        res.getStringArray(R.array.short_distance_unit_array)[data.getDistanceUnit()]
+                ));
+                viewHolder.mRefuelTotalCkm.setText(data.getRefuelTotalCkm());
+            }
+
+            if (! data.hasExpensesData) {
+                vhvSetExpensesVisibility(viewHolder, View.GONE);
+            } else {
+                vhvSetExpensesVisibility(viewHolder, View.VISIBLE);
+                viewHolder.mExpenseParkingCost.setText(String.format("%.2f", data.getExpenseParkingCost()));
+                viewHolder.mExpenseTollCost.setText(String.format("%.2f", data.getExpenseTollCost()));
+                viewHolder.mExpenseInsuraneCost.setText(String.format("%.2f", data.getExpenseInsuranceCost()));
+                viewHolder.mExpenseTotalCost.setText(String.format("%.2f", data.getExpenseTotalCost()));
+                viewHolder.mExpenseCkmTitle.setText(String.format(
+                        context.getString(R.string.dashboard_cost_per100_title),
+                        res.getStringArray(R.array.short_distance_unit_array)[data.getDistanceUnit()]
+                ));
+                viewHolder.mExpenseCkmCost.setText(data.getExpenseCkmCost());
+            }
+
+            if (! data.hasServiceData) {
+                vhvSetServiceVisibility(viewHolder, View.GONE);
+            } else {
+                vhvSetServiceVisibility(viewHolder, View.VISIBLE);
+                viewHolder.mServiceBasicCost.setText(String.format("%.2f", data.getServiceBasicCost()));
+                viewHolder.mServiceDamageCost.setText(String.format("%.2f", data.getServiceDamageCost()));
+                viewHolder.mServiceTotalCost.setText(String.format("%.2f", data.getServiceTotalCost()));
+                viewHolder.mServiceCkmTitle.setText(String.format(
+                        context.getString(R.string.dashboard_cost_per100_title),
+                        res.getStringArray(R.array.short_distance_unit_array)[data.getDistanceUnit()]
+                ));
+                viewHolder.mServiceCkmCost.setText(data.getServiceCkmCost());
+            }
+        }
     }
 
     /**
@@ -155,6 +246,55 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
     public void invalidateData() {
         mDashboardData = new ArrayList<Dashboard>();
         notifyDataSetChanged();
+    }
+
+    ///////////////// ViewHolder Views Visibility
+
+    /**
+     * Set Refuel, Expenses, Service views to gone
+     */
+    private void vhvSetResVisibility(DashboardAdapterViewHolder viewHolder, int visibility) {
+        vhvSetRefuelVisibility(viewHolder, visibility);
+        vhvSetExpensesVisibility(viewHolder, visibility);
+        vhvSetServiceVisibility(viewHolder, visibility);
+    }
+
+    private void vhvSetRefuelVisibility(DashboardAdapterViewHolder viewHolder, int visibility) {
+        viewHolder.mRefuelTitle.setVisibility(visibility);
+        viewHolder.mRefuelTotalCostTitle.setVisibility(visibility);
+        viewHolder.mRefuelTotalCost.setVisibility(visibility);
+        viewHolder.mRefuelTotalQtyTitle.setVisibility(visibility);
+        viewHolder.mRefuelTotalQty.setVisibility(visibility);
+        viewHolder.mRefuelTotalLkmTitle.setVisibility(visibility);
+        viewHolder.mRefuelTotalLkm.setVisibility(visibility);
+        viewHolder.mRefuelTotalCkmTitle.setVisibility(visibility);
+        viewHolder.mRefuelTotalCkm.setVisibility(visibility);
+    }
+
+    private void vhvSetExpensesVisibility(DashboardAdapterViewHolder viewHolder, int visibility) {
+        viewHolder.mExpensesTitle.setVisibility(visibility);
+        viewHolder.mExpenseParkingTitle.setVisibility(visibility);
+        viewHolder.mExpenseParkingCost.setVisibility(visibility);
+        viewHolder.mExpenseTollTitle.setVisibility(visibility);
+        viewHolder.mExpenseTollCost.setVisibility(visibility);
+        viewHolder.mExpenseInsuraneTitle.setVisibility(visibility);
+        viewHolder.mExpenseInsuraneCost.setVisibility(visibility);
+        viewHolder.mExpenseTotalTitle.setVisibility(visibility);
+        viewHolder.mExpenseTotalCost.setVisibility(visibility);
+        viewHolder.mExpenseCkmTitle.setVisibility(visibility);
+        viewHolder.mExpenseCkmCost.setVisibility(visibility);
+    }
+
+    private void vhvSetServiceVisibility(DashboardAdapterViewHolder viewHolder, int visibility) {
+        viewHolder.mServiceTitle.setVisibility(visibility);
+        viewHolder.mServiceBasicTitle.setVisibility(visibility);
+        viewHolder.mServiceBasicCost.setVisibility(visibility);
+        viewHolder.mServiceDamageTitle.setVisibility(visibility);
+        viewHolder.mServiceDamageCost.setVisibility(visibility);
+        viewHolder.mServiceTotalTitle.setVisibility(visibility);
+        viewHolder.mServiceTotalCost.setVisibility(visibility);
+        viewHolder.mServiceCkmTitle.setVisibility(visibility);
+        viewHolder.mServiceCkmCost.setVisibility(visibility);
     }
 
 }
