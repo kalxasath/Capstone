@@ -24,12 +24,12 @@
             />
 
         <TextView
-            android:id="@+id/broken_view"
+            android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone"
-            android:text="@string/you_broke_up_the_app" />
+            android:text="@string/no_dashboard_data_available" />
 
         <!-- The waiting spinner -->
         <ProgressBar

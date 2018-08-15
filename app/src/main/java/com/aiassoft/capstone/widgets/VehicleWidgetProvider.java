@@ -72,11 +72,13 @@ public class VehicleWidgetProvider extends AppWidgetProvider {
 
     public static void sendRefreshBroadcast(Context context) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(context, VehicleWidgetProvider.class));
+
+        ComponentName thisWidget = new ComponentName(context, VehicleWidgetProvider.class);
+        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(thisWidget);
 
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        intent.setComponent(new ComponentName(context, VehicleWidgetProvider.class));
+        intent.setComponent(thisWidget);
         context.sendBroadcast(intent);
     }
 

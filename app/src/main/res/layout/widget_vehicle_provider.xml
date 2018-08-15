@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
  * Copyright (C) 2018 by George Vrynios
@@ -17,7 +18,49 @@
  * limitations under the License.
  */
 -->
-    <include
-        layout="@layout/activity_dashboard"
+<FrameLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/PaleGreen"
+    >
+
+    <TextView
+        android:id="@+id/vehicle_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        tools:text="Peugeot 307sw - Total running costs"
+        android:textSize="@dimen/ild_vehicle_title_text_size"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginStart="@dimen/ild_margin_start_end"
+        android:layout_marginEnd="@dimen/ild_margin_start_end"
+        android:layout_marginTop="@dimen/ild_margin_top_bottom"
+        android:layout_marginBottom="@dimen/ild_margin_top_bottom"
+        />
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/lv_widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="24dp"
+        />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:text="@string/no_dashboard_data_available" />
+
+    <!-- The waiting spinner -->
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
+</FrameLayout>

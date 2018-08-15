@@ -62,6 +62,10 @@
 
         <service android:name=".services.VehicleWidgetUpdateService" />
 
+        <service
+            android:name=".remote_views.ListviewRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <!-- Register the DatabaseContentProvider -->
         <!-- Set name, authorities, and exported attributes -->
         <!-- exported = false limits access to this ContentProvider to only this app -->

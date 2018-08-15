@@ -30,7 +30,7 @@ import android.widget.TextView;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.adapters.DashboardListAdapter;
 import com.aiassoft.capstone.data.CapstoneDBHelper;
-import com.aiassoft.capstone.model.Dashboard;
+import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
 
@@ -47,7 +47,7 @@ import butterknife.ButterKnife;
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         DashboardListAdapter.DashboardAdapterOnClickHandler,
-        LoaderCallbacks<List<Dashboard>> {
+        LoaderCallbacks<List<VehiclesTotalRunningCosts>> {
 
     //TODO: in every image add the tag android:contentDescription="movie_poster_content_description"
 
@@ -239,7 +239,7 @@ public class DashboardActivity extends AppCompatActivity
          * the last created loader is re-used.
          */
         LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<List<Dashboard>> theDashboardDbLoader = loaderManager.getLoader(DASHBOARD_LOADER_ID);
+        Loader<List<VehiclesTotalRunningCosts>> theDashboardDbLoader = loaderManager.getLoader(DASHBOARD_LOADER_ID);
 
         if (theDashboardDbLoader == null) {
             loaderManager.initLoader(DASHBOARD_LOADER_ID, loaderArgs, this);
@@ -259,12 +259,12 @@ public class DashboardActivity extends AppCompatActivity
      */
     @SuppressLint("StaticFieldLeak")
     @Override
-    public Loader<List<Dashboard>> onCreateLoader(int id, final Bundle loaderArgs) {
+    public Loader<List<VehiclesTotalRunningCosts>> onCreateLoader(int id, final Bundle loaderArgs) {
 
-        return new AsyncTaskLoader<List<Dashboard>>(this) {
+        return new AsyncTaskLoader<List<VehiclesTotalRunningCosts>>(this) {
 
-            /* This Dashboard array will hold and help cache our dashboard list data */
-            List<Dashboard> mCachedDashboardListData = null;
+            /* This VehiclesTotalRunningCosts array will hold and help cache our dashboard list data */
+            List<VehiclesTotalRunningCosts> mCachedDashboardListData = null;
 
             /**
              * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
@@ -295,24 +295,23 @@ public class DashboardActivity extends AppCompatActivity
              * This is the method of the AsyncTaskLoader that will load and parse the JSON data
              * from theexpensedb.org in the background.
              *
-             * @return Dashboard' data from theexpensedb.org as a List of DashboardReviewsListItem.
+             * @return VehiclesTotalRunningCosts' data from theexpensedb.org as a List of DashboardReviewsListItem.
              *         null if an error occurs
              */
             @Override
-            public List<Dashboard> loadInBackground() {
+            public List<VehiclesTotalRunningCosts> loadInBackground() {
                 /** ArrayList to hold the dashboard list items */
-                List<Dashboard> dashboardListItems = new ArrayList<Dashboard>();
-                Dashboard dashboardListItem;
+                List<VehiclesTotalRunningCosts> dashboardListItems = new ArrayList<VehiclesTotalRunningCosts>();
+                VehiclesTotalRunningCosts dashboardListItem;
 
                 CapstoneDBHelper dbHelper;
-
                 dbHelper = new CapstoneDBHelper(getContext());
-
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                 // Read the available Vehicles
-                String sqlVehicles = "select v._id as vehicleId, v.Name, v.distanceUnit, " +
-                        "v.volumeUnit, m.minOdo, m.maxOdo " +
+                String sqlVehicles =
+                        "select v._id as vehicleId, v.Name, v.distanceUnit, " +
+                        "       v.volumeUnit, m.minOdo, m.maxOdo " +
                         "from vehicles as v " +
                         "left outer join ( " +
                         "      select e.vehicleId, min(e.odometer) as minOdo, " +
@@ -327,7 +326,7 @@ public class DashboardActivity extends AppCompatActivity
                 if (cVehicles != null && cVehicles.getCount() > 0) {
 
                     while (cVehicles.moveToNext()) {
-                        dashboardListItem = new Dashboard();
+                        dashboardListItem = new VehiclesTotalRunningCosts();
 
                         int vehicleId = cVehicles.getInt(cVehicles.getColumnIndex("vehicleId"));
                         String name = cVehicles.getString(cVehicles.getColumnIndex("name"));
@@ -343,8 +342,9 @@ public class DashboardActivity extends AppCompatActivity
                         dashboardListItem.setKmDriven(maxOdo-minOdo);
 
 
-                        String sqlExpenses = "select e.expenseType, e.subtype, " +
-                                "sum(e.amount) as amount, sum(e.fuelQty) as qty " +
+                        String sqlExpenses =
+                                "select e.expenseType, e.subtype, " +
+                                "       sum(e.amount) as amount, sum(e.fuelQty) as qty " +
                                 "from expenses as e " +
                                 "where e.vehicleId = ? " +
                                 "group by e.expenseType, e.subtype ";
@@ -361,7 +361,7 @@ public class DashboardActivity extends AppCompatActivity
                                 float qty = cExpenses.getFloat(cExpenses.getColumnIndex("qty"));
                                 float amount = cExpenses.getFloat(cExpenses.getColumnIndex("amount"));
 
-                                dashboardListItem.addExpense(expenseType,subtype, qty, amount);
+                                dashboardListItem.addExpense(expenseType, subtype, qty, amount);
                             }
 
                             cExpenses.close();
@@ -372,6 +372,9 @@ public class DashboardActivity extends AppCompatActivity
 
                     cVehicles.close();
                 }
+
+                db.close();
+                dbHelper.close();
 
 
 //                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
@@ -386,7 +389,7 @@ public class DashboardActivity extends AppCompatActivity
              *
              * @param data The result of the load
              */
-            public void deliverResult(List<Dashboard> data) {
+            public void deliverResult(List<VehiclesTotalRunningCosts> data) {
 //                mCachedDashboardListData = data;
                 super.deliverResult(data);
             } // deliverResult
@@ -402,7 +405,7 @@ public class DashboardActivity extends AppCompatActivity
      * @param data The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(Loader<List<Dashboard>> loader, List<Dashboard> data) {
+    public void onLoadFinished(Loader<List<VehiclesTotalRunningCosts>> loader, List<VehiclesTotalRunningCosts> data) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
         if (data == null) {
@@ -423,7 +426,7 @@ public class DashboardActivity extends AppCompatActivity
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<List<Dashboard>> loader) {
+    public void onLoaderReset(Loader<List<VehiclesTotalRunningCosts>> loader) {
         /*
          * We aren't using this method in this application, but we are required to Override
          * it to implement the LoaderCallbacks<List<DashboardReviewsListItem>> interface

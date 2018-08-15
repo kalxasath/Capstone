@@ -18,8 +18,6 @@
 
 package com.aiassoft.capstone.services;
 
-import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -27,26 +25,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.CapstoneDBHelper;
-import com.aiassoft.capstone.model.Dashboard;
+import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
+import com.aiassoft.capstone.remote_views.ListviewRemoteViewsService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.aiassoft.capstone.activities.DashboardActivity.DASHBOARD_LOADER_ID;
 import static com.aiassoft.capstone.utilities.PrefUtils.getWidgetVehicleId;
 
 /**
@@ -60,11 +49,13 @@ public class VehicleWidgetUpdateService extends Service {
 
     private static final int INVALID_INT = -1;
 
+    private static Context mContext;
+
     private AppWidgetManager mAppWidgetManager;
 
     private int[] mAllWidgetIds;
 
-    private Dashboard mVehiclesTotalRunningCosts;
+    private VehiclesTotalRunningCosts mVehiclesTotalRunningCosts;
 
     @Nullable
     @Override
@@ -74,12 +65,12 @@ public class VehicleWidgetUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mContext = MyApp.getContext();
         mAppWidgetManager = AppWidgetManager.getInstance(this);
 
-        mAllWidgetIds = intent
-                .getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+        mAllWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
-        mAppWidgetManager.notifyAppWidgetViewDataChanged(mAllWidgetIds, R.id.dashboard_list);
+        mAppWidgetManager.notifyAppWidgetViewDataChanged(mAllWidgetIds, R.id.lv_widget);
 
         for (int appWidgetId : mAllWidgetIds) {
             /** Reaches the view on widget */
@@ -90,13 +81,15 @@ public class VehicleWidgetUpdateService extends Service {
 
             if (vehicleId == INVALID_INT) {
                 // If the app doesn't start because of bug, or developer stop
-                // invalidate widgets since we do not have acorrected app instance
+                // invalidate widgets since we do not have a corrected app instance
                 showDeveloperInfo(rv);
             } else {
 
                 hideDeveloperInfo(rv);
-                fetchVehiclesData();
-                updateRemoteViews(rv, appWidgetId, vehicleId);
+
+                mVehiclesTotalRunningCosts = fetchVehiclesData(vehicleId);
+                
+                updateRemoteViews(rv, appWidgetId, mVehiclesTotalRunningCosts);
             }
 
             mAppWidgetManager.updateAppWidget(appWidgetId, rv);
@@ -106,8 +99,79 @@ public class VehicleWidgetUpdateService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void fetchVehiclesData() {
+    private VehiclesTotalRunningCosts fetchVehiclesData(int vehicleId) {
+        VehiclesTotalRunningCosts data = new VehiclesTotalRunningCosts();
 
+        CapstoneDBHelper dbHelper;
+        dbHelper = new CapstoneDBHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+
+        // Read the Vehicle's data
+        String sqlVehicles = "select v.Name, v.distanceUnit, " +
+                "v.volumeUnit, m.minOdo, m.maxOdo " +
+                "from vehicles as v " +
+                "left outer join ( " +
+                "      select e.vehicleId, min(e.odometer) as minOdo, " +
+                "             max(e.odometer) as maxOdo " +
+                "      from expenses as e " +
+                "      where e.expenseType = 0 " +
+                "      group by e.vehicleId " +
+                ") as m on m.vehicleId = v._ID " +
+                "where v._ID = ? ";
+
+        Cursor cVehicles = db.rawQuery(sqlVehicles, new String[] {vehicleId + ""});
+
+        if (cVehicles != null && cVehicles.getCount() > 0) {
+
+            data.hasData = true;
+
+            cVehicles.moveToNext();
+                String name = cVehicles.getString(cVehicles.getColumnIndex("name"));
+                int distanceUnit = cVehicles.getInt(cVehicles.getColumnIndex("distanceUnit"));
+                int volumeUnit = cVehicles.getInt(cVehicles.getColumnIndex("volumeUnit"));
+                int minOdo = cVehicles.getInt(cVehicles.getColumnIndex("minOdo"));
+                int maxOdo = cVehicles.getInt(cVehicles.getColumnIndex("maxOdo"));
+
+                data.setVehicleId(vehicleId);
+                data.setName(name);
+                data.setDistanceUnit(distanceUnit);
+                data.setVolumeUnit(volumeUnit);
+                data.setKmDriven(maxOdo - minOdo);
+
+            // Read Vehicle's Expenses
+            String sqlExpenses =
+                    "select e.expenseType, e.subtype, " +
+                            "       sum(e.amount) as amount, sum(e.fuelQty) as qty " +
+                            "from expenses as e " +
+                            "where e.vehicleId = ? " +
+                            "group by e.expenseType, e.subtype ";
+
+            Cursor cExpenses = db.rawQuery(sqlExpenses, new String[] {vehicleId + ""});
+
+            if (cExpenses != null && cExpenses.getCount() > 0) {
+
+                while (cExpenses.moveToNext()) {
+                    int expenseType = cExpenses.getInt(cExpenses.getColumnIndex("expenseType"));
+                    int subtype = cExpenses.getInt(cExpenses.getColumnIndex("subtype"));
+                    float qty = cExpenses.getFloat(cExpenses.getColumnIndex("qty"));
+                    float amount = cExpenses.getFloat(cExpenses.getColumnIndex("amount"));
+
+                    data.addExpense(expenseType, subtype, qty, amount);
+                }
+
+                cExpenses.close();
+
+                data.calcTotals();
+            }
+
+        } else {
+            data.setName(mContext.getString(R.string.deleted_vehicle));
+        }
+
+        db.close();
+        dbHelper.close();
+        return data;
     }
 
     /**
@@ -116,25 +180,28 @@ public class VehicleWidgetUpdateService extends Service {
      */
     private void showDeveloperInfo(RemoteViews rv) {
         //TODO showDeveloperInfo
-//        rv.setTextViewText(R.id.tv_recipe_title, MyApp.getContext().getString(R.string.appwidget_title));
+//        rv.setTextViewText(R.id.tv_recipe_title, mContext.getString(R.string.appwidget_title));
 //        rv.setViewVisibility(R.id.tv_ingredients_title, View.GONE);
 //        rv.setViewVisibility(R.id.iv_ingredients_separator, View.GONE);
-        rv.setViewVisibility(R.id.dashboard_list, View.GONE);
-        rv.setEmptyView(R.id.dashboard_list, R.id.broken_view);
+
+//        rv.setViewVisibility(R.id.card_view, View.GONE);
+//        rv.setEmptyView(R.id.card_view, R.id.empty_view);
+//        rv.setTextViewText(R.id.empty_view, mContext.getString(R.string.you_broke_up_the_app));
     }
 
     private void hideDeveloperInfo(RemoteViews rv) {
         //TODO hideDeveloperInfo
 //        rv.setViewVisibility(R.id.tv_ingredients_title, View.VISIBLE);
 //        rv.setViewVisibility(R.id.iv_ingredients_separator, View.VISIBLE);
-        rv.setViewVisibility(R.id.dashboard_list, View.VISIBLE);
-        rv.setViewVisibility(R.id.broken_view, View.GONE);
+
+//        rv.setViewVisibility(R.id.card_view, View.VISIBLE);
+//        rv.setViewVisibility(R.id.empty_view, View.GONE);
     }
 
 	// TODO: read and set vehicles data in async after selecting it, or here? Yes here this is a service
-    private void updateRemoteViews(RemoteViews rv, int appWidgetId, int vehicleId) {
+    private void updateRemoteViews(RemoteViews rv, int appWidgetId, VehiclesTotalRunningCosts data) {
         //TODO updateRemoteViews
-//TODO        rv.setTextViewText(R.id.tv_recipe_title, MyApp.mRecipesData.get(vehicleId).getName());
+        rv.setTextViewText(R.id.vehicle_title, "my Title");
 
         /** Set up the RemoteViews object to use a RemoteViews adapter.
          This adapter connects
@@ -144,22 +211,19 @@ public class VehicleWidgetUpdateService extends Service {
 
         /** Set up the intent that starts the ListViewService, which will
          provide the views for this collection. */
-//TODO        setListviewRemoteViewsIntent = new Intent(MyApp.getContext(), ListviewRemoteViewsService.class);
+        setListviewRemoteViewsIntent = new Intent(mContext, ListviewRemoteViewsService.class);
 
         /** Add the app widget ID & RecipePosition to the intent extras. */
-//TODO        setListviewRemoteViewsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-//TODO        setListviewRemoteViewsIntent.putExtra(Const.EXTRA_RECIPE_POS, vehicleId);
-//TODO        setListviewRemoteViewsIntent.setData(Uri.parse(setListviewRemoteViewsIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        setListviewRemoteViewsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        setListviewRemoteViewsIntent.putExtra("EXTRA_RECIPE_POS", appWidgetId);
+        Uri uri = Uri.parse(setListviewRemoteViewsIntent.toUri(Intent.URI_INTENT_SCHEME));
+        setListviewRemoteViewsIntent.setData(uri);
 
         /** Finally set the remote Adapter */
-//TODO        rv.setRemoteAdapter(R.id.dashboard_list, setListviewRemoteViewsIntent);
+        rv.setRemoteAdapter(R.id.lv_widget, setListviewRemoteViewsIntent);
 
         //setting an empty view in case of no data
-//TODO        rv.setEmptyView(R.id.dashboard_list, R.id.empty_view);
+//        rv.setEmptyView(R.id.lv_widget, R.id.empty_view);
     }
-
-    ///////// Loader
-
-
 
 }

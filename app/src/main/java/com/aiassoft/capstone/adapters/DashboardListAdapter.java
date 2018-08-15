@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
-import com.aiassoft.capstone.model.Dashboard;
+import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
 
     private static final String LOG_TAG = MyApp.APP_TAG + DashboardListAdapter.class.getSimpleName();
 
-    /* This array holds a list of Dashboard objects */
-    private ArrayList<Dashboard> mDashboardData = new ArrayList<>();
+    /* This array holds a list of VehiclesTotalRunningCosts objects */
+    private ArrayList<VehiclesTotalRunningCosts> mVehiclesTotalRunningCosts = new ArrayList<>();
 
     /**
      * Defining an on-click handler to make it easy for an Activity
@@ -53,12 +53,12 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
     }
 
     /**
-     * Cache of the children views for a Dashboard list item
+     * Cache of the children views for a VehiclesTotalRunningCosts list item
      */
     public class DashboardAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        /* The Views to display the Dashboard's Data */
+        /* The Views to display the VehiclesTotalRunningCosts's Data */
         @BindView(R.id.vehicle_title) TextView mVehicleTitle;
         @BindView(R.id.km_driven_title) TextView mKmDrivenTitle;
         @BindView(R.id.km_driven) TextView mKmDriven;
@@ -109,7 +109,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
         @Override
         public void onClick(View v) {
 //            int adapterPosition = getAdapterPosition();
-//            int selectedDashboard = mDashboardData.get(adapterPosition).getMinOdometer();
+//            int selectedDashboard = mVehiclesTotalRunningCosts.get(adapterPosition).getMinOdometer();
 //            mClickHandler.onClick(selectedDashboard);
         }
     }
@@ -136,7 +136,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
 
     /**
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
-     * position. In this method, we update the contents of the ViewHolder to display the Dashboard
+     * position. In this method, we update the contents of the ViewHolder to display the VehiclesTotalRunningCosts
      * details for this particular position, using the "position" argument that is conveniently
      * passed into us.
      *
@@ -148,7 +148,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
     public void onBindViewHolder(DashboardAdapterViewHolder viewHolder, int position) {
         Context context = MyApp.getContext();
         Resources res = context.getResources();
-        Dashboard data = mDashboardData.get(position);
+        VehiclesTotalRunningCosts data = mVehiclesTotalRunningCosts.get(position);
 
         //viewHolder.mVehicleTitle.getContext().getString(R.string.total_running_costs)
         viewHolder.mVehicleTitle.setText(String.format(
@@ -219,24 +219,24 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
      * This method simply returns the number of items to display. It is used behind the scenes
      * to help layout our Views and for animations.
      *
-     * @return The number of items available in our Dashboard list
+     * @return The number of items available in our VehiclesTotalRunningCosts list
      */
     @Override
     public int getItemCount() {
-        if (null == mDashboardData) return 0;
-        return mDashboardData.size();
+        if (null == mVehiclesTotalRunningCosts) return 0;
+        return mVehiclesTotalRunningCosts.size();
     }
 
     /**
-     * This method is used to set the Dashboard on a DashboardAdapter if we've already
+     * This method is used to set the VehiclesTotalRunningCosts on a DashboardAdapter if we've already
      * created one. This is handy when we get new data from the web but don't want to create a
      * new DashboardAdapter to display it.
      *
-     * @param DashboardData The new Dashboard data to be displayed.
+     * @param vehiclesTotalRunningCosts The new VehiclesTotalRunningCosts data to be displayed.
      */
-    public void setDashboardData(List<Dashboard> DashboardData) {
-        if (DashboardData == null) return;
-        mDashboardData.addAll(DashboardData);
+    public void setDashboardData(List<VehiclesTotalRunningCosts> vehiclesTotalRunningCosts) {
+        if (vehiclesTotalRunningCosts == null) return;
+        mVehiclesTotalRunningCosts.addAll(vehiclesTotalRunningCosts);
         notifyDataSetChanged();
     }
 
@@ -244,7 +244,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
      * This method is used when we are resetting data
      */
     public void invalidateData() {
-        mDashboardData = new ArrayList<Dashboard>();
+        mVehiclesTotalRunningCosts = new ArrayList<VehiclesTotalRunningCosts>();
         notifyDataSetChanged();
     }
 

@@ -8,7 +8,7 @@
     <string name="no_instances_for_you">No Instances for you!</string>
     <string name="missing_xml_layout">Missing XML layout!</string>
     <string name="dashboard_xml_layout">Dashboard XML layout!</string>
-    <string name="insert_fake_data">Insert fake data into the database... Please wait!</string>
+    <string name="insert_fake_data">Insert fake data into the database&#8230; Please wait!</string>
     <string name="finished_inserting_fake_data">Fake data inserted successfully</string>
     <string name="inserting_fake_data_failed">Inserting fake data failed</string>
     <string name="failed_to_insert_vehicles">Failed to insert Vehicles</string>

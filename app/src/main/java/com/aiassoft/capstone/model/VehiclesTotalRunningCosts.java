@@ -4,7 +4,7 @@ package com.aiassoft.capstone.model;
  * Created by gvryn on 08/08/18.
  */
 
-public class Dashboard {
+public class VehiclesTotalRunningCosts {
     private int vehicleId;
     private String name;
     private int distanceUnit;
@@ -34,19 +34,19 @@ public class Dashboard {
     /**
      * No args constructor for use in serialization ¯\_(ツ)_/¯
      */
-    public Dashboard() {
+    public VehiclesTotalRunningCosts() {
         this.hasData = false;
         this.hasRefuelData = false;
         this.hasExpensesData = false;
         this.hasServiceData = false;
     }
 
-    public Dashboard(int vehicleId, String name, int distanceUnit, int volumeUnit, int kmDriven,
-                     float refuelTotalCost, float refuelTotalQty, String refuelTotalLkm,
-                     String refuelTotalCkm, float expenseParkingCost, float expenseTollCost,
-                     float expenseInsuranceCost, float expenseTotalCost, String expenseCkmCost,
-                     float serviceBasicCost, float serviceDamageCost, float serviceTotalCost,
-                     String serviceCkmCost ) {
+    public VehiclesTotalRunningCosts(int vehicleId, String name, int distanceUnit, int volumeUnit, int kmDriven,
+                                     float refuelTotalCost, float refuelTotalQty, String refuelTotalLkm,
+                                     String refuelTotalCkm, float expenseParkingCost, float expenseTollCost,
+                                     float expenseInsuranceCost, float expenseTotalCost, String expenseCkmCost,
+                                     float serviceBasicCost, float serviceDamageCost, float serviceTotalCost,
+                                     String serviceCkmCost ) {
 
         this.vehicleId = vehicleId;
         this.name = name;
