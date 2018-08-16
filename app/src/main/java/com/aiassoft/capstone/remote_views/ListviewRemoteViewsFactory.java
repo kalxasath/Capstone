@@ -18,17 +18,20 @@
 
 package com.aiassoft.capstone.remote_views;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.Toast;
 
-import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 
 
-import java.util.List;
+import static com.aiassoft.capstone.data.DBQueries.fetchVehiclesTotalRunningCosts;
+import static com.aiassoft.capstone.utilities.PrefUtils.getWidgetVehicleId;
 
 /**
  * Created by gvryn on 15/08/18.
@@ -43,15 +46,23 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     private Context mContext;
 
-//    private List<Ingredient> mIngredientsData;
+    private VehiclesTotalRunningCosts mVehiclesTotalRunningCosts;
 
-    private int mRecipePosition;
 
     public ListviewRemoteViewsFactory(Context applicationContext, Intent intent) {
 
         mContext = applicationContext;
 
-//        mRecipePosition = intent.getIntExtra(Const.EXTRA_RECIPE_POS, Const.INVALID_INT);
+
+        /** Ger widget's Id */
+        int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+
+        /** Get widget's vehicleId */
+        int vehicleId = getWidgetVehicleId(appWidgetId);
+
+        /** Get Vehicle's total running costs */
+        mVehiclesTotalRunningCosts = fetchVehiclesTotalRunningCosts(vehicleId);
+        Toast.makeText(mContext, "Vehicle " + mVehiclesTotalRunningCosts.getName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -78,34 +89,17 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     @Override
     public int getCount() {
-//        if (mIngredientsData == null) {
-//            return 0;
-//        }
-//
-//        return mIngredientsData.size();
+        /** we have data for one vehicle, so we always return 1 */
         return 1;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        if (getCount() == 0)
-            return null;
-
-
-//        Ingredient ingredient = mIngredientsData.get(position);
-
-        // position will always range from 0 to getCount() - 1.
         // Construct a RemoteViews item based on the app widget item XML file, and set the
         // text based on the position.
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_list_widget);
 
-        rv.setTextViewText(R.id.vehicle_title, "vehicle_title test");
-
-        // feed row
-//        rv.setTextViewText(R.id.tv_name, ingredient.getIngredient());
-//        rv.setTextViewText(R.id.tv_quantity, mContext.getString(R.string.ingredient_quantity
-//                , ""+ingredient.getQuantity(), ingredient.getMeasure()));
-        // end feed row
+        rv.setTextViewText(R.id.km_driven_title, String.valueOf(mVehiclesTotalRunningCosts.getKmDriven()));
 
         // Return the RemoteViews object.
         return rv;

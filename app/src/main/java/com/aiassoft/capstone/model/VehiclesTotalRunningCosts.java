@@ -1,10 +1,35 @@
 package com.aiassoft.capstone.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import com.aiassoft.capstone.MyApp;
+import com.aiassoft.capstone.widgets.VehicleWidgetProvider;
+
 /**
  * Created by gvryn on 08/08/18.
  */
 
-public class VehiclesTotalRunningCosts {
+public class VehiclesTotalRunningCosts implements Parcelable {
+
+    private static final String LOG_TAG = MyApp.APP_TAG + VehiclesTotalRunningCosts.class.getSimpleName();
+
+    /**
+     * Receive and decode whatever is inside the parcel
+     */
+    public static final Parcelable.Creator<VehiclesTotalRunningCosts> CREATOR = new Parcelable.Creator<VehiclesTotalRunningCosts>() {
+        @Override
+        public VehiclesTotalRunningCosts createFromParcel(Parcel in) {
+            return new VehiclesTotalRunningCosts(in);
+        }
+
+        @Override
+        public VehiclesTotalRunningCosts[] newArray(int size) {
+            return new VehiclesTotalRunningCosts[size];
+        }
+    };
+
     private int vehicleId;
     private String name;
     private int distanceUnit;
@@ -69,6 +94,40 @@ public class VehiclesTotalRunningCosts {
         this.serviceDamageCost = serviceDamageCost;
         this.serviceTotalCost = serviceTotalCost;
         this.serviceCkmCost = serviceCkmCost;
+    }
+
+    /**
+     * The private constructor gets an parcel object and
+     * sets the class fields from the parcel object
+     * @param in
+     */
+    public VehiclesTotalRunningCosts(Parcel in) {
+        Log.d(LOG_TAG, "VehiclesTotalRunningCosts parcel to object");
+        this.vehicleId = in.readInt();
+        this.name = in.readString();
+        this.distanceUnit = in.readInt();
+        this.volumeUnit = in.readInt();
+        this.hasData = in.readInt()==1;
+        this.kmDriven = in.readInt();
+
+        this.hasRefuelData = in.readInt()==1;
+        this.refuelTotalCost = in.readFloat();
+        this.refuelTotalQty = in.readFloat();
+        this.refuelTotalLkm = in.readString();
+        this.refuelTotalCkm = in.readString();
+
+        this.hasExpensesData = in.readInt()==1;
+        this.expenseParkingCost = in.readFloat();
+        this.expenseTollCost = in.readFloat();
+        this.expenseInsuranceCost = in.readFloat();
+        this.expenseTotalCost = in.readFloat();
+        this.expenseCkmCost = in.readString();
+
+        this.hasServiceData = in.readInt()==1;
+        this.serviceBasicCost = in.readFloat();
+        this.serviceDamageCost = in.readFloat();
+        this.serviceTotalCost = in.readFloat();
+        this.serviceCkmCost = in.readString();
     }
 
     public void addExpense(int expenseType, int subtype, float qty, float amount) {
@@ -293,5 +352,51 @@ public class VehiclesTotalRunningCosts {
     public void setHasServiceData(boolean hasServiceData) {
         this.hasServiceData = hasServiceData;
     }
+
+    /**
+     * Required by Parcelable
+     * @return
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Puts the class fields to the parcel object
+     * @param dest a Parcel object
+     * @param flags
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        Log.d(LOG_TAG,"writeToParcel");
+
+        dest.writeInt(this.vehicleId);
+        dest.writeString(this.name);
+        dest.writeInt(this.distanceUnit);
+        dest.writeInt(this.volumeUnit);
+        dest.writeInt(this.hasData ? 1 : 0);
+        dest.writeInt(this.kmDriven);
+
+        dest.writeInt(this.hasRefuelData ? 1 : 0);
+        dest.writeFloat(this.refuelTotalCost);
+        dest.writeFloat(this.refuelTotalQty);
+        dest.writeString(this.refuelTotalLkm);
+        dest.writeString(this.refuelTotalCkm);
+
+        dest.writeInt(this.hasExpensesData ? 1 : 0);
+        dest.writeFloat(this.expenseParkingCost);
+        dest.writeFloat(this.expenseTollCost);
+        dest.writeFloat(this.expenseInsuranceCost);
+        dest.writeFloat(this.expenseTotalCost);
+        dest.writeString(this.expenseCkmCost);
+
+        dest.writeInt(this.hasServiceData ? 1 : 0);
+        dest.writeFloat(this.serviceBasicCost);
+        dest.writeFloat(this.serviceDamageCost);
+        dest.writeFloat(this.serviceTotalCost);
+        dest.writeString(this.serviceCkmCost);
+    }
+
 
 }

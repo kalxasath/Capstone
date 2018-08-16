@@ -27,7 +27,7 @@ import android.content.Intent;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.services.VehicleWidgetUpdateService;
 
-import static com.aiassoft.capstone.utilities.PrefUtils.clearWidgets;
+import static com.aiassoft.capstone.utilities.PrefUtils.prefClearWidgets;
 import static com.aiassoft.capstone.utilities.PrefUtils.rmWidgetVehicleId;
 
 /**
@@ -67,7 +67,7 @@ public class VehicleWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-        clearWidgets();
+        prefClearWidgets();
     }
 
     public static void sendRefreshBroadcast(Context context) {

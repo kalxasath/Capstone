@@ -81,7 +81,7 @@ public final class PrefUtils {
     /**
      * clears the whole shared preferences memory for the PREFS_NAME
      */
-    public static void clearWidgets() {
+    public static void prefClearWidgets() {
         SharedPreferences sp = MyApp.getContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         sp.edit().clear().apply();
     }

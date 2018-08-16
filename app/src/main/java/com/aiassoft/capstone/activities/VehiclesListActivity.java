@@ -243,10 +243,21 @@ public class VehiclesListActivity extends AppCompatActivity
         return super.onKeyUp(keyCode, event);
     }
 
+    /**
+     * This method is called after this activity has been paused or restarted.
+     * Often, this is after new data has been inserted through an AddTaskActivity,
+     * so this restarts the loader to re-query the underlying data for any changes.
+     */
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
 
+        // re-queries for all tasks
+        // we restart the loader so that any time you leave the main activity and return,
+        // like when you go to AddTaskActivity to insert a new task, the loader will
+        // restart and update the UI.
+        //TODO check the functionality of the above
+        //getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 
 
