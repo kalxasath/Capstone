@@ -33,34 +33,32 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Red"
+        
         >
 
         <TextView
             android:id="@+id/km_driven_title"
-            android:layout_width="@dimen/ild_title_width"
+            android:layout_width="@dimen/ilw_title_width"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ild_margin_start_end"
-            android:layout_marginTop="@dimen/ild_margin_top_bottom"
-            android:background="@color/Yellow"
+            android:layout_marginStart="@dimen/ilw_margin_start_end"
+            android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+            
             android:gravity="end"
-            android:textColor="@color/textPrimaryContent"
-            android:textSize="@dimen/ild_text_size"
+            android:textColor="@color/costContent"
+            android:textSize="@dimen/ilw_text_size"
             tools:text="km Driven" />
 
         <TextView
             android:id="@+id/km_driven"
-            android:layout_width="@dimen/ild_content_width"
+            android:layout_width="@dimen/ilw_content_width"
             android:layout_height="wrap_content"
-            android:background="@color/PaleGreen"
+            
             android:gravity="end"
             tools:text="D17500"
-            android:textSize="@dimen/ild_text_size"
-            android:textColor="@color/textPrimaryContent"
-            android:layout_marginStart="@dimen/ild_margin_start_end"
-            android:layout_marginEnd="@dimen/ild_margin_start_end"
-            android:layout_marginTop="@dimen/ild_margin_top_bottom"
-            android:layout_marginBottom="@dimen/ild_margin_top_bottom"
+            android:textSize="@dimen/ilw_text_size"
+            android:textColor="@color/costContent"
+            android:layout_marginEnd="@dimen/ilw_margin_start_end"
+            android:layout_marginTop="@dimen/ilw_margin_top_bottom"
             />
     </LinearLayout>
 
@@ -71,18 +69,18 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/AntiqueWhite"
+        
         >
 
         <TextView
             android:id="@+id/refuel_title"
-            android:layout_width="@dimen/ild_title_width"
+            android:layout_width="@dimen/ilw_title_width"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ild_margin_start_end"
-            android:layout_marginTop="@dimen/ild_margin_title_top"
-            android:background="@color/Yellow"
-            android:textColor="@color/textPrimaryContent"
-            android:textSize="@dimen/ild_vehicle_title_text_size"
+            android:layout_marginStart="@dimen/ilw_margin_start_end"
+            android:layout_marginTop="@dimen/ilw_margin_title_top"
+            
+            android:textColor="@color/costTitle"
+            android:textSize="@dimen/ilw_title_text_size"
             android:text="@string/dashboard_refuel_title"
             />
 
@@ -90,34 +88,31 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/refuel_total_cost_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_total_cost_title"
                 />
 
             <TextView
                 android:id="@+id/refuel_total_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="3560.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
                 />
 
         </LinearLayout>
@@ -126,34 +121,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Khaki"
+            
             >
 
             <TextView
                 android:id="@+id/refuel_total_qty_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="Total Liters"
                 />
 
             <TextView
                 android:id="@+id/refuel_total_qty"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="2500.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -161,34 +155,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/refuel_total_lkm_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 tools:text="l/100 km"
                 />
 
             <TextView
                 android:id="@+id/refuel_total_lkm"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="11.12"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -196,34 +189,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Khaki"
+            
             >
 
             <TextView
                 android:id="@+id/refuel_total_ckm_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 tools:text="cost/100 km"
                 />
 
             <TextView
                 android:id="@+id/refuel_total_ckm"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="15.68"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -235,18 +227,18 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/AntiqueWhite"
+        
         >
 
         <TextView
             android:id="@+id/expenses_title"
-            android:layout_width="@dimen/ild_title_width"
+            android:layout_width="@dimen/ilw_title_width"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ild_margin_start_end"
-            android:layout_marginTop="@dimen/ild_margin_title_top"
-            android:background="@color/Yellow"
-            android:textColor="@color/textPrimaryContent"
-            android:textSize="@dimen/ild_vehicle_title_text_size"
+            android:layout_marginStart="@dimen/ilw_margin_start_end"
+            android:layout_marginTop="@dimen/ilw_margin_title_top"
+            
+            android:textColor="@color/costTitle"
+            android:textSize="@dimen/ilw_title_text_size"
             android:text="@string/dashboard_expenses_title"
             />
 
@@ -254,34 +246,31 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/expense_parking_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_parking_title"
                 />
 
             <TextView
                 android:id="@+id/expense_parking_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="75.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
                 />
         </LinearLayout>
 
@@ -289,34 +278,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Khaki"
+            
             >
 
             <TextView
                 android:id="@+id/expense_toll_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_toll_title"
                 />
 
             <TextView
                 android:id="@+id/expense_toll_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="155.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -324,34 +312,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/expense_insurane_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_insurance_title"
                 />
 
             <TextView
                 android:id="@+id/expense_insurane_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="267.36"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -359,34 +346,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Khaki"
+            
             >
 
             <TextView
                 android:id="@+id/expense_total_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_total_title"
                 />
 
             <TextView
                 android:id="@+id/expense_total_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="5250.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -394,34 +380,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/expense_ckm_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 tools:text="cost/100 km"
                 />
 
             <TextView
                 android:id="@+id/expense_ckm_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="78.25"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -437,18 +422,18 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/AntiqueWhite"
+        
         >
 
         <TextView
             android:id="@+id/service_title"
-            android:layout_width="@dimen/ild_title_width"
+            android:layout_width="@dimen/ilw_title_width"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ild_margin_start_end"
-            android:layout_marginTop="@dimen/ild_margin_title_top"
-            android:background="@color/Yellow"
-            android:textColor="@color/textPrimaryContent"
-            android:textSize="@dimen/ild_vehicle_title_text_size"
+            android:layout_marginStart="@dimen/ilw_margin_start_end"
+            android:layout_marginTop="@dimen/ilw_margin_title_top"
+            
+            android:textColor="@color/costTitle"
+            android:textSize="@dimen/ilw_title_text_size"
             android:text="@string/dashboard_service_title"
             />
 
@@ -457,34 +442,31 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/service_basic_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_basic_title"
                 />
 
             <TextView
                 android:id="@+id/service_basic_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="275.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
                 />
         </LinearLayout>
 
@@ -492,34 +474,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Khaki"
+            
             >
 
             <TextView
                 android:id="@+id/service_damage_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_damage_title"
                 />
 
             <TextView
                 android:id="@+id/service_damage_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="50.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -527,34 +508,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Red"
+            
             >
 
             <TextView
                 android:id="@+id/service_total_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 android:text="@string/dashboard_total_title"
                 />
 
             <TextView
                 android:id="@+id/service_total_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="854.00"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
 
@@ -562,34 +542,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Khaki"
+            
             >
 
             <TextView
                 android:id="@+id/service_ckm_title"
-                android:layout_width="@dimen/ild_title_width"
+                android:layout_width="@dimen/ilw_title_width"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
-                android:background="@color/Yellow"
+                android:layout_marginStart="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
+                
                 android:gravity="end"
-                android:textColor="@color/textPrimaryContent"
-                android:textSize="@dimen/ild_text_size"
+                android:textColor="@color/costContent"
+                android:textSize="@dimen/ilw_text_size"
                 tools:text="cost/100 km"
                 />
 
             <TextView
                 android:id="@+id/service_ckm_cost"
-                android:layout_width="@dimen/ild_content_width"
+                android:layout_width="@dimen/ilw_content_width"
                 android:layout_height="wrap_content"
-                android:background="@color/PaleGreen"
+                
                 android:gravity="end"
                 tools:text="12.52"
-                android:textSize="@dimen/ild_text_size"
-                android:textColor="@color/textPrimaryContent"
-                android:layout_marginStart="@dimen/ild_margin_start_end"
-                android:layout_marginEnd="@dimen/ild_margin_start_end"
-                android:layout_marginTop="@dimen/ild_margin_top_bottom"
+                android:textSize="@dimen/ilw_text_size"
+                android:textColor="@color/costContent"
+                android:layout_marginEnd="@dimen/ilw_margin_start_end"
+                android:layout_marginTop="@dimen/ilw_margin_top_bottom"
                 />
         </LinearLayout>
     </LinearLayout>

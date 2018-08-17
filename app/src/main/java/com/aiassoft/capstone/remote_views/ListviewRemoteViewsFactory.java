@@ -21,6 +21,8 @@ package com.aiassoft.capstone.remote_views;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.Toast;
@@ -46,7 +48,7 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     private Context mContext;
 
-    private VehiclesTotalRunningCosts mVehiclesTotalRunningCosts;
+    private VehiclesTotalRunningCosts mData;
 
 
     public ListviewRemoteViewsFactory(Context applicationContext, Intent intent) {
@@ -61,8 +63,8 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
         int vehicleId = getWidgetVehicleId(appWidgetId);
 
         /** Get Vehicle's total running costs */
-        mVehiclesTotalRunningCosts = fetchVehiclesTotalRunningCosts(vehicleId);
-        Toast.makeText(mContext, "Vehicle " + mVehiclesTotalRunningCosts.getName(), Toast.LENGTH_SHORT).show();
+        mData = fetchVehiclesTotalRunningCosts(vehicleId);
+//        Toast.makeText(mContext, "Vehicle " + mData.getName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -73,13 +75,6 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
     /** called on start and when notifyAppWidgetViewDataChanged is called */
     @Override
     public void onDataSetChanged() {
-//        mIngredientsData = null;
-//
-//        if (! MyApp.hasData() || mRecipePosition == Const.INVALID_INT) {
-//            return;
-//        }
-//
-//        mIngredientsData = MyApp.mRecipesData.get(mRecipePosition).getIngredients();
     }
 
     @Override
@@ -89,7 +84,7 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     @Override
     public int getCount() {
-        /** we have data for one vehicle, so we always return 1 */
+        /** we have mData for one vehicle, so we always return 1 */
         return 1;
     }
 
@@ -99,7 +94,69 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
         // text based on the position.
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.item_list_widget);
 
-        rv.setTextViewText(R.id.km_driven_title, String.valueOf(mVehiclesTotalRunningCosts.getKmDriven()));
+        Resources res = mContext.getResources();
+
+        rv.setTextViewText(R.id.km_driven_title, String.valueOf(mData.getKmDriven()));
+
+        if (! mData.hasData) {
+            rv.setViewVisibility(R.id.ll_refuel_data, View.GONE);
+            rv.setViewVisibility(R.id.ll_expenses_data, View.GONE);
+            rv.setViewVisibility(R.id.ll_service_data, View.GONE);
+
+            rv.setViewVisibility(R.id.km_driven_title, View.GONE);
+            rv.setTextViewText(R.id.km_driven, mContext.getString(R.string.no_dashboard_data_available));
+        } else {
+            rv.setTextViewText(R.id.km_driven_title, String.format(
+                    mContext.getString(R.string.dashboard_driven_title),
+                    res.getStringArray(R.array.short_distance_unit_array)[mData.getDistanceUnit()]
+            ));
+            rv.setTextViewText(R.id.km_driven, String.valueOf(mData.getKmDriven()));
+
+            if (! mData.hasRefuelData) {
+                rv.setViewVisibility(R.id.ll_refuel_data, View.GONE);
+            } else {
+                rv.setTextViewText(R.id.refuel_total_cost, String.format("%.2f", mData.getRefuelTotalCost()));
+                rv.setTextViewText(R.id.refuel_total_qty, String.format("%.2f", mData.getRefuelTotalQty()));
+                rv.setTextViewText(R.id.refuel_total_lkm_title, String.format(
+                        mContext.getString(R.string.dashboard_fuel_per100_title),
+                        res.getStringArray(R.array.short_volume_unit_array)[mData.getVolumeUnit()],
+                        res.getStringArray(R.array.short_distance_unit_array)[mData.getDistanceUnit()]
+                ));
+                rv.setTextViewText(R.id.refuel_total_lkm, mData.getRefuelTotalLkm());
+                rv.setTextViewText(R.id.refuel_total_ckm_title, String.format(
+                        mContext.getString(R.string.dashboard_cost_per100_title),
+                        res.getStringArray(R.array.short_distance_unit_array)[mData.getDistanceUnit()]
+                ));
+                rv.setTextViewText(R.id.refuel_total_ckm, mData.getRefuelTotalCkm());
+            }
+
+            if (! mData.hasExpensesData) {
+                rv.setViewVisibility(R.id.ll_expenses_data, View.GONE);
+            } else {
+                rv.setTextViewText(R.id.expense_parking_cost, String.format("%.2f", mData.getExpenseParkingCost()));
+                rv.setTextViewText(R.id.expense_toll_cost, String.format("%.2f", mData.getExpenseTollCost()));
+                rv.setTextViewText(R.id.expense_insurane_cost, String.format("%.2f", mData.getExpenseInsuranceCost()));
+                rv.setTextViewText(R.id.expense_total_cost, String.format("%.2f", mData.getExpenseTotalCost()));
+                rv.setTextViewText(R.id.expense_ckm_title, String.format(
+                        mContext.getString(R.string.dashboard_cost_per100_title),
+                        res.getStringArray(R.array.short_distance_unit_array)[mData.getDistanceUnit()]
+                ));
+                rv.setTextViewText(R.id.expense_ckm_cost, mData.getExpenseCkmCost());
+            }
+
+            if (! mData.hasServiceData) {
+                rv.setViewVisibility(R.id.ll_service_data, View.GONE);
+            } else {
+                rv.setTextViewText(R.id.service_basic_cost, String.format("%.2f", mData.getServiceBasicCost()));
+                rv.setTextViewText(R.id.service_damage_cost, String.format("%.2f", mData.getServiceDamageCost()));
+                rv.setTextViewText(R.id.service_total_cost, String.format("%.2f", mData.getServiceTotalCost()));
+                rv.setTextViewText(R.id.service_ckm_title, String.format(
+                        mContext.getString(R.string.dashboard_cost_per100_title),
+                        res.getStringArray(R.array.short_distance_unit_array)[mData.getDistanceUnit()]
+                ));
+                rv.setTextViewText(R.id.service_ckm_cost, mData.getServiceCkmCost());
+            }
+        }
 
         // Return the RemoteViews object.
         return rv;

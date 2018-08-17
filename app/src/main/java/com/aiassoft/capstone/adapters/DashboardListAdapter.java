@@ -248,7 +248,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
         notifyDataSetChanged();
     }
 
-    ///////////////// ViewHolder Views Visibility
+    ///////////////// ViewHolder Views (vhv) Visibility
 
     /**
      * Set Refuel, Expenses, Service views to gone

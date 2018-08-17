@@ -10,23 +10,33 @@
     <color name="textPrimaryContent">#60000000</color>
     <color name="textSecondaryContent">#40000000</color>
 
+    <color name="costTitle">#E0000000</color>
+    <color name="costContent">#A0000000</color>
+
     <color name="stepIndicator">#CCCCCC</color>
     <color name="stepIndicatorCurrent">#40000000</color>
 	
     <color name="black_overlay">#66000000</color>
 
-    <color name="ilv_title_background">#60000000</color>
-    <color name="ilv_title_text_color">#FFFFFFFF</color>
-
-
-    <color name="vli_cardBackgroundColor">#EEEEEE</color>
-
-    <color name="ile_cardBackgroundColor">#EEEEEE</color>
-
-    <color name="ild_cardBackgroundColor">#EEEEEE</color>
-
+    <!-- Drawers Colors -->
     <color name="centerColor">#009688</color>
     <color name="endColor">#00695C</color>
     <color name="startColor">#4DB6AC</color>
+
+    <!-- Item List Vehicle -->
+    <color name="ilv_title_background">#60000000</color>
+    <color name="ilv_title_text_color">#FFFFFFFF</color>
+
+    <!-- Item List Vehicle -->
+    <!-- color name="vli_cardBackgroundColor">#EEEEEE</color -->
+
+    <!-- Item List Expense -->
+    <color name="ile_cardBackgroundColor">#EEEEEE</color>
+
+    <!-- Item List Dashboard -->
+    <color name="ild_cardBackgroundColor">#EEEEEE</color>
+
+    <!-- Widget Vehicle Provider -->
+    <color name="wvp_backgroundColor">#EEEEEE</color>
 
 </resources>

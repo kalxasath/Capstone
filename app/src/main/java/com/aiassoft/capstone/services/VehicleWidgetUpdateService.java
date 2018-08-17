@@ -31,7 +31,7 @@ import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.remote_views.ListviewRemoteViewsService;
 
-import static com.aiassoft.capstone.data.DBQueries.VehicleName;
+import static com.aiassoft.capstone.data.DBQueries.fetchVehiclesName;
 import static com.aiassoft.capstone.utilities.PrefUtils.getWidgetVehicleId;
 
 /**
@@ -121,7 +121,8 @@ public class VehicleWidgetUpdateService extends Service {
         /** Get widget's vehicleId */
         int vehicleId = getWidgetVehicleId(appWidgetId);
 
-        rv.setTextViewText(R.id.vehicle_title, VehicleName(vehicleId));
+        rv.setTextViewText(R.id.vehicle_title, String.format(
+                mContext.getString(R.string.total_running_costs), fetchVehiclesName(vehicleId)));
 
         /** Set up the RemoteViews object to use a RemoteViews adapter.
          This adapter connects

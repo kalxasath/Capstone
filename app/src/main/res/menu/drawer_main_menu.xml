@@ -22,7 +22,11 @@
             android:title="@string/nav_search_youtube" />
     </group>
 
-    <item android:title="@string/nav_database_utilities">
+    <item
+        android:id="@+id/nav_database_utilities"
+        android:title="@string/nav_database_utilities"
+        android:visible="false"
+        >
         <menu>
             <item
                 android:id="@+id/nav_db_fill_fake_data"

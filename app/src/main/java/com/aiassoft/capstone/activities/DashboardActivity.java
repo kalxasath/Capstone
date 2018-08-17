@@ -33,6 +33,8 @@ import com.aiassoft.capstone.data.CapstoneDBHelper;
 import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,17 +70,16 @@ public class DashboardActivity extends AppCompatActivity
     @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
     /** The recycler view */
-    @BindView(R.id.dashboard_list)
-    RecyclerView mDashboardList;
+    @BindView(R.id.dashboard_list) RecyclerView mDashboardList;
 
     /** The recycler's view adapter */
     DashboardListAdapter mDashboardListAdapter;
 
-    @BindView(R.id.empty_view)
-    TextView mEmptyView;
+    @BindView(R.id.empty_view) TextView mEmptyView;
 
-    @BindView(R.id.loading_indicator)
-    ProgressBar mLoadingIndicator;
+    @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
+
+    @BindView(R.id.adView) AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,8 @@ public class DashboardActivity extends AppCompatActivity
         initDrawer();
 
         initNavigation();
+
+        initAdView();
 
         initDashboardListRecyclerView();
 
@@ -146,6 +149,16 @@ public class DashboardActivity extends AppCompatActivity
     private void initNavigation() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initAdView() {
+        // Create an ad request. Check logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
     }
 
     private void initDashboardListRecyclerView() {

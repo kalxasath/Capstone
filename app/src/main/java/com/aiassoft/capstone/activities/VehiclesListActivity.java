@@ -358,7 +358,7 @@ public class VehiclesListActivity extends AppCompatActivity
                         vehiclesListItem.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
                         vehiclesListItem.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
 
-                        vehiclesListItem.setName(vehiclesListItem.getName() + ": " + String.valueOf(vehiclesListItem.getId()));
+                        //vehiclesListItem.setName(vehiclesListItem.getName() + ": " + String.valueOf(vehiclesListItem.getId()));
 
                         vehiclesListItems.add(vehiclesListItem);
                     }

@@ -51,4 +51,15 @@
 
     <dimen name="ild_vehicle_title_text_size">16sp</dimen>
     <dimen name="ild_text_size">14sp</dimen>
+
+    <!-- Item List Widget -->
+    <dimen name="ilw_margin_start_end">10dp</dimen>
+    <dimen name="ilw_margin_title_top">10dp</dimen>
+    <dimen name="ilw_margin_top_bottom">0dp</dimen>
+    <dimen name="ilw_title_width">90dp</dimen>
+    <dimen name="ilw_content_width">60dp</dimen>
+
+    <dimen name="ilw_title_text_size">16sp</dimen>
+    <dimen name="ilw_text_size">14sp</dimen>
+
 </resources>

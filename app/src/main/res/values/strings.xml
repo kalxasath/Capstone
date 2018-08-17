@@ -23,7 +23,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="refresh">Refresh</string>
     <string name="error_check_your_network_connectivity">Please check your network connectivity!</string>
-    <string name="youtube_player_not_found">An associated Youtube player couldn\'t be found!</string>
+    <string name="youtube_player_not_found">An associated YouTube player couldn\'t be found!</string>
 
     <!-- Menus -->
     <string name="action_done">Done</string>

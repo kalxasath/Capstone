@@ -117,6 +117,8 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
             return;
         }
 
+        //TODO make it string
+        setTitle("Select Vehicle for the widget");
 
         /*
          * The gridLayoutManager is responsible for measuring and positioning item views within a
@@ -253,7 +255,7 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
                         vehiclesListItem.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
                         vehiclesListItem.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
 
-                        vehiclesListItem.setName(vehiclesListItem.getName() + ": " + String.valueOf(vehiclesListItem.getId()));
+                        //vehiclesListItem.setName(vehiclesListItem.getName() + ": " + String.valueOf(vehiclesListItem.getId()));
 
                         vehiclesListItems.add(vehiclesListItem);
                     }

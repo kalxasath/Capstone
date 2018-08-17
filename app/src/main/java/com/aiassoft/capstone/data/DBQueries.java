@@ -22,7 +22,7 @@ public final class DBQueries {
         throw new AssertionError(R.string.no_instances_for_you);
     }
 
-    public static final String VehicleName(int vehicleId) {
+    public static final String fetchVehiclesName(int vehicleId) {
         String vehicleName = MyApp.getContext().getString(R.string.deleted_vehicle);
 
         Uri uri = VehiclesEntry.CONTENT_URI;
