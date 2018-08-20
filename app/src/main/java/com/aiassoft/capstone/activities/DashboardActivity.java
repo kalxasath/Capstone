@@ -51,8 +51,6 @@ public class DashboardActivity extends AppCompatActivity
         DashboardListAdapter.DashboardAdapterOnClickHandler,
         LoaderCallbacks<List<VehiclesTotalRunningCosts>> {
 
-    //TODO: in every image add the tag android:contentDescription="movie_poster_content_description"
-
     public static final int DASHBOARD_LOADER_ID = 0;
 
     /**
@@ -259,6 +257,8 @@ public class DashboardActivity extends AppCompatActivity
         } else {
             loaderManager.restartLoader(DASHBOARD_LOADER_ID, loaderArgs, this);
         }
+
+
 
     } // fetchDashboardList
 

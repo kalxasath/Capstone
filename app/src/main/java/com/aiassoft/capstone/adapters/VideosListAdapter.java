@@ -30,7 +30,6 @@ import android.widget.TextView;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.model.VideosListItem;
-import com.aiassoft.capstone.utilities.NetworkUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -87,7 +86,7 @@ public class VideosListAdapter
         /* This ImageView is used to display the Video's thumbnail */
         @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
         @BindView(R.id.video_thumbnail) ImageView mVideoThumbnail;
-        @BindView(R.id.play_circle) ImageView mPlay_circle;
+        @BindView(R.id.play_circle) ImageView mPlayCircle;
         @BindView(R.id.video_title) TextView mVideoTitle;
 
         public VideosAdapterViewHolder(View view) {
@@ -95,7 +94,7 @@ public class VideosListAdapter
             ButterKnife.bind(this, view);
             view.setOnClickListener(this);
             mVideoThumbnail.setOnClickListener(this);
-            mPlay_circle.setOnClickListener(this);
+            mPlayCircle.setOnClickListener(this);
             mVideoTitle.setOnClickListener(this);
         }
 
@@ -156,14 +155,15 @@ public class VideosListAdapter
     public void onBindViewHolder(final VideosAdapterViewHolder videosAdapterViewHolder, int position) {
         setThumbnailLoadingIndicator(videosAdapterViewHolder);
 
-        String s = mVideosData.get(position).getThumbnail();
+        String videoTitle = mVideosData.get(position).getTitle();
+        String videoThumbnail = mVideosData.get(position).getThumbnail();
 
         final Callback loadedCallback = new Callback() {
             @Override
             public void onSuccess() {
                 videosAdapterViewHolder.mLoadingIndicator.setVisibility(View.INVISIBLE);
                 videosAdapterViewHolder.mVideoThumbnail.setVisibility(View.VISIBLE);
-                videosAdapterViewHolder.mPlay_circle.setVisibility(View.VISIBLE);
+                videosAdapterViewHolder.mPlayCircle.setVisibility(View.VISIBLE);
                 videosAdapterViewHolder.mVideoTitle.setVisibility(View.VISIBLE);
             }
             @Override public void onError() {
@@ -176,21 +176,22 @@ public class VideosListAdapter
         };
         videosAdapterViewHolder.mVideoThumbnail.setTag(loadedCallback);
 
+        videosAdapterViewHolder.mVideoThumbnail.setContentDescription(videoTitle);
         Picasso.with(videosAdapterViewHolder.mVideoThumbnail.getContext())
-                .load(s)
+                .load(videoThumbnail)
                 .centerCrop()
                 .fit()
                 //.placeholder(R.drawable.progress_animation)
                 //.error(R.drawable.no_video_available)
                 .into(videosAdapterViewHolder.mVideoThumbnail, loadedCallback);
 
-        videosAdapterViewHolder.mVideoTitle.setText(mVideosData.get(position).getTitle());
+        videosAdapterViewHolder.mVideoTitle.setText(videoTitle);
     }
 
     private void setThumbnailLoadingIndicator(final VideosAdapterViewHolder videosAdapterViewHolder) {
         videosAdapterViewHolder.mLoadingIndicator.setVisibility(View.VISIBLE);
         videosAdapterViewHolder.mVideoThumbnail.setVisibility(View.INVISIBLE);
-        videosAdapterViewHolder.mPlay_circle.setVisibility(View.INVISIBLE);
+        videosAdapterViewHolder.mPlayCircle.setVisibility(View.INVISIBLE);
         videosAdapterViewHolder.mVideoTitle.setVisibility(View.INVISIBLE);
     }
 

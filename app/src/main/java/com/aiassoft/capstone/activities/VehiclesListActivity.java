@@ -1,5 +1,6 @@
 package com.aiassoft.capstone.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -41,13 +42,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
+
 public class VehiclesListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        //View.OnClickListener,
+        View.OnClickListener,
         VehiclesListAdapter.VehiclesAdapterOnClickHandler,
         LoaderCallbacks<List<Vehicle>> {
 
     public static final int VEHICLES_LOADER_ID = 0;
+
+    public static final int CHILD_INSERT = 0;
+    public static final int CHILD_UPDATE = 1;
 
     /**
      * Used to identify if we have to invalidate the cache
@@ -101,22 +107,24 @@ public class VehiclesListActivity extends AppCompatActivity
 
         initVehiclesListRecyclerView();
 
-        fetchVehiclesList(true);
+        fetchVehiclesList();
     }
 
     private void initFab() {
         if (mFab != null) {
             mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
 
-            mFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, VehicleEntityActivity.class);
-                    startActivity(intent);
-                    //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    //        .setAction("Action", null).show();
-                }
-            });
+            mFab.setOnClickListener(this);
+
+//            mFab.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent intent = new Intent(mContext, VehicleEntityActivity.class);
+//                    startActivity(intent);
+//                    //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    //        .setAction("Action", null).show();
+//                }
+//            });
         }
     }
 
@@ -252,22 +260,16 @@ public class VehiclesListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        // re-queries for all tasks
-        // we restart the loader so that any time you leave the main activity and return,
-        // like when you go to AddTaskActivity to insert a new task, the loader will
-        // restart and update the UI.
-        //TODO check the functionality of the above
-        //getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 
 
     /**
      * Fetch the vehicles' data from the database
      */
-    private void fetchVehiclesList(Boolean invalidateCache) {
+    private void fetchVehiclesList() {
         /* Create a bundle to pass parameters to the loader */
-        Bundle loaderArgs = new Bundle();
-        loaderArgs.putBoolean(LOADER_EXTRA_IC, invalidateCache);
+        //Bundle loaderArgs = new Bundle();
+        //loaderArgs.putBoolean(LOADER_EXTRA_IC, invalidateCache);
 
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
@@ -278,12 +280,12 @@ public class VehiclesListActivity extends AppCompatActivity
         Loader<List<Vehicle>> theVehicleDbLoader = loaderManager.getLoader(VEHICLES_LOADER_ID);
 
         if (theVehicleDbLoader == null) {
-            loaderManager.initLoader(VEHICLES_LOADER_ID, loaderArgs, this);
+            loaderManager.initLoader(VEHICLES_LOADER_ID, null, this);
         } else {
-            loaderManager.restartLoader(VEHICLES_LOADER_ID, loaderArgs, this);
+            loaderManager.restartLoader(VEHICLES_LOADER_ID, null, this);
         }
 
-    } // fetchVehiclesList
+    }
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -307,13 +309,13 @@ public class VehiclesListActivity extends AppCompatActivity
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                if (loaderArgs == null) {
-                    return;
-                }
+//                if (loaderArgs == null) {
+//                    return;
+//                }
 
-                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-                if (invalidateCache)
-                    mCachedVehiclesListData = null;
+//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
+//                if (invalidateCache)
+//                    mCachedVehiclesListData = null;
 
 
                 if (mCachedVehiclesListData != null) {
@@ -328,17 +330,17 @@ public class VehiclesListActivity extends AppCompatActivity
 
             /**
              * This is the method of the AsyncTaskLoader that will load and parse the JSON data
-             * from thevehicledb.org in the background.
+             * from the database in the background.
              *
-             * @return Vehicles' data from thevehicledb.org as a List of VehiclesReviewsListItem.
+             * @return Vehicles' data from the database as a List of VehiclesReviewsListItem.
              *         null if an error occurs
              */
             @Override
             public List<Vehicle> loadInBackground() {
 
-                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-                if (invalidateCache)
-                    mCachedVehiclesListData = null;
+//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
+//                if (invalidateCache)
+//                    mCachedVehiclesListData = null;
 
                 Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
@@ -448,14 +450,48 @@ public class VehiclesListActivity extends AppCompatActivity
     /**
      * This method is for responding to clicks from our list.
      *
+     * the VehicleEntityActivity is called with parameter the vehicleId
+     * to start the entity for edit or delete
+     *
      * @param vehicleId the Id from the selected vehicle
      */
     @Override
     public void onClick(int vehicleId) {
-        /* Prepare to call the detail activity, to show the vehicle's details */
+        /** Prepare to call the detail activity, to show the vehicle's details
+         *  for edit or delete
+         */
         Intent intent = new Intent(this, VehicleEntityActivity.class);
-        //intent.putExtra(DetailActivity.EXTRA_MOVIE_ID, vehicleId);
-        startActivity(intent);
+        intent.putExtra(VehicleEntityActivity.EXTRA_VEHICLE_ID, vehicleId);
+        startActivityForResult(intent, CHILD_UPDATE);
     }
 
+    /**
+     * his method is for responding to clicks from the fab
+     *
+     * the VehicleEntityActivity is called without parameters
+     * to start an empty entity for new insert
+     *
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(mContext, VehicleEntityActivity.class);
+        startActivityForResult(intent, CHILD_INSERT);
+    }
+
+    /**
+     * called after child activity finish
+     * if resultCode == Activity.RESULT_OK we will restart the loader
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            // if we have changes then we restart the loader
+            // so that to we read the new data and update the UI.
+            getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
+        }
+    }
 }

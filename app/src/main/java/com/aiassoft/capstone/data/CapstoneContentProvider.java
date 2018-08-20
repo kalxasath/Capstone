@@ -288,7 +288,7 @@ public class CapstoneContentProvider extends ContentProvider {
          * returns the number of deleted records
          * starts as 0
          */
-        int deletedRecord = 0;
+        int deletedRecords = 0;
 
         switch (match) {
             case VEHICLE_WITH_ID:
@@ -300,7 +300,12 @@ public class CapstoneContentProvider extends ContentProvider {
                 mSelectionArgs = new String[]{id};
 
                 /** finally the deletion is constructed as normally, passing in the selection/args */
-                deletedRecord =  db.delete(VehiclesEntry.TABLE_NAME, mSelection, mSelectionArgs);
+                deletedRecords =  db.delete(VehiclesEntry.TABLE_NAME, mSelection, mSelectionArgs);
+
+                break;
+
+            case EXPENSES:
+                deletedRecords =  db.delete(ExpensesEntry.TABLE_NAME, selection, selectionArgs);
 
                 break;
 
@@ -309,7 +314,7 @@ public class CapstoneContentProvider extends ContentProvider {
                 mSelection = ExpensesEntry._ID + "=?";
                 mSelectionArgs = new String[]{id};
 
-                deletedRecord =  db.delete(ExpensesEntry.TABLE_NAME, mSelection, mSelectionArgs);
+                deletedRecords =  db.delete(ExpensesEntry.TABLE_NAME, mSelection, mSelectionArgs);
 
                 break;
 
@@ -318,7 +323,7 @@ public class CapstoneContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        return deletedRecord;
+        return deletedRecords;
     }
 
     @Override
@@ -342,6 +347,13 @@ public class CapstoneContentProvider extends ContentProvider {
                 // update a sing;e vehicle by getting the id
                 id = uri.getPathSegments().get(1);
                 mSelection = VehiclesEntry._ID + "=?";
+
+                break;
+            case EXPENSES_WITH_ID:
+                tableName = ExpensesEntry.TABLE_NAME;
+                // update a sing;e vehicle by getting the id
+                id = uri.getPathSegments().get(1);
+                mSelection = ExpensesEntry._ID + "=?";
 
                 break;
         }

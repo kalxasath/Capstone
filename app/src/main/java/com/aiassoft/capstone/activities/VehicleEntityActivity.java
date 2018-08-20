@@ -1,17 +1,28 @@
 package com.aiassoft.capstone.activities;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -29,20 +40,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aiassoft.capstone.BuildConfig;
+import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
+import com.aiassoft.capstone.data.ExpensesContract;
+import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
+import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
+import com.aiassoft.capstone.model.Vehicle;
+import com.aiassoft.capstone.utilities.AppUtils;
 import com.aiassoft.capstone.utilities.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VehicleEntityActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class VehicleEntityActivity extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener,
+        DialogInterface.OnClickListener,
+        LoaderManager.LoaderCallbacks<Vehicle> {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntityActivity.class.getSimpleName();
+
+    public static final int VEHICLES_LOADER_ID = 0;
+
+    public static final String EXTRA_VEHICLE_ID = "EXTRA_VEHICLE_ID";
+
+    private static final String STATE_VEHICLE_ID = "STATE_VEHICLE_ID";
+    private static final String STATE_RECYCLER = "STATE_RECYCLER";
 
     private static final boolean USER_IS_GOING_TO_EXIT = false;
     private static final int REQUEST_TAKE_PHOTO = 0;
@@ -70,6 +99,8 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
     private ImageView mToolbarPhoto;
     private Toast mBacktoast;
 
+    private int mVehicleId;
+//    private boolean mReadVehiclesData;
     @BindView(R.id.name_wrapper) TextInputLayout mNameWrapper;
     @BindView(R.id.name) TextInputEditText mName;
     @BindView(R.id.make_wrapper) TextInputLayout mMakeWrapper;
@@ -91,6 +122,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+//        mReadVehiclesData = false;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -116,6 +148,7 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
 
         // toolbar photo
         mToolbarPhoto = findViewById(R.id.toolbar_photo);
+        //TODO set mToolbarPhoto Content Description according state
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
@@ -141,10 +174,106 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
 */
         ButterKnife.bind(this);
 
-        initTextWatcher();
         initSpinners();
 
+        initTextWatcher();
+
+        /** recovering the instance state */
+        if (savedInstanceState != null) {
+            mVehicleId = savedInstanceState.getInt(STATE_VEHICLE_ID, Const.INVALID_ID);
+
+        } else {
+
+            /**
+             * should be called from another activity. if not, show error toast and return
+             */
+            Intent intent = getIntent();
+            if (intent == null) {
+                closeOnError();
+            } else {
+
+                /** Intent parameter should be a valid vehicle id for editing / deleting
+                 *  Otherwise NEW_RECORD_ID signifies a new vehicle entity
+                 */
+                mVehicleId = intent.getIntExtra(EXTRA_VEHICLE_ID, Const.NEW_RECORD_ID);
+                // ?mReadVehiclesData = (mVehicleId != NEW_RECORD_ID);
+            }
+//TODO loader after init should freeze
+//TODO loader after read should check for live activity, search my code
+            if (mVehicleId != Const.NEW_RECORD_ID)
+                fetchVehiclesData();
+        }
+
+
         setEntityTitle(getString(R.string.add_new_vehicle));
+    }
+
+    /** invoked when the activity may be temporarily destroyed, save the instance state here */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_VEHICLE_ID, mVehicleId);
+
+//        Parcelable recyclerState = mMethodStepsRecyclerView.getLayoutManager().onSaveInstanceState();
+//        outState.putParcelable(Const.STATE_METHODS_STEP_RECYCLER, recyclerState);
+
+        /** call superclass to save any view hierarchy */
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_entity_edit, menu);
+
+        // if new entry -> hide options menu delete entry
+        menu.findItem(R.id.action_delete).setVisible(mVehicleId != Const.NEW_RECORD_ID);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int selectedMenuItem = item.getItemId();
+        Intent returnIntent = new Intent();
+
+        switch (selectedMenuItem) {
+            case android.R.id.home :
+                //TODO ask for cancel if the are data in the views
+
+                setResult(Activity.RESULT_CANCELED);
+
+                onBackPressed();
+                return true;
+
+            case R.id.action_done :
+                //TODO check data validity
+                //TODO save the data
+                saveData();
+
+                // TODO set returns result
+                returnIntent.putExtra("my return result", 0);
+                setResult(Activity.RESULT_OK, null);
+
+                finish();
+                return true;
+
+            // TODO: implement delete method
+            case R.id.action_delete :
+                deleteVehicle();
+                setResult(Activity.RESULT_OK, null);
+
+                //finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mTempPhotoFile != null) {
+            mTempPhotoFile.delete();
+        }
     }
 
     private void initSpinners() {
@@ -223,43 +352,37 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         mCollapsingToolbarLayout.setTitle(title);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_entity_edit, menu);
-
-        // TODO: hide delete only if new entry
-        menu.findItem(R.id.action_delete).setVisible(false);
-        return true;
+    private void closeOnError() {
+        String err = this.getString(R.string.activity_error_message_missing_extras, VehicleEntityActivity.class.getSimpleName());
+        Log.e(LOG_TAG, err);
+        Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+        setResult(Activity.RESULT_CANCELED);
+        finish();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int selectedMenuItem = item.getItemId();
+    /**
+     * Fetch the vehicle's data from the database
+     */
+    private void fetchVehiclesData() {
+        /* Create a bundle to pass parameters to the loader */
+        Bundle loaderArgs = new Bundle();
+        loaderArgs.putInt(EXTRA_VEHICLE_ID, mVehicleId);
 
-        switch (selectedMenuItem) {
-            case android.R.id.home :
-                //TODO ask for cancel if the are data in the views
-                //finish();
-                //return true;
-                onBackPressed();
-                return true;
-                //return false; // calls the onSupportNavigateUp
+        /*
+         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<Vehicle> theVehicleDbLoader = loaderManager.getLoader(VEHICLES_LOADER_ID);
 
-            case R.id.action_done :
-                //TODO check data validity
-                //TODO save the data
-                saveData();
-                //NavUtils.navigateUpFromSameTask(this); Did you forget to add the android.support.PARENT_ACTIVITY <meta-data>  element in your manifest?
-                finish();
-                return true;
-
-            // TODO: implement delete method
+        if (theVehicleDbLoader == null) {
+            loaderManager.initLoader(VEHICLES_LOADER_ID, loaderArgs, this);
+        } else {
+            loaderManager.restartLoader(VEHICLES_LOADER_ID, loaderArgs, this);
         }
 
-        return super.onOptionsItemSelected(item);
-    } // onOptionsItemSelected
+    }
 
     private boolean saveData() {
         /** We'll create a new ContentValues object to place data into. */
@@ -276,24 +399,86 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
         contentValues.put(VehiclesEntry.COLUMN_NAME_VOLUME_UNIT, mVolumeUnitSpinner.getSelectedItemId());
         contentValues.put(VehiclesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
 
+        Uri uri;
+        int recordsUpdated;
 
-        /**
-         * Insert new Vehicle's data via a ContentResolver
-         * Then we need to insert these values into our database with
-         * a call to a content resolver
-         */
-        Uri uri = getContentResolver().insert(VehiclesEntry.CONTENT_URI, contentValues);
+        if (mVehicleId == Const.NEW_RECORD_ID) {
+            /**
+             * Insert new Vehicle's data via a ContentResolver
+             * insert these values into our database with
+             * a call to a content resolver
+             */
+            uri = getContentResolver().insert(VehiclesEntry.CONTENT_URI, contentValues);
 
-        if (uri == null) {
-            Toast.makeText(getBaseContext(), getString(R.string.couldnt_insert_vehicle),
-                    Toast.LENGTH_SHORT).show();
+            if (uri == null) {
+                Toast.makeText(getBaseContext(), getString(R.string.couldnt_insert_vehicle),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.vehicle_added) + uri,
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            return (uri != null);
+
         } else {
-            Toast.makeText(getBaseContext(), getString(R.string.vehicle_added) + uri,
-                    Toast.LENGTH_SHORT).show();
-        }
 
-        return (uri != null);
+            uri = VehiclesEntry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(mVehicleId+"").build();
+
+            recordsUpdated = getContentResolver().update(uri, contentValues,  null, null);
+
+            if (recordsUpdated == 1) {
+                Toast.makeText(getBaseContext(), getString(R.string.vehicles_data_updated),
+                        Toast.LENGTH_SHORT).show();
+            } else if (recordsUpdated > 1) {
+                Toast.makeText(getBaseContext(), getString(R.string.to_much_vehicles_updated),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.vehicles_data_not_updated),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            return (recordsUpdated == 1);
+        }
     }
+
+    private boolean deleteVehicle() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.dialog_confirm);
+        builder.setMessage(R.string.question_delete_vehicle);
+        builder.setPositiveButton(R.string.dialog_yes, this);
+        builder.setNegativeButton(R.string.dialog_no, this);
+
+        AlertDialog confirmDeletion = builder.create();
+        confirmDeletion.show();
+
+        return true;
+    }
+
+    private void populateViews(Vehicle data) {
+        //TODO set vehicles Image
+        mName.setText(data.getName());
+        mMake.setText(data.getMake());
+        mModel.setText(data.getModel());
+        mPlateno.setText(data.getPlateNo());
+        mInitialMileage.setText(String.valueOf(data.getInitialMileage()));
+        mDistanceUnitSpinner.setSelection(data.getDistanceUnit());
+        mTankVolume.setText(String.valueOf(data.getTankVolume()));
+        mVolumeUnitSpinner.setSelection(data.getVolumeUnit());
+        mNotes.setText(data.getNotes());
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//
+//        Intent returnIntent = new Intent();
+//        // TODO set returns result
+//        returnIntent.putExtra("my return result", 0);
+//        setResult(Activity.RESULT_OK, returnIntent);
+//        finish();
+//    }
 
     /*
     @Override
@@ -335,13 +520,161 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
     }
     */
 
+    /**
+     * The loader, is used to read the data from the database 
+     * and populate the views with vehicle's data
+     */
+    /**
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id The ID whose loader is to be created.
+     * @param loaderArgs The WEB URL for fetching the vehicles' data.
+     *
+     * @return Return a new Loader instance that is ready to start loading.
+     */
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mTempPhotoFile != null) {
-            mTempPhotoFile.delete();
+    public Loader<Vehicle> onCreateLoader(int id, final Bundle loaderArgs) {
+
+        return new AsyncTaskLoader<Vehicle>(this) {
+            private int mVehicleId;
+
+            /**
+             * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
+             */
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if (loaderArgs == null) {
+                    return;
+                }
+
+                mVehicleId = loaderArgs.getInt(EXTRA_VEHICLE_ID, Const.INVALID_ID);
+
+                //TODO: freeze views until loading
+                //TODO: mayne display load indicator
+                //mLoadingIndicator.setVisibility(View.VISIBLE);
+
+                forceLoad();
+            } // onStartLoading
+
+            /**
+             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
+             * from the database in the background.
+             *
+             * @return Vehicles' data from the database as a List of VehiclesReviewsListItem.
+             *         null if an error occurs
+             */
+            @Override
+            public Vehicle loadInBackground() {
+
+//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
+//                if (invalidateCache)
+//                    mCachedVehiclesData = null;
+
+                Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
+                uri = uri.buildUpon().build();
+                Cursor cursor = getContentResolver().query(uri, null,
+                        VehiclesEntry._ID + "= ?",
+                        new String[] {mVehicleId + ""}, null);
+
+                Vehicle vehicle = new Vehicle();
+                if (cursor != null && cursor.getCount() != 0) {
+                    cursor.moveToNext();
+                    vehicle.setId(mVehicleId);
+                    vehicle.setImage(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_IMAGE)));
+                    vehicle.setName(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME)));
+                    vehicle.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
+                    vehicle.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
+                    vehicle.setPlateNo(cursor.getString(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_PLATE_NO)));
+                    vehicle.setInitialMileage(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_INITIALMILEAGE)));
+                    vehicle.setDistanceUnit(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT)));
+                    vehicle.setTankVolume(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_TANKVOLUME)));
+                    vehicle.setVolumeUnit(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_VOLUME_UNIT)));
+                    vehicle.setNotes(cursor.getString(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_NOTES)));
+                    cursor.close();
+                }
+
+                return vehicle;
+            }
+
+            /**
+             * Sends the result of the load to the registered listener.
+             *
+             * @param data The result of the load
+             */
+            public void deliverResult(Vehicle data) {
+                super.deliverResult(data);
+            } // deliverResult
+
+        }; // AsyncTaskLoader
+
+    } // Loader
+
+    /**
+     * Called when a previously created loader has finished its load.
+     *
+     * @param loader The Loader that has finished.
+     * @param data The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<Vehicle> loader, Vehicle data) {
+        populateViews(data);
+        //TODO: LoadingIndicator?
+        //mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+//        if (data == null) {
+//            showEmptyView();
+//        } else {
+//            showVehiclesListView();
+//        }
+        /* Update the adapters data with the new one */
+//        invalidateData();
+//        mVehiclesListAdapter.setVehiclesData(data);
+    } // onLoadFinished
+
+    /**
+     * Called when a previously created loader is being reset, and thus
+     * making its data unavailable.  The application should at this point
+     * remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<Vehicle> loader) {
+        /*
+         * We aren't using this method in this application, but we are required to Override
+         * it to implement the LoaderCallbacks<List<VehiclesReviewsListItem>> interface
+         */
+    }
+
+
+
+    /**
+     * YES / NO Dialog onClick
+     */
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        dialog.dismiss();
+
+        if (which == Dialog.BUTTON_POSITIVE) {
+            int deletedRecords;
+
+            Uri uri = ExpensesContract.ExpensesEntry.CONTENT_URI;
+            deletedRecords = getContentResolver().delete(uri,
+                    "vehicleId=?", new String[] {mVehicleId+""});
+
+
+            uri = VehiclesEntry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(mVehicleId+"").build();
+
+            deletedRecords = getContentResolver().delete(uri, null, null);
+
+            finish();
         }
     }
+
+
+
 
     /**
      * Camera & Gallery Handling
@@ -438,4 +771,6 @@ public class VehicleEntityActivity extends AppCompatActivity implements AdapterV
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }
+

@@ -117,13 +117,15 @@ public class VehiclesListAdapter extends RecyclerView.Adapter<VehiclesListAdapte
     @Override
     public void onBindViewHolder(VehiclesAdapterViewHolder vehiclesAdapterViewHolder, int position) {
         String image = mVehiclesData.get(position).getImage();
+        String vehiclesTitle = mVehiclesData.get(position).getTitle();
 
+        vehiclesAdapterViewHolder.mVehicleImage.setContentDescription(vehiclesTitle);
         Picasso.with(vehiclesAdapterViewHolder.mVehicleImage.getContext())
                 .load(R.drawable.jonathan_daniels_453915_unsplash_rsz)
                 .placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
                 .into(vehiclesAdapterViewHolder.mVehicleImage);
 
-        vehiclesAdapterViewHolder.mVehicleTitle.setText(mVehiclesData.get(position).getTitle());
+        vehiclesAdapterViewHolder.mVehicleTitle.setText(vehiclesTitle);
     }
 
     /**

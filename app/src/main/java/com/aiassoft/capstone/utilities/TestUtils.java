@@ -37,14 +37,14 @@ public final class TestUtils {
         if (erroneous == 0)
             erroneous = insertFakeExpenses(db);
 
-        String error;
+        String msg;
         if (erroneous == 0)
-            error = view.getContext().getString(R.string.finished_inserting_fake_data);
+            msg = view.getContext().getString(R.string.finished_inserting_fake_data);
         else
-            error = view.getContext().getString(R.string.inserting_fake_data_failed) +
+            msg = view.getContext().getString(R.string.inserting_fake_data_failed) +
                     ": " + view.getContext().getString(erroneous);
 
-        showSnackbar(view, error);
+        showSnackbar(view, msg);
     }
 
     private static int insertFakeVehicles(SQLiteDatabase db) {
@@ -116,7 +116,6 @@ public final class TestUtils {
         return erroneous;
     }
 
-    // TODO: add Fake expenses
     private static int insertFakeExpenses(SQLiteDatabase db) {
         int erroneous = 0;
 

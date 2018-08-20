@@ -35,14 +35,9 @@ public class Const {
         throw new AssertionError(R.string.no_instances_for_you);
     }
 
-    /**
-     * YOUTUBE API KEY
-     */
 
-    /**
-     * This ID will be used to identify the Loader responsible for loading our list.
-     */
-    //public static final int MOVIES_LOADER_ID = 0;
+    public static final int INVALID_ID = -1;
+    public static final int NEW_RECORD_ID = 0;
 
     /**
      * Contract's & Content Provider's definitions

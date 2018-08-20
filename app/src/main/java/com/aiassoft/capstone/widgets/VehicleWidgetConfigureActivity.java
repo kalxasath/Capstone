@@ -117,8 +117,7 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
             return;
         }
 
-        //TODO make it string
-        setTitle("Select Vehicle for the widget");
+        setTitle(mContext.getString(R.string.select_vehicle_for_widget));
 
         /*
          * The gridLayoutManager is responsible for measuring and positioning item views within a
