@@ -36,6 +36,7 @@ public class Const {
     }
 
 
+    public static final int INVALID_INT = -1;
     public static final int INVALID_ID = -1;
     public static final int NEW_RECORD_ID = 0;
 

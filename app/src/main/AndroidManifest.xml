@@ -3,6 +3,7 @@
     package="com.aiassoft.capstone">
 
     <uses-permission android:name="com.aiassoft.capstone.PERMISSION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.aiassoft.capstone.MyApp"

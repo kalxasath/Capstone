@@ -27,7 +27,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.aiassoft.capstone"
-        minSdkVersion 19
+        minSdkVersion 19 // kitkat
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

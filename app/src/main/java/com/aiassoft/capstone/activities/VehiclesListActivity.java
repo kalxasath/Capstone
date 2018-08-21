@@ -113,18 +113,9 @@ public class VehiclesListActivity extends AppCompatActivity
     private void initFab() {
         if (mFab != null) {
             mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
-
+            mFab.setContentDescription(getString(R.string.add_new_vehicle));
             mFab.setOnClickListener(this);
 
-//            mFab.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(mContext, VehicleEntityActivity.class);
-//                    startActivity(intent);
-//                    //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    //        .setAction("Action", null).show();
-//                }
-//            });
         }
     }
 
@@ -494,4 +485,8 @@ public class VehiclesListActivity extends AppCompatActivity
             getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
         }
     }
+
+    //TODO add setupPermissions
+    //TODO restart loader after granded
+
 }

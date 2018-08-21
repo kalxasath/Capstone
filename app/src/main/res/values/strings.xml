@@ -26,6 +26,8 @@
     <string name="error_check_your_network_connectivity">Please check your network connectivity!</string>
     <string name="youtube_player_not_found">An associated YouTube player couldn\'t be found!</string>
     <string name="activity_error_message_missing_extras">Missing extra data for activity %1$s</string>
+    <string name="gallery_not_found">An associated Gallery application couldn\'t be found!</string>
+    <string name="permission_for_reading_the_external_storage_not_granted">Permission for reading the external storage not granted. Vehicle Images can\'t displayed</string>
 
     <!-- Menus -->
     <string name="action_done">Done</string>
@@ -70,13 +72,15 @@
     <string name="hint_vehicle_tankvolume">Tank Volume</string>
     <string name="hint_vehicle_notes">Notes</string>
 
+    <string name="vehicle_screen_ready_for_new_record">Screen ready to enter data for a new vehicle</string>
+    <string name="vehicle_screen_ready_for_edit_record">Screen ready to edit vehicle data</string>
+    <string name="add_or_replace_vehicle_image">Add or replace vehicle image</string>
     <string name="couldnt_insert_vehicle">Couldn\'t insert the Vehicle</string>
     <string name="vehicle_added">Vehicle added: </string>
     <string name="vehicles_data_updated">Vehicle updated</string>
     <string name="to_much_vehicles_updated">TO MUCH VEHICLES UPDATED</string>
     <string name="vehicles_data_not_updated">Something went wrong, vehicle\'s data were not updated!</string>
     <string name="deleted_vehicle">Vehicle is deleted</string>
-
     <string name="question_delete_vehicle">Delete Vehicle and its Expenses?</string>
 
     <!-- Expenses List -->

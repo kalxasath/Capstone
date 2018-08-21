@@ -101,7 +101,7 @@ public class VehiclesTotalRunningCosts implements Parcelable {
      * sets the class fields from the parcel object
      * @param in
      */
-    public VehiclesTotalRunningCosts(Parcel in) {
+    protected VehiclesTotalRunningCosts(Parcel in) {
         Log.d(LOG_TAG, "VehiclesTotalRunningCosts parcel to object");
         this.vehicleId = in.readInt();
         this.name = in.readString();

@@ -1,25 +1,31 @@
 package com.aiassoft.capstone.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -49,7 +55,9 @@ import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 import com.aiassoft.capstone.model.Vehicle;
 import com.aiassoft.capstone.utilities.AppUtils;
+import com.aiassoft.capstone.utilities.FetchPath;
 import com.aiassoft.capstone.utilities.FileUtils;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,9 +70,12 @@ import butterknife.ButterKnife;
 public class VehicleEntityActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener,
         DialogInterface.OnClickListener,
+        View.OnClickListener,
         LoaderManager.LoaderCallbacks<Vehicle> {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntityActivity.class.getSimpleName();
+
+    private static final int MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE = 77;
 
     public static final int VEHICLES_LOADER_ID = 0;
 
@@ -72,6 +83,8 @@ public class VehicleEntityActivity extends AppCompatActivity
 
     private static final String STATE_VEHICLE_ID = "STATE_VEHICLE_ID";
     private static final String STATE_RECYCLER = "STATE_RECYCLER";
+    private static final String STATE_SCROLL_POS = "STATE_SCROLL_POS";
+    private static final String STATE_ENTITY = "STATE_ENTITY";
 
     private static final boolean USER_IS_GOING_TO_EXIT = false;
     private static final int REQUEST_TAKE_PHOTO = 0;
@@ -99,6 +112,12 @@ public class VehicleEntityActivity extends AppCompatActivity
     private ImageView mToolbarPhoto;
     private Toast mBacktoast;
 
+    private int mScrollViewContainerScrollToY = Const.INVALID_INT;
+
+    // This vehicle structure is to hold vehicle's data
+    // Vehicle's image uri is written her direct
+    private Vehicle mVehicle;
+
     private int mVehicleId;
 //    private boolean mReadVehiclesData;
     @BindView(R.id.name_wrapper) TextInputLayout mNameWrapper;
@@ -117,6 +136,7 @@ public class VehicleEntityActivity extends AppCompatActivity
     @BindView(R.id.volume_unit_spinner) Spinner mVolumeUnitSpinner;
     @BindView(R.id.notes_wrapper) TextInputLayout mNotesWrapper;
     @BindView(R.id.notes) TextInputEditText mNotes;
+    @BindView(R.id.fab) FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,31 +168,18 @@ public class VehicleEntityActivity extends AppCompatActivity
 
         // toolbar photo
         mToolbarPhoto = findViewById(R.id.toolbar_photo);
-        //TODO set mToolbarPhoto Content Description according state
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-/*
-        SpringFabMenu sfm = (SpringFabMenu)findViewById(R.id.fab);
 
-        sfm.setOnSpringFabMenuItemClickListener(new SpringFabMenu.OnSpringFabMenuItemClickListener() {
-            @Override
-            public void onSpringFabMenuItemClick(View view) {
-                switch (view.getId()) {
-                    case R.id.fab_camera:
-                        startCamera();
-                        break;
-                    case R.id.fab_gallery:
-                        startGallery();
-                        break;
-                }
-            }
-        });
-*/
         ButterKnife.bind(this);
+
+        setupPermissions();
+
+        initFab();
 
         initSpinners();
 
@@ -181,6 +188,8 @@ public class VehicleEntityActivity extends AppCompatActivity
         /** recovering the instance state */
         if (savedInstanceState != null) {
             mVehicleId = savedInstanceState.getInt(STATE_VEHICLE_ID, Const.INVALID_ID);
+            mScrollViewContainerScrollToY = savedInstanceState.getInt(STATE_SCROLL_POS, Const.INVALID_INT); // NestedScrollView
+            mVehicle = savedInstanceState.getParcelable(STATE_ENTITY);
 
         } else {
 
@@ -200,21 +209,40 @@ public class VehicleEntityActivity extends AppCompatActivity
             }
 //TODO loader after init should freeze
 //TODO loader after read should check for live activity, search my code
-            if (mVehicleId != Const.NEW_RECORD_ID)
+            if (mVehicleId != Const.NEW_RECORD_ID) {
+                mToolbarPhoto.setContentDescription(
+                        getString(R.string.vehicle_screen_ready_for_edit_record));
                 fetchVehiclesData();
+            } else {
+                mToolbarPhoto.setContentDescription(
+                        getString(R.string.vehicle_screen_ready_for_new_record));
+                setEntityTitle(getString(R.string.add_new_vehicle));
+                // Generate Entities Structure
+                mVehicle = new Vehicle();
+            }
+
         }
 
-
-        setEntityTitle(getString(R.string.add_new_vehicle));
+        if (mScrollViewContainerScrollToY != Const.INVALID_INT) {
+            //this is important. scrollTo doesn't work in main thread.
+            mLayoutContainer.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    mLayoutContainer.scrollTo(0, mScrollViewContainerScrollToY);
+                }
+            });
+        }
     }
 
     /** invoked when the activity may be temporarily destroyed, save the instance state here */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(STATE_VEHICLE_ID, mVehicleId);
+        outState.putInt(STATE_SCROLL_POS, mLayoutContainer.getScrollY());
 
-//        Parcelable recyclerState = mMethodStepsRecyclerView.getLayoutManager().onSaveInstanceState();
-//        outState.putParcelable(Const.STATE_METHODS_STEP_RECYCLER, recyclerState);
+        outState.putParcelable(STATE_ENTITY, mVehicle);
 
         /** call superclass to save any view hierarchy */
         super.onSaveInstanceState(outState);
@@ -233,7 +261,6 @@ public class VehicleEntityActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int selectedMenuItem = item.getItemId();
-        Intent returnIntent = new Intent();
 
         switch (selectedMenuItem) {
             case android.R.id.home :
@@ -245,23 +272,19 @@ public class VehicleEntityActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_done :
-                //TODO check data validity
-                //TODO save the data
-                saveData();
+                if (validateData()) {
+                    updateVehicleFromViews();
+                    saveData();
 
-                // TODO set returns result
-                returnIntent.putExtra("my return result", 0);
-                setResult(Activity.RESULT_OK, null);
-
-                finish();
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
                 return true;
 
-            // TODO: implement delete method
             case R.id.action_delete :
                 deleteVehicle();
                 setResult(Activity.RESULT_OK, null);
 
-                //finish();
                 return true;
         }
 
@@ -273,6 +296,14 @@ public class VehicleEntityActivity extends AppCompatActivity
         super.onDestroy();
         if (mTempPhotoFile != null) {
             mTempPhotoFile.delete();
+        }
+    }
+
+    private void initFab() {
+        if (mFab != null) {
+            mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_gallery_white_24dp));
+            mFab.setContentDescription(getString(R.string.add_or_replace_vehicle_image));
+            mFab.setOnClickListener(this);
         }
     }
 
@@ -384,20 +415,25 @@ public class VehicleEntityActivity extends AppCompatActivity
 
     }
 
+    private boolean validateData() {
+        return true;
+    }
+
     private boolean saveData() {
         /** We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
 
         /** Put the Vehicle's data into the ContentValues */
-        contentValues.put(VehiclesEntry.COLUMN_NAME_NAME, mName.getText().toString());
-        contentValues.put(VehiclesEntry.COLUMN_NAME_MAKE, mMake.getText().toString());
-        contentValues.put(VehiclesEntry.COLUMN_NAME_MODEL, mModel.getText().toString());
-        contentValues.put(VehiclesEntry.COLUMN_NAME_PLATE_NO, mPlateno.getText().toString());
-        contentValues.put(VehiclesEntry.COLUMN_NAME_INITIALMILEAGE, Integer.valueOf(mInitialMileage.getText().toString()));
-        contentValues.put(VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT, mDistanceUnitSpinner.getSelectedItemId());
-        contentValues.put(VehiclesEntry.COLUMN_NAME_TANKVOLUME, Integer.valueOf(mTankVolume.getText().toString()));
-        contentValues.put(VehiclesEntry.COLUMN_NAME_VOLUME_UNIT, mVolumeUnitSpinner.getSelectedItemId());
-        contentValues.put(VehiclesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_IMAGE, mVehicle.getImage());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_NAME, mVehicle.getName());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_MAKE, mVehicle.getMake());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_MODEL, mVehicle.getModel());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_PLATE_NO, mVehicle.getPlateNo());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_INITIALMILEAGE, mVehicle.getInitialMileage());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT, mVehicle.getDistanceUnit());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_TANKVOLUME, mVehicle.getTankVolume());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_VOLUME_UNIT, mVehicle.getVolumeUnit());
+        contentValues.put(VehiclesEntry.COLUMN_NAME_NOTES, mVehicle.getNotes());
 
         Uri uri;
         int recordsUpdated;
@@ -442,7 +478,7 @@ public class VehicleEntityActivity extends AppCompatActivity
         }
     }
 
-    private boolean deleteVehicle() {
+    private void deleteVehicle() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(R.string.dialog_confirm);
@@ -452,73 +488,48 @@ public class VehicleEntityActivity extends AppCompatActivity
 
         AlertDialog confirmDeletion = builder.create();
         confirmDeletion.show();
-
-        return true;
     }
 
-    private void populateViews(Vehicle data) {
-        //TODO set vehicles Image
-        mName.setText(data.getName());
-        mMake.setText(data.getMake());
-        mModel.setText(data.getModel());
-        mPlateno.setText(data.getPlateNo());
-        mInitialMileage.setText(String.valueOf(data.getInitialMileage()));
-        mDistanceUnitSpinner.setSelection(data.getDistanceUnit());
-        mTankVolume.setText(String.valueOf(data.getTankVolume()));
-        mVolumeUnitSpinner.setSelection(data.getVolumeUnit());
-        mNotes.setText(data.getNotes());
-    }
+    private void displayEntityImage() {
+        if (mVehicleId != Const.NEW_RECORD_ID) {
+            File f = new File(mVehicle.getImage());
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//
-//        Intent returnIntent = new Intent();
-//        // TODO set returns result
-//        returnIntent.putExtra("my return result", 0);
-//        setResult(Activity.RESULT_OK, returnIntent);
-//        finish();
-//    }
-
-    /*
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-    */
-
-
-    /*
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Really Exit?")
-                .setMessage("Are you sure you want to exit?")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        VehicleEntityActivity.super.onBackPressed();
-                    }
-                }).create().show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(USER_IS_GOING_TO_EXIT) {
-            if(mBacktoast !=null&& mBacktoast.getView().getWindowToken()!=null) {
-                finish();
-            } else {
-                mBacktoast = Toast.makeText(this, "Press back to exit", Toast.LENGTH_SHORT);
-                mBacktoast.show();
-            }
-        } else {
-            //other stuff...
-            super.onBackPressed();
+            Picasso.with(mContext)
+                    .load(f)
+                    //.placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
+                    .error(R.drawable.missing_car_image)
+                    .into(mToolbarPhoto);
         }
     }
-    */
+
+    private void populateViews() {
+        displayEntityImage();
+
+        setEntityTitle(mVehicle.getTitle());
+
+        mName.setText(mVehicle.getName());
+        mMake.setText(mVehicle.getMake());
+        mModel.setText(mVehicle.getModel());
+        mPlateno.setText(mVehicle.getPlateNo());
+        mInitialMileage.setText(String.valueOf(mVehicle.getInitialMileage()));
+        mDistanceUnitSpinner.setSelection(mVehicle.getDistanceUnit());
+        mTankVolume.setText(String.valueOf(mVehicle.getTankVolume()));
+        mVolumeUnitSpinner.setSelection(mVehicle.getVolumeUnit());
+        mNotes.setText(mVehicle.getNotes());
+    }
+
+    private void updateVehicleFromViews() {
+        mVehicle.setName(mName.getText().toString());
+        mVehicle.setMake(mMake.getText().toString());
+        mVehicle.setModel(mModel.getText().toString());
+        mVehicle.setPlateNo(mPlateno.getText().toString());
+        mVehicle.setInitialMileage(Integer.decode(mInitialMileage.getText().toString()));
+        mVehicle.setDistanceUnit(mDistanceUnitSpinner.getSelectedItemId());
+        mVehicle.setTankVolume(Integer.decode(mTankVolume.getText().toString()));
+        mVehicle.setVolumeUnit(mVolumeUnitSpinner.getSelectedItemId());
+        mVehicle.setNotes(mNotes.getText().toString());
+    }
+
 
     /**
      * The loader, is used to read the data from the database 
@@ -618,7 +629,11 @@ public class VehicleEntityActivity extends AppCompatActivity
      */
     @Override
     public void onLoadFinished(Loader<Vehicle> loader, Vehicle data) {
-        populateViews(data);
+        // we don't need any more the loader
+        getSupportLoaderManager().destroyLoader(VEHICLES_LOADER_ID);
+
+        mVehicle = data;
+        populateViews();
         //TODO: LoadingIndicator?
         //mLoadingIndicator.setVisibility(View.INVISIBLE);
 
@@ -673,51 +688,24 @@ public class VehicleEntityActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Views onClick
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.fab) {
+            startGallery();
+        }
+    }
+
+
 
 
 
     /**
-     * Camera & Gallery Handling
+     * Gallery Handling
      */
-    void startCamera() {
-        try {
-            dispatchTakePictureIntent();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, getString(R.string.error_while_creating_file));
-            Snackbar.make(mRootLayout, getString(R.string.error_while_creating_file), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }
-    }
-
-    private void dispatchTakePictureIntent() throws IOException {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-
-            // delete previous created temp file
-            if (mTempPhotoFile != null) {
-                mTempPhotoFile.delete();
-            }
-
-            // Create the Temp File where the photo should go
-            try {
-                mTempPhotoFile = FileUtils.createTempFile(mContext, "ve_", ".jpg");
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                return;
-            }
-
-            // Continue only if the File was successfully created
-            if (mTempPhotoFile != null) {
-                //Uri photoURI = Uri.fromFile(photoFile);
-                mTempPhotoPath = "file:" + mTempPhotoFile.getAbsolutePath();
-                Uri photoURI = FileProvider.getUriForFile(mContext,BuildConfig.APPLICATION_ID + ".provider", mTempPhotoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
-
     void startGallery() {
         try {
             dispatchPickPictureIntent();
@@ -726,36 +714,35 @@ public class VehicleEntityActivity extends AppCompatActivity
     }
 
     private void dispatchPickPictureIntent() throws IOException {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent pickPhoto;
+
+        if (Build.VERSION.SDK_INT <= 19) {
+            pickPhoto = new Intent();
+            pickPhoto.setType("image/*");
+            pickPhoto.setAction(Intent.ACTION_GET_CONTENT);
+            pickPhoto.addCategory(Intent.CATEGORY_OPENABLE);
+        } else {
+            pickPhoto = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        }
 
         // Ensure that there's a gallery activity to handle the intent
         if (pickPhoto.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(pickPhoto, REQUEST_PICK_PHOTO);
-        }
+        } else
+            Toast.makeText(mContext, R.string.gallery_not_found, Toast.LENGTH_LONG).show();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent identData) {
         super.onActivityResult(requestCode, resultCode, identData);
-        switch(requestCode) {
-            case REQUEST_TAKE_PHOTO:
-                switch(resultCode) {
-                    case RESULT_OK:
-                        mToolbarPhoto.setImageURI(Uri.parse(mTempPhotoPath));
-                        return;
-                    case RESULT_CANCELED:
-                        // TODO remove temp file
-                        return;
-                }
-                break;
-            case REQUEST_PICK_PHOTO:
-                if(resultCode == RESULT_OK) {
-                    Uri selectedImage = identData.getData();
-                    Snackbar.make(mLayoutContainer, selectedImage.toString(), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    mToolbarPhoto.setImageURI(selectedImage);
-                }
-                break;
+        if (requestCode == REQUEST_PICK_PHOTO) {
+            if(resultCode == RESULT_OK) {
+                //content://com.google.android.apps.photos.contentprovider/-1/1/content%3A%2F%2Fmedia%2Fexternal%2Fimages%2Fmedia%2F130/ORIGINAL/NONE/126637935
+                Uri selectedImage = identData.getData();
+                String imagePath = FetchPath.getPath(mContext, selectedImage);
+                mVehicle.setImage(imagePath);
+                mToolbarPhoto.setImageURI(selectedImage);
+            }
         }
     }
 
@@ -772,5 +759,48 @@ public class VehicleEntityActivity extends AppCompatActivity
 
     }
 
-}
 
+    /**
+     * App Permissions for read external storage
+     **/
+    private void setupPermissions() {
+        // If we don't have the read external storage permission...
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // And if we're on SDK M or later...
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Ask again, nicely, for the permissions.
+                String[] permissionsWeNeed = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE };
+                requestPermissions(permissionsWeNeed, MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE);
+            }
+        } else {
+            // Otherwise, permissions were granted and we are ready to go!
+            displayEntityImage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // The permission was granted!
+                    displayEntityImage();
+
+                } else {
+                    Toast.makeText(this, R.string.permission_for_reading_the_external_storage_not_granted, Toast.LENGTH_LONG).show();
+                    // The permission was denied, so we can show a message why we can't run the app
+                    // and then close the app.
+                }
+            }
+        }
+    }
+
+
+
+
+}
