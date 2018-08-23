@@ -86,12 +86,12 @@ public final class AppUtils {
     }
 
     // Shows the system bars by removing all the flags
-// except for the ones that make the content appear under the system bars.
+    // except for the ones that make the content appear under the system bars.
     public static void showSystemUI(Activity activity) {
         View decorView = activity.getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                //| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 //                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         );
     }
@@ -104,8 +104,8 @@ public final class AppUtils {
         Snackbar.make(view, msg, Snackbar.LENGTH_LONG).show();
     }
 
-    public static void showSnackbar(View view, int redId) {
-        Snackbar.make(view, redId, Snackbar.LENGTH_LONG).show();
+    public static void showSnackbar(View view, int msgId) {
+        Snackbar.make(view, msgId, Snackbar.LENGTH_LONG).show();
     }
 }
 

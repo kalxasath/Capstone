@@ -40,6 +40,10 @@ public class Const {
     public static final int INVALID_ID = -1;
     public static final int NEW_RECORD_ID = 0;
 
+    // Permission request codes
+    public static final int MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE = 77;
+
+
     /**
      * Contract's & Content Provider's definitions
      */

@@ -1,6 +1,7 @@
 package com.aiassoft.capstone.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.model.Vehicle;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,14 +118,29 @@ public class VehiclesListAdapter extends RecyclerView.Adapter<VehiclesListAdapte
      */
     @Override
     public void onBindViewHolder(VehiclesAdapterViewHolder vehiclesAdapterViewHolder, int position) {
-        String image = mVehiclesData.get(position).getImage();
-        String vehiclesTitle = mVehiclesData.get(position).getTitle();
+        Vehicle vehicle = mVehiclesData.get(position);
+
+        String imagePath = vehicle.getImage();
+        String vehiclesTitle = vehicle.getTitle();
 
         vehiclesAdapterViewHolder.mVehicleImage.setContentDescription(vehiclesTitle);
-        Picasso.with(vehiclesAdapterViewHolder.mVehicleImage.getContext())
-                .load(R.drawable.jonathan_daniels_453915_unsplash_rsz)
-                .placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
-                .into(vehiclesAdapterViewHolder.mVehicleImage);
+
+        if (imagePath == null || imagePath.isEmpty()) {
+            Picasso.with(vehiclesAdapterViewHolder.mVehicleImage.getContext())
+                    .load(R.drawable.jonathan_daniels_453915_unsplash_rsz)
+                    .into(vehiclesAdapterViewHolder.mVehicleImage);
+        } else {
+            Picasso.with(vehiclesAdapterViewHolder.mVehicleImage.getContext())
+                    .load(Uri.fromFile(new File(imagePath)))
+                    .placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
+                    .error(R.drawable.missing_car_image)
+                    .into(vehiclesAdapterViewHolder.mVehicleImage);
+        }
+
+//        Picasso.with(vehiclesAdapterViewHolder.mVehicleImage.getContext())
+//                .load(R.drawable.jonathan_daniels_453915_unsplash_rsz)
+//                .placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
+//                .into(vehiclesAdapterViewHolder.mVehicleImage);
 
         vehiclesAdapterViewHolder.mVehicleTitle.setText(vehiclesTitle);
     }

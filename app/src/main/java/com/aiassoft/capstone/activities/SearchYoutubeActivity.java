@@ -201,8 +201,10 @@ public class SearchYoutubeActivity extends AppCompatActivity
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView))
+        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
+        }
 
         return true;
     }

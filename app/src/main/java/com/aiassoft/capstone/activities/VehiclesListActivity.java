@@ -1,13 +1,17 @@
 package com.aiassoft.capstone.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
@@ -29,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.adapters.VehiclesListAdapter;
 import com.aiassoft.capstone.data.VehiclesContract;
@@ -43,6 +48,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
+import static com.aiassoft.capstone.utilities.PrefUtils.READ_EXTERNAL_STORAGE_GRANTED;
+import static com.aiassoft.capstone.utilities.PrefUtils.getBoolPref;
+import static com.aiassoft.capstone.utilities.PrefUtils.setBoolPref;
 
 public class VehiclesListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -55,10 +63,7 @@ public class VehiclesListActivity extends AppCompatActivity
     public static final int CHILD_INSERT = 0;
     public static final int CHILD_UPDATE = 1;
 
-    /**
-     * Used to identify if we have to invalidate the cache
-     */
-    private static final String LOADER_EXTRA_IC = "invalidate_the_cache";
+    private static final String STATE_RECYCLER = "STATE_RECYCLER";
 
     Context mContext;
 
@@ -92,11 +97,8 @@ public class VehiclesListActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        //mNavView = this.findViewById(R.id.nav_view);
-        //mNavView.setFocusable(true);
+        requestPermissions();
 
-        //mToolbar = findViewById(R.id.toolbar);
-        //mToolbar.setFocusable(true);
         setSupportActionBar(mToolbar);
 
         initFab();
@@ -215,8 +217,10 @@ public class VehiclesListActivity extends AppCompatActivity
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView))
+        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
+        }
 
         return true;
     }
@@ -454,6 +458,7 @@ public class VehiclesListActivity extends AppCompatActivity
         Intent intent = new Intent(this, VehicleEntityActivity.class);
         intent.putExtra(VehicleEntityActivity.EXTRA_VEHICLE_ID, vehicleId);
         startActivityForResult(intent, CHILD_UPDATE);
+        overridePendingTransition(R.anim.exit, R.anim.entry);
     }
 
     /**
@@ -468,6 +473,7 @@ public class VehiclesListActivity extends AppCompatActivity
     public void onClick(View view) {
         Intent intent = new Intent(mContext, VehicleEntityActivity.class);
         startActivityForResult(intent, CHILD_INSERT);
+        overridePendingTransition(R.anim.exit, R.anim.entry);
     }
 
     /**
@@ -486,7 +492,57 @@ public class VehiclesListActivity extends AppCompatActivity
         }
     }
 
-    //TODO add setupPermissions
-    //TODO restart loader after granded
+
+
+    /**
+     * App Permissions for read external storage
+     **/
+    private void requestPermissions() {
+        // If we don't have the read external storage permission...
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // And if we're on SDK M or later...
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Ask again, nicely, for the permissions.
+                String[] permissionsWeNeed = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE };
+                requestPermissions(permissionsWeNeed, Const.MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE);
+            }
+        } else {
+            // Otherwise, permissions were granted and we are ready to go!
+            getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Const.MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // The permission was granted!
+                    setBoolPref(READ_EXTERNAL_STORAGE_GRANTED, true);
+                    getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
+
+                } else {
+                    // The permission was denied, so we can show a message why we can't run the app
+                    // and then close the app.
+                    boolean permWasGranted = getBoolPref(READ_EXTERNAL_STORAGE_GRANTED, true);
+
+                    if (permWasGranted) {
+                        setBoolPref(READ_EXTERNAL_STORAGE_GRANTED, false);
+                        showSnackbar(mContainer, R.string.permission_for_reading_the_external_storage_not_granted);
+                    } else {
+                        showSnackbar(mContainer, R.string.enable_permission_for_reading_the_external_storage);
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
 }

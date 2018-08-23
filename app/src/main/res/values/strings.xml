@@ -28,6 +28,9 @@
     <string name="activity_error_message_missing_extras">Missing extra data for activity %1$s</string>
     <string name="gallery_not_found">An associated Gallery application couldn\'t be found!</string>
     <string name="permission_for_reading_the_external_storage_not_granted">Permission for reading the external storage not granted. Vehicle Images can\'t displayed</string>
+    <string name="enable_permission_for_reading_the_external_storage">Vehicle Images can only be displayed, if storage permission is granted via the settings.</string>
+    <string name="form_validation_failed">Invalid data in form fields, see the errors to correct them.</string>
+    <string name="abord_editing">... to abort editing, discard changes and return</string>
 
     <!-- Menus -->
     <string name="action_done">Done</string>
@@ -82,6 +85,11 @@
     <string name="vehicles_data_not_updated">Something went wrong, vehicle\'s data were not updated!</string>
     <string name="deleted_vehicle">Vehicle is deleted</string>
     <string name="question_delete_vehicle">Delete Vehicle and its Expenses?</string>
+
+    <string name="validation_enter_name">Name is required</string>
+    <string name="validation_enter_make">Make is required</string>
+    <string name="validation_enter_model">Model is required</string>
+    <string name="validation_wrong_number">Wrong Number</string>
 
     <!-- Expenses List -->
     <string name="no_expenses_available">No Expenses Available</string>

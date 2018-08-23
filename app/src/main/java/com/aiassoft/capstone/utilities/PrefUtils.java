@@ -40,11 +40,38 @@ public final class PrefUtils {
      * and Key Name
      */
     public static final String PREFS_NAME = "com.aiassoft.capstone";
+    public static final int INVALID_INT = -1;
+
     public static final String WIDGET_VEHICLE_ID = "VEHICLE";
-	public static final int INVALID_INT = -1;
+    public static final String READ_EXTERNAL_STORAGE_GRANTED = "READ_EXTERNAL_STORAGE_GRANTED";
+
+    private static boolean mReadExternalStorageGranted;
 
     private PrefUtils() {
         throw new AssertionError("No Instances for you!");
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     */
+    public static void setBoolPref(String key, boolean value) {
+        SharedPreferences sp = MyApp.getContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean(key, value);
+        ed.apply();
+    }
+
+    /**
+     *
+     * @param key
+     * @param missingValue
+     * @return
+     */
+    public static boolean getBoolPref(String key, boolean missingValue) {
+        SharedPreferences sp = MyApp.getContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        return sp.getBoolean(key, missingValue);
     }
 
     /**
@@ -78,12 +105,22 @@ public final class PrefUtils {
         sp.edit().remove(WIDGET_VEHICLE_ID + widgetId).apply();
     }
 
+    private static void prefSaveExceptWidgets() {
+        mReadExternalStorageGranted = getBoolPref(READ_EXTERNAL_STORAGE_GRANTED, true);
+    }
+
+    private static void prefRestoreExceptWidgets() {
+        setBoolPref(READ_EXTERNAL_STORAGE_GRANTED, mReadExternalStorageGranted);
+    }
+
     /**
      * clears the whole shared preferences memory for the PREFS_NAME
      */
     public static void prefClearWidgets() {
+        prefSaveExceptWidgets();
         SharedPreferences sp = MyApp.getContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         sp.edit().clear().apply();
+        prefRestoreExceptWidgets();
     }
 
 }

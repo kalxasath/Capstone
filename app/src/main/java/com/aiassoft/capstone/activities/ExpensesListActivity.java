@@ -1,6 +1,7 @@
 package com.aiassoft.capstone.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,10 +50,14 @@ import butterknife.ButterKnife;
 
 public class ExpensesListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener,
         ExpensesListAdapter.ExpensesAdapterOnClickHandler,
         LoaderCallbacks<List<Expense>> {
 
     public static final int EXPENSES_LOADER_ID = 0;
+
+    public static final int CHILD_INSERT = 0;
+    public static final int CHILD_UPDATE = 1;
 
     /**
      * Used to identify if we have to invalidate the cache
@@ -200,8 +205,10 @@ public class ExpensesListActivity extends AppCompatActivity
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView))
+        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
+        }
 
         return true;
     }
@@ -433,10 +440,36 @@ public class ExpensesListActivity extends AppCompatActivity
      */
     @Override
     public void onClick(int expenseId) {
-        /* Prepare to call the detail activity, to show the expense's details */
+        /** Prepare to call the detail activity, to show the expense's details */
         Intent intent = new Intent(this, ExpensesEntityActivity.class);
-        //intent.putExtra(DetailActivity.EXTRA_MOVIE_ID, expenseId);
+        intent.putExtra(ExpensesEntityActivity.EXTRA_EXPENSES_ID, expenseId);
         startActivity(intent);
     }
 
+    /**
+     * his method is for responding to clicks from the fab
+     *
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(mContext, VehicleEntityActivity.class);
+        startActivityForResult(intent, CHILD_INSERT);
+    }
+
+    /**
+     * called after child activity finish
+     * if resultCode == Activity.RESULT_OK we will restart the loader
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            // if we have changes then we restart the loader
+            // so that to we read the new data and update the UI.
+            getSupportLoaderManager().restartLoader(EXPENSES_LOADER_ID, null, this);
+        }
+    }
 }

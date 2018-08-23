@@ -1,5 +1,6 @@
 package com.aiassoft.capstone.activities;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +65,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
     private static final String LOG_TAG = MyApp.APP_TAG + ExpensesEntityActivity.class.getSimpleName();
 
     public static final int VEHICLES_LOADER_ID = 0;
+
+    public static final String EXTRA_EXPENSES_ID = "EXTRA_EXPENSES_ID";
 
     private static final boolean USER_IS_GOING_TO_EXIT = false;
 
@@ -133,6 +136,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
         // toolbar photo
         mToolbarPhoto = findViewById(R.id.toolbar_photo);
+        //TODO set mToolbarPhoto Content Description according state
+
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
@@ -234,8 +239,9 @@ public class ExpensesEntityActivity extends AppCompatActivity
         switch (selectedMenuItem) {
             case android.R.id.home :
                 //TODO ask for cancel if the are data in the views
-                //finish();
-                //return true;
+
+                setResult(Activity.RESULT_CANCELED);
+
                 onBackPressed();
                 return true;
             //return false; // calls the onSupportNavigateUp
@@ -244,7 +250,9 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 //TODO check data validity
                 //TODO save the data
                 saveData();
-                //NavUtils.navigateUpFromSameTask(this); Did you forget to add the android.support.PARENT_ACTIVITY <meta-data>  element in your manifest?
+
+                setResult(Activity.RESULT_OK);
+
                 finish();
                 return true;
         }
