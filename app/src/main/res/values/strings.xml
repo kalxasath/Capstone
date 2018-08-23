@@ -95,6 +95,7 @@
     <string name="no_expenses_available">No Expenses Available</string>
 
     <!-- Expenses Entity -->
+    <string name="add_new_expense">Add new expense</string>
     <string name="vehicle_spinner_label">Vehicle</string>
     <string name="expense_type_spinner_label">Type</string>
     <string name="subtype_spinner_label">Subtype</string>
@@ -106,7 +107,13 @@
 
     <string name="couldnt_insert_expense">Couldn\'t insert the Expense</string>
     <string name="expense_added">Expense added: </string>
-    
+    <string name="expenses_data_updated">Expense updated</string>
+    <string name="to_much_expenses_updated">TO MUCH EXPENSES UPDATED</string>
+    <string name="expenses_data_not_updated">Something went wrong, expense\'s data were not updated!</string>
+    <string name="deleted_expense">Expense is deleted</string>
+    <string name="question_delete_expense">Delete Expense?</string>
+    <string name="enter_vehicles_first">Hurry up! Enter some vehicles for the beginning. Then come back here ...</string>
+
     <!-- Search Youtube -->
     <string name="no_video_results">No video results</string>
     <string name="no_video_results_for">No video results for</string>

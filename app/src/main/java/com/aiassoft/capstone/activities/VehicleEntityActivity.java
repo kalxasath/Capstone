@@ -59,11 +59,15 @@ import static com.aiassoft.capstone.utilities.PrefUtils.READ_EXTERNAL_STORAGE_GR
 import static com.aiassoft.capstone.utilities.PrefUtils.getBoolPref;
 import static com.aiassoft.capstone.utilities.PrefUtils.setBoolPref;
 
+/**
+ * Created by gvryn on 26/07/18.
+ */
+
 public class VehicleEntityActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener,
-        //DialogInterface.OnClickListener,
         View.OnClickListener,
         LoaderManager.LoaderCallbacks<Vehicle> {
+
 
     private static final String LOG_TAG = MyApp.APP_TAG + VehicleEntityActivity.class.getSimpleName();
 
@@ -92,18 +96,16 @@ public class VehicleEntityActivity extends AppCompatActivity
     private ViewGroup mRootLayout;
     private ViewGroup mLayoutContainer;
     private ImageView mToolbarPhoto;
-    private Toast mBacktoast;
 
     private static boolean mEntityUpdated;
 
     private int mScrollViewContainerScrollToY = Const.INVALID_INT;
 
     // This vehicle structure is to hold vehicle's data
-    // Vehicle's image uri is written her direct
+    // Vehicle's image uri is written here direct
     private Vehicle mVehicle;
 
     private int mVehicleId;
-//    private boolean mReadVehiclesData;
     @BindView(R.id.name_wrapper) TextInputLayout mNameWrapper;
     @BindView(R.id.name) TextInputEditText mName;
     @BindView(R.id.make_wrapper) TextInputLayout mMakeWrapper;
@@ -190,7 +192,6 @@ public class VehicleEntityActivity extends AppCompatActivity
                  *  Otherwise NEW_RECORD_ID signifies a new vehicle entity
                  */
                 mVehicleId = intent.getIntExtra(EXTRA_VEHICLE_ID, Const.NEW_RECORD_ID);
-                // ?mReadVehiclesData = (mVehicleId != NEW_RECORD_ID);
             }
 
             if (mVehicleId != Const.NEW_RECORD_ID) {
@@ -255,7 +256,7 @@ public class VehicleEntityActivity extends AppCompatActivity
             case R.id.action_done :
                 if (validateData()) {
                     updateVehicleFromViews();
-                    saveData();
+                    saveEntity();
 
                     setResult(Activity.RESULT_OK);
                     finish();
@@ -264,7 +265,7 @@ public class VehicleEntityActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete :
-                deleteVehicle();
+                deleteEntity();
                 return true;
         }
 
@@ -485,7 +486,7 @@ public class VehicleEntityActivity extends AppCompatActivity
         return validated;
     }
 
-    private boolean saveData() {
+    private boolean saveEntity() {
         /** We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
 
@@ -507,8 +508,6 @@ public class VehicleEntityActivity extends AppCompatActivity
         if (mVehicleId == Const.NEW_RECORD_ID) {
             /**
              * Insert new Vehicle's data via a ContentResolver
-             * insert these values into our database with
-             * a call to a content resolver
              */
             uri = getContentResolver().insert(VehiclesEntry.CONTENT_URI, contentValues);
 
@@ -562,7 +561,7 @@ public class VehicleEntityActivity extends AppCompatActivity
         }
     }
 
-    private void deleteVehicle() {
+    private void deleteEntity() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(R.string.dialog_confirm);
@@ -615,13 +614,12 @@ public class VehicleEntityActivity extends AppCompatActivity
         mVehicle.setMake(mMake.getText().toString());
         mVehicle.setModel(mModel.getText().toString());
         mVehicle.setPlateNo(mPlateno.getText().toString());
-        mVehicle.setInitialMileage(Integer.decode(mInitialMileage.getText().toString()));
+        mVehicle.setInitialMileage(Integer.parseInt(mInitialMileage.getText().toString()));
         mVehicle.setDistanceUnit(mDistanceUnitSpinner.getSelectedItemId());
-        mVehicle.setTankVolume(Integer.decode(mTankVolume.getText().toString()));
+        mVehicle.setTankVolume(Integer.parseInt(mTankVolume.getText().toString()));
         mVehicle.setVolumeUnit(mVolumeUnitSpinner.getSelectedItemId());
         mVehicle.setNotes(mNotes.getText().toString());
     }
-
 
     /**
      * The loader, is used to read the data from the database 
@@ -665,10 +663,6 @@ public class VehicleEntityActivity extends AppCompatActivity
              */
             @Override
             public Vehicle loadInBackground() {
-
-//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-//                if (invalidateCache)
-//                    mCachedVehiclesData = null;
 
                 Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
@@ -904,6 +898,7 @@ public class VehicleEntityActivity extends AppCompatActivity
             }
         }
     }
+
 
 
 

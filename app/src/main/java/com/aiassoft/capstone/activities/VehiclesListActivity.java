@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -52,6 +53,10 @@ import static com.aiassoft.capstone.utilities.PrefUtils.READ_EXTERNAL_STORAGE_GR
 import static com.aiassoft.capstone.utilities.PrefUtils.getBoolPref;
 import static com.aiassoft.capstone.utilities.PrefUtils.setBoolPref;
 
+/**
+ * Created by gvryn on 26/07/18.
+ */
+
 public class VehiclesListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener,
@@ -80,11 +85,11 @@ public class VehiclesListActivity extends AppCompatActivity
     /** The recycler's view adapter */
     VehiclesListAdapter mVehiclesListAdapter;
 
+    Parcelable mRecyclerState = null;
+
     @BindView(R.id.empty_view) TextView mEmptyView;
 
     @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,11 @@ public class VehiclesListActivity extends AppCompatActivity
         View.inflate(this, R.layout.activity_vehicles_list, mContainer);
 
         ButterKnife.bind(this);
+
+        /** recovering the instance state */
+        if (savedInstanceState != null) {
+            mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
+        }
 
         requestPermissions();
 
@@ -109,6 +119,9 @@ public class VehiclesListActivity extends AppCompatActivity
 
         initVehiclesListRecyclerView();
 
+        if (mRecyclerState != null)
+            mVehiclesList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+
         fetchVehiclesList();
     }
 
@@ -117,34 +130,20 @@ public class VehiclesListActivity extends AppCompatActivity
             mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
             mFab.setContentDescription(getString(R.string.add_new_vehicle));
             mFab.setOnClickListener(this);
-
         }
     }
 
     private void initDrawer() {
-        //mDrawer = findViewById(R.id.drawer_layout);
-        //mDrawer.setFocusable(true);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //This is not working properly
-                mNavView.requestFocus();
-                /*
-                if(mNavView.requestFocus()){
-                    NavigationMenuView navigationMenuView = (NavigationMenuView)mNavView.getFocusedChild();
-                    navigationMenuView.setPressed(true);
-
-                    //navigationMenuView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                }
-                */
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                //This seems to work
                 mContainer.requestFocus();
             }
         };
@@ -192,6 +191,16 @@ public class VehiclesListActivity extends AppCompatActivity
     }
 
 
+    /** invoked when the activity may be temporarily destroyed, save the instance state here */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Parcelable recyclerState = mVehiclesList.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(STATE_RECYCLER, recyclerState);
+
+        /** call superclass to save any view hierarchy */
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -201,19 +210,9 @@ public class VehiclesListActivity extends AppCompatActivity
         }
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
-    }
-    */
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        //item.setChecked(true);
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
@@ -247,25 +246,9 @@ public class VehiclesListActivity extends AppCompatActivity
     }
 
     /**
-     * This method is called after this activity has been paused or restarted.
-     * Often, this is after new data has been inserted through an AddTaskActivity,
-     * so this restarts the loader to re-query the underlying data for any changes.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-
-    /**
      * Fetch the vehicles' data from the database
      */
     private void fetchVehiclesList() {
-        /* Create a bundle to pass parameters to the loader */
-        //Bundle loaderArgs = new Bundle();
-        //loaderArgs.putBoolean(LOADER_EXTRA_IC, invalidateCache);
-
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
          * created and (if the activity/fragment is currently started) starts the loader. Otherwise
@@ -286,7 +269,7 @@ public class VehiclesListActivity extends AppCompatActivity
      * Instantiate and return a new Loader for the given ID.
      *
      * @param id The ID whose loader is to be created.
-     * @param loaderArgs The WEB URL for fetching the vehicles' data.
+     * @param loaderArgs
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
@@ -304,14 +287,6 @@ public class VehiclesListActivity extends AppCompatActivity
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-//                if (loaderArgs == null) {
-//                    return;
-//                }
-
-//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-//                if (invalidateCache)
-//                    mCachedVehiclesListData = null;
-
 
                 if (mCachedVehiclesListData != null) {
                     deliverResult(mCachedVehiclesListData);
@@ -321,7 +296,7 @@ public class VehiclesListActivity extends AppCompatActivity
 
                     forceLoad();
                 }
-            } // onStartLoading
+            }
 
             /**
              * This is the method of the AsyncTaskLoader that will load and parse the JSON data
@@ -333,14 +308,9 @@ public class VehiclesListActivity extends AppCompatActivity
             @Override
             public List<Vehicle> loadInBackground() {
 
-//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-//                if (invalidateCache)
-//                    mCachedVehiclesListData = null;
-
                 Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
                 Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
 
                 if (cursor != null && cursor.getCount() != 0) {
                     /** ArrayList to hold the vehicles list items */
@@ -354,8 +324,6 @@ public class VehiclesListActivity extends AppCompatActivity
                         vehiclesListItem.setName(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME)));
                         vehiclesListItem.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
                         vehiclesListItem.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
-
-                        //vehiclesListItem.setName(vehiclesListItem.getName() + ": " + String.valueOf(vehiclesListItem.getId()));
 
                         vehiclesListItems.add(vehiclesListItem);
                     }
@@ -400,6 +368,11 @@ public class VehiclesListActivity extends AppCompatActivity
         /* Update the adapters data with the new one */
         invalidateData();
         mVehiclesListAdapter.setVehiclesData(data);
+
+        if (mRecyclerState != null) {
+            mVehiclesList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+            mRecyclerState = null;
+        }
     } // onLoadFinished
 
     /**
@@ -462,7 +435,7 @@ public class VehiclesListActivity extends AppCompatActivity
     }
 
     /**
-     * his method is for responding to clicks from the fab
+     * this method is for responding to clicks from the fab
      *
      * the VehicleEntityActivity is called without parameters
      * to start an empty entity for new insert

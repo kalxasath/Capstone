@@ -25,7 +25,7 @@ import android.net.Uri;
  * Created by gvryn on 23/06/2018.
  * Defining a class of constants to use them from anywhere
  */
-public class Const {
+public final class Const {
     /**
      * We never need to create an instance of the Const class
      * because the Const is simply a class filled,

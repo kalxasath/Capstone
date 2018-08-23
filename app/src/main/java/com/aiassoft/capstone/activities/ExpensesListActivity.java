@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -59,10 +60,7 @@ public class ExpensesListActivity extends AppCompatActivity
     public static final int CHILD_INSERT = 0;
     public static final int CHILD_UPDATE = 1;
 
-    /**
-     * Used to identify if we have to invalidate the cache
-     */
-    private static final String LOADER_EXTRA_IC = "invalidate_the_cache";
+    private static final String STATE_RECYCLER = "STATE_RECYCLER";
 
     Context mContext;
 
@@ -74,17 +72,16 @@ public class ExpensesListActivity extends AppCompatActivity
     @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
 
     /** The recycler view */
-    @BindView(R.id.expenses_list)
-    RecyclerView mExpensesList;
+    @BindView(R.id.expenses_list) RecyclerView mExpensesList;
 
     /** The recycler's view adapter */
     ExpensesListAdapter mExpensesListAdapter;
 
-    @BindView(R.id.empty_view)
-    TextView mEmptyView;
+    Parcelable mRecyclerState = null;
 
-    @BindView(R.id.loading_indicator)
-    ProgressBar mLoadingIndicator;
+    @BindView(R.id.empty_view) TextView mEmptyView;
+
+    @BindView(R.id.loading_indicator) ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,16 +89,19 @@ public class ExpensesListActivity extends AppCompatActivity
         setContentView(R.layout.app_drawer);
         mContext = this;
 
-        // for fragment see https://stackoverflow.com/questions/2395769/how-to-programmatically-add-views-to-views
         mContainer = this.findViewById(R.id.layout_container);
         View.inflate(this, R.layout.activity_expenses_list, mContainer);
 
         ButterKnife.bind(this);
 
-        mNavView = this.findViewById(R.id.nav_view);
+        /** recovering the instance state */
+        if (savedInstanceState != null) {
+            mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
+        }
+
+
 
         setSupportActionBar(mToolbar);
-
 
         initFab();
 
@@ -111,20 +111,17 @@ public class ExpensesListActivity extends AppCompatActivity
 
         initExpensesListRecyclerView();
 
+        if (mRecyclerState != null)
+            mExpensesList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+
         fetchExpensesList(true);
     }
 
     private void initFab() {
         if (mFab != null) {
             mFab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add_white_24dp));
-
-            mFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, ExpensesEntityActivity.class);
-                    startActivity(intent);
-                }
-            });
+            mFab.setContentDescription(getString(R.string.add_new_expense));
+            mFab.setOnClickListener(this);
         }
 
     }
@@ -135,14 +132,11 @@ public class ExpensesListActivity extends AppCompatActivity
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //This is not working properly
-                mNavView.requestFocus();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                //This seems to work
                 mContainer.requestFocus();
             }
         };
@@ -189,6 +183,17 @@ public class ExpensesListActivity extends AppCompatActivity
 
     }
 
+
+    /** invoked when the activity may be temporarily destroyed, save the instance state here */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Parcelable recyclerState = mExpensesList.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(STATE_RECYCLER, recyclerState);
+
+        /** call superclass to save any view hierarchy */
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
@@ -201,7 +206,6 @@ public class ExpensesListActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        //item.setChecked(true);
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
@@ -237,10 +241,6 @@ public class ExpensesListActivity extends AppCompatActivity
      * Fetch the expenses' data from the database
      */
     private void fetchExpensesList(Boolean invalidateCache) {
-        /* Create a bundle to pass parameters to the loader */
-        Bundle loaderArgs = new Bundle();
-        loaderArgs.putBoolean(LOADER_EXTRA_IC, invalidateCache);
-
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
          * created and (if the activity/fragment is currently started) starts the loader. Otherwise
@@ -250,18 +250,18 @@ public class ExpensesListActivity extends AppCompatActivity
         Loader<List<Expense>> theExpenseDbLoader = loaderManager.getLoader(EXPENSES_LOADER_ID);
 
         if (theExpenseDbLoader == null) {
-            loaderManager.initLoader(EXPENSES_LOADER_ID, loaderArgs, this);
+            loaderManager.initLoader(EXPENSES_LOADER_ID, null, this);
         } else {
-            loaderManager.restartLoader(EXPENSES_LOADER_ID, loaderArgs, this);
+            loaderManager.restartLoader(EXPENSES_LOADER_ID, null, this);
         }
 
-    } // fetchExpensesList
+    }
 
     /**
      * Instantiate and return a new Loader for the given ID.
      *
      * @param id The ID whose loader is to be created.
-     * @param loaderArgs The WEB URL for fetching the expenses' data.
+     * @param loaderArgs
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
@@ -280,14 +280,6 @@ public class ExpensesListActivity extends AppCompatActivity
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                if (loaderArgs == null) {
-                    return;
-                }
-
-                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-                if (invalidateCache)
-                    mCachedExpensesListData = null;
-
 
                 if (mCachedExpensesListData != null) {
                     deliverResult(mCachedExpensesListData);
@@ -297,7 +289,7 @@ public class ExpensesListActivity extends AppCompatActivity
 
                     forceLoad();
                 }
-            } // onStartLoading
+            }
 
             /**
              * This is the method of the AsyncTaskLoader that will load and parse the JSON data
@@ -309,15 +301,10 @@ public class ExpensesListActivity extends AppCompatActivity
             @Override
             public List<Expense> loadInBackground() {
 
-                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-                if (invalidateCache)
-                    mCachedExpensesListData = null;
-
                 Uri uri = ExpensesContract.ExpensesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
                 Cursor cursor = getContentResolver().query(uri, null, null, null,
                         ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE + " desc");
-
 
                 if (cursor != null && cursor.getCount() > 0) {
                     /** ArrayList to hold the expenses list items */
@@ -391,6 +378,11 @@ public class ExpensesListActivity extends AppCompatActivity
         /* Update the adapters data with the new one */
         invalidateData();
         mExpensesListAdapter.setExpensesData(data);
+
+        if (mRecyclerState != null) {
+            mExpensesList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+            mRecyclerState = null;
+        }
     } // onLoadFinished
 
     /**
@@ -436,25 +428,35 @@ public class ExpensesListActivity extends AppCompatActivity
     /**
      * This method is for responding to clicks from our list.
      *
+     * the ExpensesEntityActivity is called with parameter the expenseId
+     * to start the entity for edit or delete
+     *
      * @param expenseId the Id from the selected expense
      */
     @Override
     public void onClick(int expenseId) {
-        /** Prepare to call the detail activity, to show the expense's details */
+        /** Prepare to call the detail activity, to show the expense's details
+         * for edit or delete
+         **/
         Intent intent = new Intent(this, ExpensesEntityActivity.class);
         intent.putExtra(ExpensesEntityActivity.EXTRA_EXPENSES_ID, expenseId);
-        startActivity(intent);
+        startActivityForResult(intent, CHILD_UPDATE);
+        overridePendingTransition(R.anim.exit, R.anim.entry);
     }
 
     /**
-     * his method is for responding to clicks from the fab
+     * this method is for responding to clicks from the fab
+     *
+     * the ExpensesEntityActivity is called without parameters
+     * to start an empty entity for new insert
      *
      * @param view
      */
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(mContext, VehicleEntityActivity.class);
+        Intent intent = new Intent(mContext, ExpensesEntityActivity.class);
         startActivityForResult(intent, CHILD_INSERT);
+        overridePendingTransition(R.anim.exit, R.anim.entry);
     }
 
     /**
