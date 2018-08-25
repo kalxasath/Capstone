@@ -283,7 +283,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     private void invalidateActivity() {
-        // we don't need any more the loader
+        // destroy the loader
         getSupportLoaderManager().destroyLoader(EXPENSES_LOADER_ID);
     }
 

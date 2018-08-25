@@ -285,7 +285,7 @@ public class VehicleEntityActivity extends AppCompatActivity
     }
 
     private void invalidateActivity() {
-        // we don't need any more the loader
+        // destroy the loader
         getSupportLoaderManager().destroyLoader(VEHICLES_LOADER_ID);
     }
 

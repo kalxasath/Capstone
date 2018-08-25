@@ -78,7 +78,7 @@ public class VehiclesListActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
     @BindView(R.id.fab) FloatingActionButton mFab;
-    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
+    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavigationView;
 
     /** The recycler view */
     @BindView(R.id.vehicles_list) RecyclerView mVehiclesList;
@@ -153,8 +153,8 @@ public class VehiclesListActivity extends AppCompatActivity
     }
 
     private void initNavigation() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().findItem(R.id.nav_vehicles_list).setChecked(true);
     }
 
     private void initVehiclesListRecyclerView() {
@@ -203,6 +203,17 @@ public class VehiclesListActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        invalidateActivity();
+        super.onStop();
+    }
+
+    private void invalidateActivity() {
+        // destroy the loader
+        getSupportLoaderManager().destroyLoader(VEHICLES_LOADER_ID);
+    }
+
+    @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
@@ -217,7 +228,7 @@ public class VehiclesListActivity extends AppCompatActivity
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+        if (DrawerMenu.navigate(this, item, mNavigationView)) {
             overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
         }

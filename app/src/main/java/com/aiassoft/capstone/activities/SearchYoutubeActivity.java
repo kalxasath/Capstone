@@ -78,7 +78,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
     @BindView(R.id.fab) FloatingActionButton mFab;
-    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
+    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavigationView;
 
     SearchView mSearchView;
     MenuItem mSearchMenuItem;
@@ -113,7 +113,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        mNavView = this.findViewById(R.id.nav_view);
+        mNavigationView = this.findViewById(R.id.nav_view);
 
         setSupportActionBar(mToolbar);
 
@@ -142,7 +142,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 //This is not working properly
-                mNavView.requestFocus();
+                mNavigationView.requestFocus();
             }
 
             @Override
@@ -157,8 +157,8 @@ public class SearchYoutubeActivity extends AppCompatActivity
     }
 
     private void initNavigation() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().findItem(R.id.nav_search_youtube).setChecked(true);
     }
 
     private void initVideosListRecyclerView() {
@@ -195,13 +195,24 @@ public class SearchYoutubeActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStop() {
+        invalidateActivity();
+        super.onStop();
+    }
+
+    private void invalidateActivity() {
+        // destroy the loader
+        getSupportLoaderManager().destroyLoader(VIDEOS_LOADER_ID);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+        if (DrawerMenu.navigate(this, item, mNavigationView)) {
             overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
         }

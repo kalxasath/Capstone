@@ -39,7 +39,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
      * The interface that receives OnClick messages
      */
     public interface DashboardAdapterOnClickHandler {
-        void onClick(int DashboardId);
+        void onClick(int dashboardId);
     }
 
     /**
@@ -108,9 +108,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
          */
         @Override
         public void onClick(View v) {
-//            int adapterPosition = getAdapterPosition();
-//            int selectedDashboard = mVehiclesTotalRunningCosts.get(adapterPosition).getMinOdometer();
-//            mClickHandler.onClick(selectedDashboard);
+            // this method will not be used
         }
     }
 

@@ -70,7 +70,7 @@ public class ExpensesListActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
     @BindView(R.id.fab) FloatingActionButton mFab;
-    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
+    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavigationView;
 
     /** The recycler view */
     @BindView(R.id.expenses_list) RecyclerView mExpensesList;
@@ -146,8 +146,8 @@ public class ExpensesListActivity extends AppCompatActivity
     }
 
     private void initNavigation() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().findItem(R.id.nav_expenses_list).setChecked(true);
     }
 
     private void initExpensesListRecyclerView() {
@@ -196,6 +196,17 @@ public class ExpensesListActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        invalidateActivity();
+        super.onStop();
+    }
+
+    private void invalidateActivity() {
+        // destroy the loader
+        getSupportLoaderManager().destroyLoader(EXPENSES_LOADER_ID);
+    }
+
+    @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
@@ -210,7 +221,7 @@ public class ExpensesListActivity extends AppCompatActivity
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+        if (DrawerMenu.navigate(this, item, mNavigationView)) {
             overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
         }

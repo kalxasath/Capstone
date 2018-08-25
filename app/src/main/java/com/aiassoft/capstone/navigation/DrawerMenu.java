@@ -3,6 +3,7 @@ package com.aiassoft.capstone.navigation;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.aiassoft.capstone.R;
@@ -31,12 +32,15 @@ public class DrawerMenu {
 
     /**
      * Handle navigation view item clicks here.
-     * @param id
+     * @param context
+     * @param item
+     * @param view
+     * @return
      */
-    public static boolean navigate(Context context, int id, View view) {
+    public static boolean navigate(Context context, MenuItem item, View view) {
         Intent intent;
 
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.nav_dashboard:
                 // Handle the dashboard action
                 intent = new Intent(context, DashboardActivity.class);

@@ -55,11 +55,6 @@ public class DashboardActivity extends AppCompatActivity
 
     public static final int DASHBOARD_LOADER_ID = 0;
 
-    /**
-     * Used to identify if we have to invalidate the cache
-     */
-    private static final String LOADER_EXTRA_IC = "invalidate_the_cache";
-
     Context mContext;
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
@@ -67,7 +62,7 @@ public class DashboardActivity extends AppCompatActivity
     @BindView(R.id.toolbar) Toolbar mToolbar;
     ViewGroup mContainer;
     @BindView(R.id.fab) FloatingActionButton mFab;
-    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavView;
+    @BindView(R.id.nav_view) android.support.design.widget.NavigationView mNavigationView;
 
     /** The recycler view */
     @BindView(R.id.dashboard_list) RecyclerView mDashboardList;
@@ -92,8 +87,6 @@ public class DashboardActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        mNavView = this.findViewById(R.id.nav_view);
-
         setSupportActionBar(mToolbar);
 
         initFab();
@@ -116,29 +109,16 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
-        //mDrawer = findViewById(R.id.drawer_layout);
-        //mDrawer.setFocusable(true);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //This is not working properly
-                mNavView.requestFocus();
-                /*
-                if(mNavView.requestFocus()){
-                    NavigationMenuView navigationMenuView = (NavigationMenuView)mNavView.getFocusedChild();
-                    navigationMenuView.setPressed(true);
-
-                    //navigationMenuView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                }
-                */
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                //This seems to work
                 mContainer.requestFocus();
             }
         };
@@ -147,8 +127,8 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     private void initNavigation() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().findItem(R.id.nav_dashboard).setChecked(true);
     }
 
     private void initAdView() {
@@ -196,6 +176,19 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        invalidateActivity();
+        super.onStop();
+    }
+
+    private void invalidateActivity() {
+        // destroy the loader
+        getSupportLoaderManager().destroyLoader(DASHBOARD_LOADER_ID);
+        // destroy the ads
+        mAdView.destroy();
+    }
+
+    @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
@@ -207,11 +200,10 @@ public class DashboardActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        //item.setChecked(true);
         mDrawer.closeDrawer(GravityCompat.START);
 
         // Handle navigation view item clicks here.
-        if (DrawerMenu.navigate(this, item.getItemId(), mNavView)) {
+        if (DrawerMenu.navigate(this, item, mNavigationView)) {
             overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
         }
@@ -244,10 +236,6 @@ public class DashboardActivity extends AppCompatActivity
      * Fetch the dashboard' data from the database
      */
     private void fetchDashboardList(Boolean invalidateCache) {
-        /* Create a bundle to pass parameters to the loader */
-        Bundle loaderArgs = new Bundle();
-        loaderArgs.putBoolean(LOADER_EXTRA_IC, invalidateCache);
-
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
          * created and (if the activity/fragment is currently started) starts the loader. Otherwise
@@ -257,9 +245,9 @@ public class DashboardActivity extends AppCompatActivity
         Loader<List<VehiclesTotalRunningCosts>> theDashboardDbLoader = loaderManager.getLoader(DASHBOARD_LOADER_ID);
 
         if (theDashboardDbLoader == null) {
-            loaderManager.initLoader(DASHBOARD_LOADER_ID, loaderArgs, this);
+            loaderManager.initLoader(DASHBOARD_LOADER_ID, null, this);
         } else {
-            loaderManager.restartLoader(DASHBOARD_LOADER_ID, loaderArgs, this);
+            loaderManager.restartLoader(DASHBOARD_LOADER_ID, null, this);
         }
 
 
@@ -289,14 +277,6 @@ public class DashboardActivity extends AppCompatActivity
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                if (loaderArgs == null) {
-                    return;
-                }
-
-                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-                if (invalidateCache)
-                    mCachedDashboardListData = null;
-
 
                 if (mCachedDashboardListData != null) {
                     deliverResult(mCachedDashboardListData);
@@ -355,8 +335,6 @@ public class DashboardActivity extends AppCompatActivity
                 dbHelper.close();
 
 
-//                Boolean invalidateCache = loaderArgs.getBoolean(LOADER_EXTRA_IC);
-//                if (invalidateCache)
                     mCachedDashboardListData = null;
 
                 return dashboardListItems;
@@ -439,14 +417,11 @@ public class DashboardActivity extends AppCompatActivity
     /**
      * This method is for responding to clicks from our list.
      *
-     * @param expenseId the Id from the selected expense
+     * @param
      */
     @Override
-    public void onClick(int expenseId) {
-        /* Prepare to call the detail activity, to show the expense's details */
-        //Intent intent = new Intent(this, DashboardEntityActivity.class);
-        //intent.putExtra(DetailActivity.EXTRA_MOVIE_ID, expenseId);
-        //startActivity(intent);
+    public void onClick(int dashboardId) {
+        // this method will not be used
     }
 
 

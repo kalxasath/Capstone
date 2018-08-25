@@ -33,6 +33,7 @@
     <string name="abord_editing">... to abort editing, discard changes and return</string>
     <string name="tap_to_refresh">Tap to refresh</string>
     <string name="tap_to_accept_the_date">Tap to accept the date</string>
+    <string name="invalid_api_key">Invalid API key</string>
 
     <!-- Menus -->
     <string name="action_done">Done</string>

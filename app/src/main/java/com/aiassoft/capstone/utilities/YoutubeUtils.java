@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
 import static com.aiassoft.capstone.utilities.AppUtils.showToast;
 
 /**
@@ -112,9 +113,9 @@ public class YoutubeUtils {
     ////// Parse JSON Data //////
 
     public static ArrayList<VideosListItem> parseSearchResults(String json) {
-        Log.d(LOG_TAG, json);
-        /* ArrayList to hold the movie reviews list items */
+        //Log.d(LOG_TAG, json);
 
+        /* ArrayList to hold the search result videos */
         ArrayList<VideosListItem> videosListItems = new ArrayList<>();
         VideosListItem videosListItem;
 
