@@ -128,7 +128,7 @@ public class YoutubeUtils {
 
             int maxResults = items.length();
             for (int i=0; i<maxResults; i++) {
-                /** Get the movie's data */
+                /** Get the video's data */
                 JSONObject item = items.optJSONObject(i);
                 JSONObject id = item.optJSONObject("id");
                 JSONObject video = item.optJSONObject("snippet");
@@ -139,10 +139,10 @@ public class YoutubeUtils {
                 videosListItem.setVideoId(id.optString("videoId"));
                 videosListItem.setTitle(video.optString("title"));
                 videosListItem.setDescription(video.optString("description"));
-                if (i==0)
-                    videosListItem.setThumbnail("https://url");
-                else
+
+//                if (i==0) videosListItem.setThumbnail("https://url"); else
                     videosListItem.setThumbnail(high.optString("url"));
+
                 videosListItem.setPage(pageInfo.optInt("resultsPerPage"));
 
                 videosListItems.add(videosListItem);

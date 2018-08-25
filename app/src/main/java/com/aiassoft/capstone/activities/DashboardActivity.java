@@ -42,6 +42,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.aiassoft.capstone.data.DBQueries.fetchVehiclesTotalRunningCosts;
+
 /**
  * Created by gvryn on 25/07/18.
  */
@@ -341,47 +343,8 @@ public class DashboardActivity extends AppCompatActivity
                 if (cVehicles != null && cVehicles.getCount() > 0) {
 
                     while (cVehicles.moveToNext()) {
-                        dashboardListItem = new VehiclesTotalRunningCosts();
-
                         int vehicleId = cVehicles.getInt(cVehicles.getColumnIndex("vehicleId"));
-                        String name = cVehicles.getString(cVehicles.getColumnIndex("name"));
-                        int distanceUnit = cVehicles.getInt(cVehicles.getColumnIndex("distanceUnit"));
-                        int volumeUnit = cVehicles.getInt(cVehicles.getColumnIndex("volumeUnit"));
-                        int minOdo = cVehicles.getInt(cVehicles.getColumnIndex("minOdo"));
-                        int maxOdo = cVehicles.getInt(cVehicles.getColumnIndex("maxOdo"));
-
-                        dashboardListItem.setVehicleId(vehicleId);
-                        dashboardListItem.setName(name);
-                        dashboardListItem.setDistanceUnit(distanceUnit);
-                        dashboardListItem.setVolumeUnit(volumeUnit);
-                        dashboardListItem.setKmDriven(maxOdo-minOdo);
-
-
-                        String sqlExpenses =
-                                "select e.expenseType, e.subtype, " +
-                                "       sum(e.amount) as amount, sum(e.fuelQty) as qty " +
-                                "from expenses as e " +
-                                "where e.vehicleId = ? " +
-                                "group by e.expenseType, e.subtype ";
-
-                        Cursor cExpenses = db.rawQuery(sqlExpenses, new String[] {vehicleId + ""});
-
-                        if (cExpenses != null && cExpenses.getCount() > 0) {
-
-                            dashboardListItem.hasData = true;
-
-                            while (cExpenses.moveToNext()) {
-                                int expenseType = cExpenses.getInt(cExpenses.getColumnIndex("expenseType"));
-                                int subtype = cExpenses.getInt(cExpenses.getColumnIndex("subtype"));
-                                float qty = cExpenses.getFloat(cExpenses.getColumnIndex("qty"));
-                                float amount = cExpenses.getFloat(cExpenses.getColumnIndex("amount"));
-
-                                dashboardListItem.addExpense(expenseType, subtype, qty, amount);
-                            }
-
-                            cExpenses.close();
-                        }
-                        dashboardListItem.calcTotals();
+                        dashboardListItem = fetchVehiclesTotalRunningCosts(vehicleId);
                         dashboardListItems.add(dashboardListItem);
                     }
 

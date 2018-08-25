@@ -32,19 +32,22 @@ public class Expense implements Parcelable {
     private int vehicleId;
     private int expenseType;
     private int subtype;
-    private String date;
+//    private String date;
+    private YearMonthDay yearMonthDay; // todo change to date
     private int odometer;
     private float fuelQuantity;
     private float amount;
     private String notes;
 
     private String vehicle;
+    private int vehiclePosInSpinner;
     private String vehicleImage;
 
     /**
      * No args constructor for use in serialization ¯\_(ツ)_/¯
      */
     public Expense() {
+        this.yearMonthDay = new YearMonthDay();
     }
 
     public Expense(int id, int vehicleId, int expenseType, int subtype, String date, int odometer,
@@ -53,7 +56,9 @@ public class Expense implements Parcelable {
         this.vehicleId = vehicleId;
         this.expenseType = expenseType;
         this.subtype = subtype;
-        this.date = date;
+//        this.date = date;
+        this.yearMonthDay = new YearMonthDay();
+        yearMonthDay.setDate(date);
         this.fuelQuantity = fuelQuantity;
         this.odometer = odometer;
         this.amount = amount;
@@ -66,7 +71,9 @@ public class Expense implements Parcelable {
         this.vehicleId = vehicleId;
         this.expenseType = expenseType;
         this.subtype = subtype;
-        this.date = date;
+//        this.date = date;
+        this.yearMonthDay = new YearMonthDay();
+        yearMonthDay.setDate(date);
         this.fuelQuantity = fuelQuantity;
         this.odometer = odometer;
         this.amount = amount;
@@ -80,13 +87,15 @@ public class Expense implements Parcelable {
         this.vehicleId = in.readInt();
         this.expenseType = in.readInt();
         this.subtype = in.readInt();
-        this.date = in.readString();
+//        this.date = in.readString();
+        this.yearMonthDay = in.readParcelable(YearMonthDay.class.getClassLoader());
         this.odometer = in.readInt();
         this.fuelQuantity = in.readFloat();
         this.amount = in.readFloat();
         this.notes = in.readString();
 
         this.vehicle = in.readString();
+        this.vehiclePosInSpinner = in.readInt();
         this.vehicleImage = in.readString();
     }
 
@@ -142,16 +151,16 @@ public class Expense implements Parcelable {
         this.subtype = subtype;
     }
 
-    public String getDate() {
-        return date;
-    }
+//    public String XgetDate() {
+//        return date;
+//    }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+//    public void XsetDate(String date) {
+//        this.date = date;
+//    }
 
     public int getOdometer() {
-        return odometer;
+        return this.odometer;
     }
 
     public void setOdometer(int odometer) {
@@ -159,20 +168,20 @@ public class Expense implements Parcelable {
     }
 
     public float getFuelQuantity() {
-        return fuelQuantity;
+        return this.fuelQuantity;
     }
 
     public void setFuelQuantity(float fuelQuantity) { this.fuelQuantity = fuelQuantity; }
 
 
     public float getAmount() {
-        return amount;
+        return this.amount;
     }
 
     public void setAmount(float amount) { this.amount = amount; }
 
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     public void setNotes(String notes) {
@@ -180,21 +189,28 @@ public class Expense implements Parcelable {
     }
 
     public String getVehicle() {
-        return vehicle;
+        return this.vehicle;
     }
 
     public void setVehicle(String vehicle) {
         this.vehicle = vehicle;
     }
 
-    public String getVehicleImage() {
-        return vehicleImage;
-    }
+    public int getVehiclePosInSpinner() { return this.vehiclePosInSpinner; }
+
+    public void setVehiclePosInSpinner(int vehiclePosInSpinner) { this.vehiclePosInSpinner = vehiclePosInSpinner; }
+
+    public String getVehicleImage() { return this.vehicleImage; }
 
     public void setVehicleImage(String vehicleImage) {
         this.vehicleImage = vehicleImage;
     }
 
+    public YearMonthDay getYearMonthDay() { return this.yearMonthDay; }
+
+    public void setYearMonthDay(YearMonthDay yearMonthDay) {
+        this.yearMonthDay = yearMonthDay;
+    }
 
     /**
      * Required by Parcelable
@@ -216,13 +232,15 @@ public class Expense implements Parcelable {
         dest.writeInt(this.vehicleId);
         dest.writeInt(this.expenseType);
         dest.writeInt(this.subtype);
-        dest.writeString(this.date);
+//        dest.writeString(this.date);
         dest.writeInt(this.odometer);
         dest.writeFloat(this.fuelQuantity);
         dest.writeFloat(this.amount);
         dest.writeString(this.notes);
 
         dest.writeString(this.vehicle);
+        dest.writeInt(this.vehiclePosInSpinner);
         dest.writeString(this.vehicleImage);
+        dest.writeParcelable(yearMonthDay, flags);
     }
 }

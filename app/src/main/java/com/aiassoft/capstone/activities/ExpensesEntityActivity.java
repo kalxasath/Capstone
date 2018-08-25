@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TextInputEditText;
@@ -51,16 +52,13 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
-import static com.aiassoft.capstone.utilities.DateUtils.getAppLocalizedPattern;
-import static com.aiassoft.capstone.utilities.DateUtils.getDate;
-import static com.aiassoft.capstone.utilities.DateUtils.getDisplayDate;
-import static com.aiassoft.capstone.utilities.DateUtils.getDisplayFormat;
 import static com.aiassoft.capstone.utilities.PrefUtils.READ_EXTERNAL_STORAGE_GRANTED;
 import static com.aiassoft.capstone.utilities.PrefUtils.getBoolPref;
 import static com.aiassoft.capstone.utilities.PrefUtils.setBoolPref;
@@ -90,7 +88,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
     private static TextWatcher mTextWatcherForUpdate = null;
     private static ArrayAdapter<CharSequence> mAdapterVehicles;
     List<CharSequence> mVehiclesNamesList = null;
-    // todo search for to-do
     private static ArrayAdapter<CharSequence> mAdapterExpenseType;
     private static ArrayAdapter<CharSequence> mAdapterSubtype;
     private static String[] mDistanceUnits;
@@ -107,10 +104,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
     private ImageView mToolbarPhoto;
 
     private DatePickerDialog mDatePickerDialog;
-    private int mDay;
-    private int mMonth;
-    private int mYear;
-
 
     private static boolean mEntityUpdated;
 
@@ -129,6 +122,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
     @BindView(R.id.btn_open_date_picker) Button mButtonOpenDatePicker;
     @BindView(R.id.odometer_wrapper) TextInputLayout mOdometerWrapper;
     @BindView(R.id.odometer) TextInputEditText mOdometer;
+    @BindView(R.id.distance_unit) TextView mDistanceUnit;
     @BindView(R.id.fuel_quantity_wrapper) TextInputLayout mFuelQuantityWrapper;
     @BindView(R.id.fuel_quantity) TextInputEditText mFuelQuantity;
     @BindView(R.id.volume_unit) TextView mVolumeUnit;
@@ -188,6 +182,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
         initDialogsOnClickListener();
 
+        mDate.setOnClickListener(this);
+
 
         /** recovering the instance state */
         if (savedInstanceState != null) {
@@ -208,7 +204,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 /** Intent parameter should be a valid vehicle id for editing / deleting
                  *  Otherwise NEW_RECORD_ID signifies a new vehicle entity
                  */
-                mExpenseId = intent.getIntExtra(STATE_EXPENSE_ID, Const.NEW_RECORD_ID);
+                mExpenseId = intent.getIntExtra(EXTRA_EXPENSES_ID, Const.NEW_RECORD_ID);
             }
 
             fetchData();
@@ -219,15 +215,10 @@ public class ExpensesEntityActivity extends AppCompatActivity
             } else {
                 mToolbarPhoto.setContentDescription(
                         getString(R.string.vehicle_screen_ready_for_new_record));
-                setEntityTitle(getString(R.string.add_new_vehicle));
-                // Generate Entities Structure
-                mExpense = new Expense();
             }
 
         }
 
-//to-do was is doing initdata, test only later init empy entity
-        initData();
     }
 
     /** invoked when the activity may be temporarily destroyed, save the instance state here */
@@ -313,14 +304,16 @@ public class ExpensesEntityActivity extends AppCompatActivity
         mAdapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSubtypeSpinner.setAdapter(mAdapterSubtype);
         mSubtypeSpinner.setOnItemSelectedListener(this);
-        mSubtypeSpinner.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mEntityUpdated = false;
-            }
-        }, 300);    }
+
+//        mVehiclesSpinner.postDelayed(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                mEntityUpdated = false;
+//            }
+//        }, 500);
+    }
 
 
     private void initTextWatchers() {
@@ -358,37 +351,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
         Toast.makeText(this, err, Toast.LENGTH_LONG).show();
         setResult(Activity.RESULT_CANCELED);
         finish();
-    }
-
-    private void initData() {
-        // To-do what else in initdata
-        /*
-        String d = getDate();
-        Locale locale = Locale.getDefault();
-
-        String d1 = "2018-06-07";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd");
-        Date date = null;
-        Boolean dateIsInvalid = false;
-        try {
-            date = simpleDateFormat.parse(d1);
-        } catch (ParseException e) {
-            dateIsInvalid = true;
-        }
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(mContext);
-        String deviceDate = dateFormat.format(date);
-
-        java.text.DateFormat dateFormat2 = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
-
-        mDate.setText(getDate());
-        */
-        String dbDate = "2018-06-07";
-        String displayDate = getDisplayDate(getDate(dbDate, getAppLocalizedPattern()));
-        String displayFormat = getDisplayFormat();
-        //TO-DO: add dateformat to dates tag
-
-        mDate.setText(displayDate);
-        mDate.setEnabled(false);
     }
 
     private boolean validateData() {
@@ -431,21 +393,18 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     private boolean saveEntity() {
+//todo saveEntity
         /** We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
         /** Put the Expenses data into the ContentValues */
-        int vehicleSpinnerItem = mVehiclesSpinner.getSelectedItemPosition();
-        int vehicleId = mVehiclesListData.get(vehicleSpinnerItem).getId();
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, vehicleId);
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, mExpenseTypeSpinner.getSelectedItemId());
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, mSubtypeSpinner.getSelectedItemId());
-        // TO-DO: convert date to String to store to SQLite
-        // TO-DO: create DateUtils with functions for conversions
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, mDate.getText().toString());
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, Integer.valueOf(mOdometer.getText().toString()));
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, Float.valueOf(mFuelQuantity.getText().toString()));
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, Float.valueOf(mAmount.getText().toString()));
-        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, mNotes.getText().toString());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, mExpense.getVehicleId());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, mExpense.getExpenseType());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, mExpense.getSubtype());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE, mExpense.getYearMonthDay().getDbDate());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER, mExpense.getOdometer());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY, mExpense.getFuelQuantity());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT, mExpense.getAmount());
+        contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES, mExpense.getNotes());
 
         Uri uri;
         int recordsUpdated;
@@ -459,6 +418,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
             if (uri == null) {
                 Toast.makeText(getBaseContext(), getString(R.string.couldnt_insert_expense),
                         Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, getString(R.string.couldnt_insert_expense));
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.expense_added) + uri,
                         Toast.LENGTH_SHORT).show();
@@ -478,9 +438,11 @@ public class ExpensesEntityActivity extends AppCompatActivity
             } else if (recordsUpdated > 1) {
                 Toast.makeText(getBaseContext(), getString(R.string.to_much_expenses_updated),
                         Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, getString(R.string.to_much_expenses_updated));
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.expenses_data_not_updated),
                         Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, getString(R.string.expenses_data_not_updated));
             }
 
             return (recordsUpdated == 1);
@@ -518,7 +480,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     private void displayVehicleImage() {
-//todo vehicle image
         String imagePath = mExpense.getVehicleImage();
 
         if (imagePath == null || imagePath.isEmpty()) {
@@ -534,17 +495,48 @@ public class ExpensesEntityActivity extends AppCompatActivity
         }
     }
 
+    private void populateVehiclesSpinner() {
+        mAdapterVehicles = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, mVehiclesNamesList);
+        mAdapterVehicles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mVehiclesSpinner.setAdapter(mAdapterVehicles);
+        mVehiclesSpinner.invalidate();
+
+        // For an new entry entity
+        // We need here to set the VehicleId, since the populateViews needs it
+        // Title and image are populated on spinners onItemSelected
+        if (mVehiclesListData.size() != 0 && mExpenseId == Const.NEW_RECORD_ID) {
+            mExpense.setVehicleId(mVehiclesListData.get(0).getId());
+            mExpense.setVehiclePosInSpinner(0);
+        }
+    }
+
+    /**
+     * Search the Vehicles ArrayList to find vehicle's position
+     * in the ArrayList, this is the position for the Spinner
+     * there is no way to fail since all the data are preloaded
+     * and this is not a multi user enviroment
+     * @return
+     */
+    private int findVehiclesSpinnerPosition(int id) {
+        for(int i = 0; i < mVehiclesListData.size(); ++i) {
+            if(mVehiclesListData.get(i).getId() == id)
+                return i;
+        }
+
+        return 0;
+    }
+
     private void populateViews() {
-//to-do check with initdata
-        requestPermissions();
-
-        displayVehicleImage();
-
         setEntityTitle(null);
-//to-do set vehicle
+
+        mExpense.setVehiclePosInSpinner(findVehiclesSpinnerPosition(mExpense.getVehicleId()));
+        mVehiclesSpinner.setSelection(mExpense.getVehiclePosInSpinner());
         mExpenseTypeSpinner.setSelection(mExpense.getExpenseType());
         mSubtypeSpinner.setSelection(mExpense.getSubtype());
-//to-do set date
+
+        mDate.setText(mExpense.getYearMonthDay().getDisplayDate());
+        mDate.setEnabled(false);
+
         mOdometer.setText(String.valueOf(mExpense.getOdometer()));
         mFuelQuantity.setText(String.valueOf(mExpense.getFuelQuantity()));
         mAmount.setText(String.valueOf(mExpense.getAmount()));
@@ -552,15 +544,26 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     private void updateExpenseFromViews() {
-//to-do check
-        //to-do store vehicle
+//todo updateExpenseFromViews
+        // vehicle's id is store when selecting from the spinner
         mExpense.setExpenseType((int)mExpenseTypeSpinner.getSelectedItemId());
         mExpense.setSubtype((int)mSubtypeSpinner.getSelectedItemId());
-        //to-do store date? maybe not
+        // date is stored from date picker
         mExpense.setOdometer(Integer.parseInt(mOdometer.getText().toString()));
         mExpense.setFuelQuantity(Float.parseFloat(mFuelQuantity.getText().toString()));
         mExpense.setAmount(Float.parseFloat(mAmount.getText().toString()));
         mExpense.setNotes(mNotes.getText().toString());
+    }
+
+    private void hideOdometerControls() {
+        mFuelQuantityWrapper.setVisibility(View.GONE);
+        mDistanceUnit.setVisibility(View.GONE);
+        mFuelQuantity.setText("0.0");
+    }
+
+    private void showOdometerControls() {
+        mFuelQuantityWrapper.setVisibility(View.VISIBLE);
+        mVolumeUnit.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -568,21 +571,24 @@ public class ExpensesEntityActivity extends AppCompatActivity
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//to-do check set update flag
+//todo SPINNET on change
         mEntityUpdated = true;
         setEntityTitle(null);
         switch (parent.getId()) {
             case R.id.expense_type_spinner:
                 switch (position) {
                     case 0:
+                        showOdometerControls();
                         mAdapterSubtype = ArrayAdapter.createFromResource(this,
                                 R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
                         break;
                     case 1:
+                        hideOdometerControls();
                         mAdapterSubtype = ArrayAdapter.createFromResource(this,
                                 R.array.bill_expenses_subtypes, android.R.layout.simple_spinner_item);
                         break;
                     case 2:
+                        hideOdometerControls();
                         mAdapterSubtype = ArrayAdapter.createFromResource(this,
                                 R.array.service_expenses_subtypes, android.R.layout.simple_spinner_item);
                         break;
@@ -593,12 +599,23 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 break;
 
             case R.id.vehicle_spinner:
-//todo spinner change
-                int vehicleSpinnerItem = mVehiclesSpinner.getSelectedItemPosition();
-                int distanceUnit = mVehiclesListData.get(vehicleSpinnerItem).getDistanceUnit();
-                ((TextView) mRootLayout.findViewById(R.id.distance_unit)).setText(mDistanceUnits[distanceUnit]);
-                int volumeUnit = mVehiclesListData.get(vehicleSpinnerItem).getVolumeUnit();
-                ((TextView) mRootLayout.findViewById(R.id.volume_unit)).setText(mVolumeUnits[volumeUnit]);
+                int vehicleSpinnerPosition = mVehiclesSpinner.getSelectedItemPosition();
+
+                // Set Distance & Volume metrics according vehicle's data
+                int distanceUnit = mVehiclesListData.get(vehicleSpinnerPosition).getDistanceUnit();
+                mDistanceUnit.setText(mDistanceUnits[distanceUnit]);
+                int volumeUnit = mVehiclesListData.get(vehicleSpinnerPosition).getVolumeUnit();
+                mVolumeUnit.setText(mVolumeUnits[volumeUnit]);
+
+                // Set vehicle's data to the expense
+                mExpense.setVehiclePosInSpinner(vehicleSpinnerPosition);
+                mExpense.setVehicleId(mVehiclesListData.get(vehicleSpinnerPosition).getId());
+                mExpense.setVehicleImage(mVehiclesListData.get(vehicleSpinnerPosition).getImage());
+                mExpense.setVehicle(mVehiclesListData.get(vehicleSpinnerPosition).getTitle());
+                mExpense.setVehicleId(mVehiclesListData.get(vehicleSpinnerPosition).getId());
+
+                requestPermissions();
+                displayVehicleImage();
                 break;
         }
     }
@@ -631,9 +648,9 @@ public class ExpensesEntityActivity extends AppCompatActivity
         Loader<List<Expense>> theDbLoader = loaderManager.getLoader(EXPENSES_LOADER_ID);
 
         if (theDbLoader == null) {
-            loaderManager.initLoader(EXPENSES_LOADER_ID, null, this);
+            loaderManager.initLoader(EXPENSES_LOADER_ID, loaderArgs, this);
         } else {
-            loaderManager.restartLoader(EXPENSES_LOADER_ID, null, this);
+            loaderManager.restartLoader(EXPENSES_LOADER_ID, loaderArgs, this);
         }
 
     }
@@ -664,6 +681,10 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
                 mExpenseId = loaderArgs.getInt(EXTRA_EXPENSES_ID, Const.INVALID_ID);
 
+                if (mExpenseId == Const.INVALID_ID) {
+                    return;
+                }
+
                 forceLoad();
             } // onStartLoading
 
@@ -676,11 +697,20 @@ public class ExpensesEntityActivity extends AppCompatActivity
              */
             @Override
             public Expense loadInBackground() {
-//todo load the data
+//todo loadInBackground load the data
                 // Load the Vehicles for the spinner
                 Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                String[] projection = new String[] {
+                        VehiclesContract.VehiclesEntry._ID,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_IMAGE,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_VOLUME_UNIT
+                };
+                Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
 
                 mVehiclesListData = null;
                 mVehiclesNamesList = null;
@@ -698,6 +728,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
                         vehiclesListItem.setName(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME)));
                         vehiclesListItem.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
                         vehiclesListItem.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
+                        vehiclesListItem.setDistanceUnit(cursor.getInt(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT)));
+                        vehiclesListItem.setVolumeUnit(cursor.getInt(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_VOLUME_UNIT)));
 
                         mVehiclesListData.add(vehiclesListItem);
 
@@ -706,31 +738,33 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
                     cursor.close();
 
-                    uri = ExpensesContract.ExpensesEntry.CONTENT_URI;
-                    uri = uri.buildUpon().build();
-                    cursor = getContentResolver().query(uri, null,
-                            ExpensesContract.ExpensesEntry._ID + "= ?",
-                            new String[] {mExpenseId + ""}, null);
+                    // We initialize the expenses only if we have at least one vehicle
+                    if (mExpenseId != Const.NEW_RECORD_ID) {
+                        uri = ExpensesContract.ExpensesEntry.CONTENT_URI;
+                        uri = uri.buildUpon().build();
+                        cursor = getContentResolver().query(uri, null,
+                                ExpensesContract.ExpensesEntry._ID + "= ?",
+                                new String[] {mExpenseId + ""}, null);
 
-                    Expense expense = new Expense();
-                    if (cursor != null && cursor.getCount() != 0) {
-                        cursor.moveToNext();
-                        expense.setId(mExpenseId);
-//TODO HERE TODO
-//                        expense.setImage(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_IMAGE)));
-//                        expense.setName(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME)));
-//                        expense.setMake(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE)));
-//                        expense.setModel(cursor.getString(cursor.getColumnIndex(VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL)));
-//                        expense.setPlateNo(cursor.getString(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_PLATE_NO)));
-//                        expense.setInitialMileage(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_INITIALMILEAGE)));
-//                        expense.setDistanceUnit(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_DINSTANCE_UNIT)));
-//                        expense.setTankVolume(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_TANKVOLUME)));
-//                        expense.setVolumeUnit(cursor.getInt(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_VOLUME_UNIT)));
-//                        expense.setNotes(cursor.getString(cursor.getColumnIndex(VehiclesEntry.COLUMN_NAME_NOTES)));
-                        cursor.close();
+                        Expense expense = new Expense();
+                        if (cursor != null && cursor.getCount() != 0) {
+                            cursor.moveToNext();
+                            expense.setId(mExpenseId);
+                            expense.setVehicleId(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID)));
+                            expense.setExpenseType(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE)));
+                            expense.setSubtype(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE)));
+                            expense.getYearMonthDay().setDate(cursor.getString(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE)));
+                            expense.setSubtype(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE)));
+                            expense.setOdometer(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER)));
+                            expense.setFuelQuantity(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY)));
+                            expense.setAmount(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT)));
+                            expense.setNotes(cursor.getString(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES)));
+                            cursor.close();
+                        }
+
+                        return expense;
                     }
 
-                    return expense;
                 }
 
                 return null;
@@ -742,7 +776,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
              * @param data The result of the load
              */
             public void deliverResult(Expense data) {
-                mCachedVehiclesListData = data;
                 super.deliverResult(data);
             } // deliverResult
 
@@ -758,26 +791,36 @@ public class ExpensesEntityActivity extends AppCompatActivity
      */
     @Override
     public void onLoadFinished(Loader<Expense> loader, Expense data) {
+//todo onLoadFinished
         // we don't need any more the loader
         getSupportLoaderManager().destroyLoader(EXPENSES_LOADER_ID);
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mVehiclesSpinner.setVisibility(View.VISIBLE);
 
-        if (data == null) {
+        if (mVehiclesNamesList.size() == 0) {
             showSnackbar(mRootLayout, R.string.enter_vehicles_first);
         } else {
-            mVehiclesListData = new ArrayList<Vehicle>();
-            mVehiclesListData.addAll(data);
-//todo loaded populated
-            mVehiclesNamesList = new ArrayList<CharSequence>();
-            for(Vehicle v : mVehiclesListData) {
-               mVehiclesNamesList.add(v.getName());
-            }
-            mAdapterVehicles = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, mVehiclesNamesList);
-            mAdapterVehicles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mVehiclesSpinner.setAdapter(mAdapterVehicles);
-            mVehiclesSpinner.invalidate();
+            if (data == null) {
+                mExpenseId = Const.NEW_RECORD_ID;
+                mExpense = new Expense();
+                mExpense.getYearMonthDay().setTodayDate();
+            } else
+                mExpense = data;
+
+            populateVehiclesSpinner();
+
+            populateViews();
+
+            // We need a post delay so that we can set
+            // that no changes are existing on entities data
+            // and this because spinners are running in their world
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    mEntityUpdated = false;
+                }
+            }, 300);
         }
     } // onLoadFinished
 
@@ -840,18 +883,23 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnSelectedDate(int day, int month, int year) {
-        mDay = day;
-        mMonth = month;
-        mYear = year;
+    public void OnSelectedDate(int year, int month, int day) {
+//        showSnackbar(mRootLayout, year+", "+month+", "+day);
+        mExpense.getYearMonthDay().setDate(year, month, day);
 
-        //TO-DO: convert date to string, put it to the date view
+        mDate.setText(mExpense.getYearMonthDay().getDisplayDate());
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_open_date_picker) {
-            //TO-DO:mDatePickerDialog.setDate();
+        if (v.getId() == R.id.btn_open_date_picker || v.getId() == R.id.date) {
+
+            int year = mExpense.getYearMonthDay().getYear();
+            int month = mExpense.getYearMonthDay().getMonth();
+            int day = mExpense.getYearMonthDay().getDay();
+
+//            showSnackbar(mRootLayout, year+", "+month+", "+day);
+            mDatePickerDialog.setDate(year, month, day);
 
             mDatePickerDialog.show(getSupportFragmentManager(), "");
         }
@@ -873,7 +921,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
             }
         } else {
             // Otherwise, permissions were granted and we are ready to go!
-            displayVehicleImage();
+            //displayVehicleImage();
         }
     }
 

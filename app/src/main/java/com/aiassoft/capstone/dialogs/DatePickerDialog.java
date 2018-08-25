@@ -32,7 +32,7 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 
     public interface OpenDatePickerDialogOnSelectedDateHandler {
 
-        void OnSelectedDate(int day, int month, int year);
+        void OnSelectedDate(int year, int month, int day);
     }
 
     @BindView(R.id.date_picker) DatePicker mDatePicker;
@@ -46,14 +46,14 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 
         View rootView = inflater.inflate(R.layout.dialog_date_picker, viewGroup);
 
-        getDialog().setTitle(getResources().getString(R.string.date_picker_title));
+//        getDialog().setTitle(getResources().getString(R.string.date_picker_title));
 
         ButterKnife.bind(this, rootView);
 
         mButtonAccept.setOnClickListener(this);
 
         if (mSetDate) {
-            mDatePicker.updateDate(mYear, mMonth, mDay);
+            mDatePicker.updateDate(mYear, mMonth-1, mDay);
         }
         return rootView;
     }
@@ -65,7 +65,7 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
                 int day = mDatePicker.getDayOfMonth();
                 int month = mDatePicker.getMonth() + 1; // months start in 0
                 int year = mDatePicker.getYear();
-                mSelectedDateHandler.OnSelectedDate(day, month, year);
+                mSelectedDateHandler.OnSelectedDate(year, month, day);
                 break;
         }
         this.dismiss();
@@ -77,7 +77,7 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
         mSelectedDateHandler = (OpenDatePickerDialogOnSelectedDateHandler) context;
     }
 
-    public void setDate(int day, int month, int year) {
+    public void setDate(int year, int month, int day) {
         this.mDay = day;
         this.mMonth = month;
         this.mYear = year;

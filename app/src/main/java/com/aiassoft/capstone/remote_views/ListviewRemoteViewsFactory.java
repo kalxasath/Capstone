@@ -25,7 +25,6 @@ import android.content.res.Resources;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.Toast;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
@@ -48,6 +47,7 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     private Context mContext;
 
+    private int mVehicleId;
     private VehiclesTotalRunningCosts mData;
 
 
@@ -60,10 +60,10 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
 
         /** Get widget's vehicleId */
-        int vehicleId = getWidgetVehicleId(appWidgetId);
+        mVehicleId = getWidgetVehicleId(appWidgetId);
 
         /** Get Vehicle's total running costs */
-        mData = fetchVehiclesTotalRunningCosts(vehicleId);
+        mData = fetchVehiclesTotalRunningCosts(mVehicleId);
 //        Toast.makeText(mContext, "Vehicle " + mData.getName(), Toast.LENGTH_SHORT).show();
     }
 
@@ -75,6 +75,8 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
     /** called on start and when notifyAppWidgetViewDataChanged is called */
     @Override
     public void onDataSetChanged() {
+        /** Get Vehicle's total running costs */
+        mData = fetchVehiclesTotalRunningCosts(mVehicleId);
     }
 
     @Override

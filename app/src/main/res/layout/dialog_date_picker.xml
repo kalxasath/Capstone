@@ -18,6 +18,7 @@
         android:id="@+id/btn_accept"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/tap_to_accept_the_date"
         android:text="@string/date_picker_accept"
         />
 </LinearLayout>

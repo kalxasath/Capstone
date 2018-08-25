@@ -166,6 +166,7 @@ public class VehiclesTotalRunningCosts implements Parcelable {
     }
 
     public void calcTotals() {
+//todo check totals
         expenseTotalCost = expenseParkingCost + expenseTollCost + expenseInsuranceCost;
         serviceTotalCost = serviceBasicCost + serviceDamageCost;
 

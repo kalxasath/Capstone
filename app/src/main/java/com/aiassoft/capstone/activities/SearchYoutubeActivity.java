@@ -191,7 +191,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
             /* We are not connected, inform the user
              * with the propriety error message
              */
-            showSnackbar(mContainer, R.string.error_check_your_network_connectivity);
+            displayNetworkConnectivityError();
         }
     }
 
@@ -247,14 +247,19 @@ public class SearchYoutubeActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextSubmit(String searchQuery) {
-//        Snackbar.make(mSearchView, "TextSubmit " + query, Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show();
-//        Toast.makeText(this, "TextSubmit " + query, Toast.LENGTH_LONG).show();
-
-        invalidateOptionsMenu();
-        //mSearchMenuItem.collapseActionView();
         invalidateData();
-        fetchVideosList(searchQuery);
+
+        /* We will check if we are connected to the internet */
+        if (! NetworkUtils.isOnline()) {
+            /* We are not connected, inform the user
+             * with the propriety error message
+             */
+            displayNetworkConnectivityError();
+        } else {
+            invalidateOptionsMenu();
+            fetchVideosList(searchQuery);
+        }
+
         return false;
     }
 
@@ -267,6 +272,13 @@ public class SearchYoutubeActivity extends AppCompatActivity
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Inform user about the Network Connectivity Error
+     */
+    private void displayNetworkConnectivityError() {
+        showSnackbar(mContainer, R.string.error_check_your_network_connectivity);
+    }
 
 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -462,20 +474,5 @@ public class SearchYoutubeActivity extends AppCompatActivity
         mErrorMessageText.setText(getString(errorId));
     } // showErrorMessage
 
-    /**
-     * Called when a tap occurs in the refresh button
-     * @param view The view which reacted to the click
-     */
-    public void onRefreshButtonClick(View view) {
-        /* Again check if we are connected to the internet */
-//        if (NetworkUtils.isOnline()) {
-//            /* If the network connectivity is restored
-//             * show the Videos List to hide the error block, and
-//             * fetch videos' data from the internet
-//             */
-//            showVideosListView();
-//            fetchVideosList();
-//        }
-    } // onRefreshButtonClick
 
 }

@@ -41,6 +41,7 @@ import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.model.Vehicle;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
+import com.aiassoft.capstone.widgets.VehicleWidgetProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -310,7 +311,14 @@ public class VehiclesListActivity extends AppCompatActivity
 
                 Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
-                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                String[] projection = new String[] {
+                        VehiclesContract.VehiclesEntry._ID,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_IMAGE,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_NAME,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_MAKE,
+                        VehiclesContract.VehiclesEntry.COLUMN_NAME_MODEL,
+                };
+                Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
 
                 if (cursor != null && cursor.getCount() != 0) {
                     /** ArrayList to hold the vehicles list items */
@@ -462,6 +470,9 @@ public class VehiclesListActivity extends AppCompatActivity
             // if we have changes then we restart the loader
             // so that to we read the new data and update the UI.
             getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
+
+            // update the home screen widgets
+            VehicleWidgetProvider.sendRefreshBroadcast(mContext);
         }
     }
 

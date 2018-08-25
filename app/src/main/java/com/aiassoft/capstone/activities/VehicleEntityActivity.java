@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -311,14 +312,14 @@ public class VehicleEntityActivity extends AppCompatActivity
         adapterDistanceUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDistanceUnitSpinner.setAdapter(adapterDistanceUnit);
         mDistanceUnitSpinner.setOnItemSelectedListener(this);
-        mDistanceUnitSpinner.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mEntityUpdated = false;
-            }
-        }, 300);
+//        mDistanceUnitSpinner.postDelayed(new Runnable()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                mEntityUpdated = false;
+//            }
+//        }, 300);
     }
 
     private void initTextWatchers() {
@@ -514,6 +515,7 @@ public class VehicleEntityActivity extends AppCompatActivity
             if (uri == null) {
                 Toast.makeText(getBaseContext(), getString(R.string.couldnt_insert_vehicle),
                         Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, getString(R.string.couldnt_insert_vehicle));
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.vehicle_added) + uri,
                         Toast.LENGTH_SHORT).show();
@@ -534,9 +536,11 @@ public class VehicleEntityActivity extends AppCompatActivity
             } else if (recordsUpdated > 1) {
                 Toast.makeText(getBaseContext(), getString(R.string.to_much_vehicles_updated),
                         Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, getString(R.string.to_much_vehicles_updated));
             } else {
                 Toast.makeText(getBaseContext(), getString(R.string.vehicles_data_not_updated),
                         Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, getString(R.string.vehicles_data_not_updated));
             }
 
             return (recordsUpdated == 1);
@@ -717,8 +721,22 @@ public class VehicleEntityActivity extends AppCompatActivity
         if (mContext != null) {
             mVehicle = data;
             populateViews();
-            mEntityUpdated = false;
         }
+
+        // We need a post delay so that we can set
+        // that no changes are existing on entities data
+        // and this because spinners are running in their world
+        //
+        // Dear Reviewer,
+        // Is there a point or method in the activity were the system
+        // says hey I am done with the queue of the background tasks?
+        // and this every time after ui starts new background tasks
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                mEntityUpdated = false;
+            }
+        }, 300);
     }
 
     /**

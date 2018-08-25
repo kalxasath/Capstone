@@ -71,6 +71,7 @@ public class VehicleWidgetProvider extends AppWidgetProvider {
     }
 
     public static void sendRefreshBroadcast(Context context) {
+//todo sendRefreshBroadcast
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
         ComponentName thisWidget = new ComponentName(context, VehicleWidgetProvider.class);

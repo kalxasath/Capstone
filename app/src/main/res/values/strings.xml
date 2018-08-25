@@ -31,6 +31,8 @@
     <string name="enable_permission_for_reading_the_external_storage">Vehicle Images can only be displayed, if storage permission is granted via the settings.</string>
     <string name="form_validation_failed">Invalid data in form fields, see the errors to correct them.</string>
     <string name="abord_editing">... to abort editing, discard changes and return</string>
+    <string name="tap_to_refresh">Tap to refresh</string>
+    <string name="tap_to_accept_the_date">Tap to accept the date</string>
 
     <!-- Menus -->
     <string name="action_done">Done</string>
@@ -113,6 +115,7 @@
     <string name="deleted_expense">Expense is deleted</string>
     <string name="question_delete_expense">Delete Expense?</string>
     <string name="enter_vehicles_first">Hurry up! Enter some vehicles for the beginning. Then come back here ...</string>
+    <string name="click_to_open_the_date_picker">Click to open the date picker</string>
 
     <!-- Search Youtube -->
     <string name="no_video_results">No video results</string>

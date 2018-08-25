@@ -116,7 +116,7 @@ public class ExpensesListAdapter extends RecyclerView.Adapter<ExpensesListAdapte
     @Override
     public void onBindViewHolder(ExpensesAdapterViewHolder viewHolder, int position) {
         viewHolder.mVehicleTitle.setText(mExpensesData.get(position).getVehicle());
-        viewHolder.mExpenseDate.setText(mExpensesData.get(position).getDate());
+        viewHolder.mExpenseDate.setText(mExpensesData.get(position).getYearMonthDay().getDisplayDate());
         viewHolder.mExpenseType.setText(mExpensesData.get(position)
                 .getExpenseTypeStr(viewHolder.mExpenseType.getContext()));
         viewHolder.mExpenseSubtype.setText(mExpensesData.get(position)

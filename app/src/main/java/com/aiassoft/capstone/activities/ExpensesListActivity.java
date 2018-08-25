@@ -38,6 +38,7 @@ import com.aiassoft.capstone.data.VehiclesContract;
 import com.aiassoft.capstone.model.Expense;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
+import com.aiassoft.capstone.widgets.VehicleWidgetProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -317,7 +318,7 @@ public class ExpensesListActivity extends AppCompatActivity
                         expensesListItem.setVehicleId(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID)));
                         expensesListItem.setExpenseType(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE)));
                         expensesListItem.setSubtype(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE)));
-                        expensesListItem.setDate(cursor.getString(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE)));
+                        expensesListItem.getYearMonthDay().setDate(cursor.getString(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE)));
                         expensesListItem.setOdometer(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER)));
                         expensesListItem.setAmount(cursor.getFloat(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT)));
 
@@ -472,6 +473,9 @@ public class ExpensesListActivity extends AppCompatActivity
             // if we have changes then we restart the loader
             // so that to we read the new data and update the UI.
             getSupportLoaderManager().restartLoader(EXPENSES_LOADER_ID, null, this);
+
+            // update the home screen widgets
+            VehicleWidgetProvider.sendRefreshBroadcast(mContext);
         }
     }
 }
