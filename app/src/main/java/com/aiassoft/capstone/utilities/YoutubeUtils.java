@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -120,16 +123,16 @@ public class YoutubeUtils {
         VideosListItem videosListItem;
 
         try {
-            /** Creates a new JSONObject with name/value mappings from the json string */
+            /* Creates a new JSONObject with name/value mappings from the json string */
             JSONObject searchResults = new JSONObject(json);
             JSONObject pageInfo =  searchResults.optJSONObject("pageInfo");
 
-            /** Get the movie reviews' data array */
+            /* Get the movie reviews' data array */
             JSONArray items =  searchResults.optJSONArray("items");
 
             int maxResults = items.length();
             for (int i=0; i<maxResults; i++) {
-                /** Get the video's data */
+                /* Get the video's data */
                 JSONObject item = items.optJSONObject(i);
                 JSONObject id = item.optJSONObject("id");
                 JSONObject video = item.optJSONObject("snippet");

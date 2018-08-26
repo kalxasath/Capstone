@@ -1,5 +1,8 @@
 /*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -19,6 +22,7 @@
 package com.aiassoft.capstone.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,7 +120,6 @@ public class VideosListAdapter
                 int adapterPosition = getAdapterPosition();
                 String selectedVideo = mVideosData.get(adapterPosition).getVideoId();
                 mClickHandler.onClick(selectedVideo);
-            } else {
             }
         }
     }
@@ -130,8 +133,9 @@ public class VideosListAdapter
      *                  can use this viewType integer to provide a different layout.
      * @return A new VideoVideosAdapterViewHolder that holds the View for each list item
      */
+    @NonNull
     @Override
-    public VideosAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public VideosAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.item_list_video;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -152,7 +156,7 @@ public class VideosListAdapter
      * @param position                The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(final VideosAdapterViewHolder videosAdapterViewHolder, int position) {
+    public void onBindViewHolder(@NonNull final VideosAdapterViewHolder videosAdapterViewHolder, int position) {
         setThumbnailLoadingIndicator(videosAdapterViewHolder);
 
         String videoTitle = mVideosData.get(position).getTitle();
@@ -224,7 +228,7 @@ public class VideosListAdapter
      * This method is used when we are resetting data
      */
     public void invalidateData() {
-        mVideosData = new ArrayList<VideosListItem>();
+        mVideosData = new ArrayList<>();
         notifyDataSetChanged();
     }
 

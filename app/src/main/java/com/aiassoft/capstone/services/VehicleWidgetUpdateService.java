@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -34,8 +37,8 @@ import com.aiassoft.capstone.remote_views.ListviewRemoteViewsService;
 import static com.aiassoft.capstone.data.DBQueries.fetchVehiclesName;
 import static com.aiassoft.capstone.utilities.PrefUtils.getWidgetVehicleId;
 
-/**
- * Created by gvryn on 14/08/18.
+/*
+  Created by gvryn on 14/08/18.
  */
 
 /** This service updates the widgets with the appropriate recipe ingredients */
@@ -69,10 +72,10 @@ public class VehicleWidgetUpdateService extends Service {
         mAppWidgetManager.notifyAppWidgetViewDataChanged(mAllWidgetIds, R.id.lv_widget);
 
         for (int appWidgetId : mAllWidgetIds) {
-            /** Reaches the view on widget that holds the updated widget contents */
+            /* Reaches the view on widget that holds the updated widget contents */
             RemoteViews rv = new RemoteViews(getPackageName(), R.layout.widget_vehicle_provider);
 
-            /** Get widget's vehicleId */
+            /* Get widget's vehicleId */
             int vehicleId = getWidgetVehicleId(appWidgetId);
 
 
@@ -105,22 +108,22 @@ public class VehicleWidgetUpdateService extends Service {
                         mContext.getString(R.string.total_running_costs), vehiclesName));
             }
 
-            /** Set up the RemoteViews object to use a RemoteViews adapter.
+            /* Set up the RemoteViews object to use a RemoteViews adapter.
              This adapter connects
              to a RemoteViewsService through the specified intent.
              This is how you populate the data. */
             Intent setListviewRemoteViewsIntent;
 
-            /** Set up the intent that starts the ListViewService, which will
+            /* Set up the intent that starts the ListViewService, which will
              provide the views for this collection. */
             setListviewRemoteViewsIntent = new Intent(mContext, ListviewRemoteViewsService.class);
 
-            /** Add the app widget ID & RecipePosition to the intent extras. */
+            /* Add the app widget ID & RecipePosition to the intent extras. */
             setListviewRemoteViewsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             Uri uri = Uri.parse(setListviewRemoteViewsIntent.toUri(Intent.URI_INTENT_SCHEME));
             setListviewRemoteViewsIntent.setData(uri);
 
-            /** Finally set the remote Adapter */
+            /* Finally set the remote Adapter */
             rv.setRemoteAdapter(R.id.lv_widget, setListviewRemoteViewsIntent);
         }
         //setting an empty view in case of no data

@@ -1,5 +1,8 @@
 /*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -63,22 +66,22 @@ public class CapstoneContentProvider extends ContentProvider {
 
     /** We define a static buildUriMatcher method that associates URI's with their int match */
     public static UriMatcher buildUriMatcher() {
-        /** first create a new UriMatcher object, by passing in the constant UriMatcher.nomatch */
+        /* first create a new UriMatcher object, by passing in the constant UriMatcher.nomatch */
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        /**
-         * Then we add the matches we want, by telling it which URI structures to recognize
-         * and the integer constants they'll match with.
-         * Using the method addURI(String authority, String path, int code)
-         * directory
+        /*
+          Then we add the matches we want, by telling it which URI structures to recognize
+          and the integer constants they'll match with.
+          Using the method addURI(String authority, String path, int code)
+          directory
          */
         // Vehicles
         uriMatcher.addURI(Const.CONTENT_AUTHORITY, VehiclesContract.PATH_VEHICLES, VEHICLES);
-        /** single item */
+        /* single item */
         uriMatcher.addURI(Const.CONTENT_AUTHORITY, VehiclesContract.PATH_VEHICLES + "/#",
                 VEHICLE_WITH_ID);
         // Events
         uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EXPENSES, EXPENSES);
-        /** single item */
+        /* single item */
         uriMatcher.addURI(Const.CONTENT_AUTHORITY, ExpensesContract.PATH_EXPENSES + "/#",
                 EXPENSES_WITH_ID);
 
@@ -93,7 +96,7 @@ public class CapstoneContentProvider extends ContentProvider {
      */
     @Override
     public boolean onCreate() {
-        /** Create the DBHelper */
+        /* Create the DBHelper */
         mDBHelper  = new CapstoneDBHelper(getContext());
 
         return true;
@@ -102,35 +105,35 @@ public class CapstoneContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
 
-        /** Get access to the task database, So that we can write new data to it */
+        /* Get access to the task database, So that we can write new data to it */
         final SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
-        /**
-         * Write URI matching code to identify the match for the directories
-         * This match will be either 10,20,30.. for all entries
-         * or 11,21,31.. for a entry with ID, or an unrecognized URI
+        /*
+          Write URI matching code to identify the match for the directories
+          This match will be either 10,20,30.. for all entries
+          or 11,21,31.. for a entry with ID, or an unrecognized URI
          */
         int match = sUriMatcher.match(uri);
 
-        /**
-         * Insert new values into the database
-         * Set the value for the returnedUri and write the default case for unknown URI's
+        /*
+          Insert new values into the database
+          Set the value for the returnedUri and write the default case for unknown URI's
          */
         Uri returnUri;
 
-        /**
-         * Contract Values
+        /*
+          Contract Values
          */
         String tableName;
         Uri contentUri;
 
-        /**
-         * We want to check these cases and respond to only the 10,20,30.. cases.
-         * If the cases are met, we can insert a new row of data into this directory.
-         * We can't insert data into just one row like in the with id case.
-         * And if we receive any other type URI or an invalid one, the default behavior
-         * will be to throw an UnsupportedOperationException and print out an
-         * Unknown uri message.
+        /*
+          We want to check these cases and respond to only the 10,20,30.. cases.
+          If the cases are met, we can insert a new row of data into this directory.
+          We can't insert data into just one row like in the with id case.
+          And if we receive any other type URI or an invalid one, the default behavior
+          will be to throw an UnsupportedOperationException and print out an
+          Unknown uri message.
          */
         switch(match) {
             case VEHICLES:
@@ -142,42 +145,42 @@ public class CapstoneContentProvider extends ContentProvider {
                 contentUri = ExpensesEntry.CONTENT_URI;
                 break;
             default:
-                /** Default case throws an UnsupportedOperationException */
+                /* Default case throws an UnsupportedOperationException */
                 throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
-        /** Inserting values into the table */
+        /* Inserting values into the table */
         long id = db.insert(tableName, null, values);
-        /**
-         *  If the insert wasn't successful, this ID will be -1
-         *  But if ths insert is successful, we want the provider's insert method to take
-         *  that unique row ID and create and return a URI for that newly inserted data.
+        /*
+           If the insert wasn't successful, this ID will be -1
+           But if ths insert is successful, we want the provider's insert method to take
+           that unique row ID and create and return a URI for that newly inserted data.
          */
 
-        /** So first, let's write an if that checks that this insert was successful. */
+        /* So first, let's write an if that checks that this insert was successful. */
         if ( id > 0 ) {
-            /**
-             * Success, the insert worked and we can construct the new URI
-             * that will be our main content URI, which has the authority
-             * and tasks path, with the id appended to it.
+            /*
+              Success, the insert worked and we can construct the new URI
+              that will be our main content URI, which has the authority
+              and tasks path, with the id appended to it.
              */
             returnUri = ContentUris.withAppendedId(contentUri, id);
-            /**
-             * contentUris is an Android class that contains helper methods for
-             * constructing URIs
+            /*
+              contentUris is an Android class that contains helper methods for
+              constructing URIs
              */
         } else {
-            /** Otherwise, we'll throw a SQLiteException, because the insert failed. */
+            /* Otherwise, we'll throw a SQLiteException, because the insert failed. */
             throw new android.database.SQLException(getContext().getString(R.string.failed_to_insert_row_into) + uri);
         }
 
 
-        /**
-         * Notify the resolver if the uri has been changed, and return the newly inserted URI
-         * To notify the resolver that a change has occurred at this particular URI,
-         * we'll do this using the notify change function.
-         * This is so that the resolver knows that something has changed, and
-         * can update the database and any associated UI accordingly
+        /*
+          Notify the resolver if the uri has been changed, and return the newly inserted URI
+          To notify the resolver that a change has occurred at this particular URI,
+          we'll do this using the notify change function.
+          This is so that the resolver knows that something has changed, and
+          can update the database and any associated UI accordingly
          */
         getContext().getContentResolver().notifyChange(uri, null);
 
@@ -199,62 +202,62 @@ public class CapstoneContentProvider extends ContentProvider {
 
         switch (match) {
             case VEHICLES:
-                /** Query for the VEHICLES directory */
-                /**
-                 * This starting code will look pretty similar for all of our CRUD functions.
-                 * The query for our VEHICLES case, will return all the rows in our database
-                 * as a cursor.
+                /* Query for the VEHICLES directory */
+                /*
+                  This starting code will look pretty similar for all of our CRUD functions.
+                  The query for our VEHICLES case, will return all the rows in our database
+                  as a cursor.
                  */
                 retCursor = db.query(VehiclesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case VEHICLE_WITH_ID:
-                /** Query for one vehicle in the VEHICLES directory */
-                /**
-                 * To Query a row of data by its ID, we'll use the selection and
-                 * selection args parameters of the ??? method.
-                 * First we'll have to get the row ID from the past URI.
-                 * The URI will look similar to the directory URI.
-                 * It'll start with the same scheme authority and path.
-                 * But this time also with an ID as the part of the path.
-                 * And we can grab this ID by Using a call to get path segments on that URI.
-                 * And get with the index 1 passed in.
-                 * Index 0 would be the tasks portion of the path.
-                 * And index 1 is the segment right next to that.
-                 *
-                 * Get the id from the URI
+                /* Query for one vehicle in the VEHICLES directory */
+                /*
+                  To Query a row of data by its ID, we'll use the selection and
+                  selection args parameters of the ??? method.
+                  First we'll have to get the row ID from the past URI.
+                  The URI will look similar to the directory URI.
+                  It'll start with the same scheme authority and path.
+                  But this time also with an ID as the part of the path.
+                  And we can grab this ID by Using a call to get path segments on that URI.
+                  And get with the index 1 passed in.
+                  Index 0 would be the tasks portion of the path.
+                  And index 1 is the segment right next to that.
+
+                  Get the id from the URI
                  */
                 id = uri.getPathSegments().get(1);
 
-                /**
-                 * Selection is the Vechicle _id column = ?,
-                 * and the Selection args = the row ID from the URI
-                 * The question mark indicates that this is asking for
+                /*
+                  Selection is the Vechicle _id column = ?,
+                  and the Selection args = the row ID from the URI
+                  The question mark indicates that this is asking for
                  */
                 mSelection = VehiclesEntry._ID + "=?";
 
-                /**
-                 * the rest of this equality from the selection args parameter.
-                 * And the selection args should be the row ID
-                 * which we just got from the past URI.
-                 * And selection args has to be an array of strings.
+                /*
+                  the rest of this equality from the selection args parameter.
+                  And the selection args should be the row ID
+                  which we just got from the past URI.
+                  And selection args has to be an array of strings.
                  */
                 mSelectionArgs = new String[]{id};
 
-                /** finally the query is constructed as normally, passing in the selection/args */
+                /* finally the query is constructed as normally, passing in the selection/args */
                 retCursor = db.query(VehiclesEntry.TABLE_NAME,
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
 
             case EXPENSES:
-                /** Query for the EXPENSES directory */
+                /* Query for the EXPENSES directory */
                 retCursor = db.query(ExpensesEntry.TABLE_NAME,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case EXPENSES_WITH_ID:
-                /** Query for one event in the EXPENSES directory */
+                /* Query for one event in the EXPENSES directory */
                 id = uri.getPathSegments().get(1);
 
                 mSelection = ExpensesEntry._ID + "=?";
@@ -265,12 +268,12 @@ public class CapstoneContentProvider extends ContentProvider {
                         projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
 
-            /** default exception */
+            /* default exception */
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        /** Return the desired Cursor */
+        /* Return the desired Cursor */
         return retCursor;
     }
 
@@ -284,22 +287,22 @@ public class CapstoneContentProvider extends ContentProvider {
         String mSelection;
         String[] mSelectionArgs;
 
-        /**
-         * returns the number of deleted records
-         * starts as 0
+        /*
+          returns the number of deleted records
+          starts as 0
          */
         int deletedRecords = 0;
 
         switch (match) {
             case VEHICLE_WITH_ID:
-                /**
-                 * build the deletion selections/args as in the delete statement
+                /*
+                  build the deletion selections/args as in the delete statement
                  */
                 id = uri.getPathSegments().get(1);
                 mSelection = VehiclesEntry._ID + "=?";
                 mSelectionArgs = new String[]{id};
 
-                /** finally the deletion is constructed as normally, passing in the selection/args */
+                /* finally the deletion is constructed as normally, passing in the selection/args */
                 deletedRecords =  db.delete(VehiclesEntry.TABLE_NAME, mSelection, mSelectionArgs);
 
                 break;
@@ -318,7 +321,7 @@ public class CapstoneContentProvider extends ContentProvider {
 
                 break;
 
-            /** default exception */
+            /* default exception */
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -400,7 +403,7 @@ public class CapstoneContentProvider extends ContentProvider {
                 return "vnd.android.cursor.item" + "/" + Const.CONTENT_AUTHORITY + "/"
                         + ExpensesContract.PATH_EXPENSES;
 
-            /** default exception */
+            /* default exception */
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

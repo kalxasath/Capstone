@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
+ * This project was made under the supervision of Udacity
+ * in the Android Developer Nanodegree Program
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.aiassoft.capstone.activities;
 
 import android.content.Context;
@@ -84,7 +105,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
     MenuItem mSearchMenuItem;
     SearchView mSearchViewMI;
 
-    /** The views in the xml file */
+    /* The views in the xml file */
     /** The recycler view */
     @BindView(R.id.videos_list) RecyclerView mVideosList;
 
@@ -374,16 +395,16 @@ public class SearchYoutubeActivity extends AppCompatActivity
                 }
 
                 String loaderWebUrlString = YoutubeUtils.buildHttpGoogleApisYoutubeSearchVideoUri(searchQuery).toString();
-                /** try to fetch the data from the network */
+                /* try to fetch the data from the network */
                 try {
                     URL theWebUrl = new URL(loaderWebUrlString);
 
-                    /** if succeed returns a List of VideosListItem objects */
+                    /* if succeed returns a List of VideosListItem objects */
                     return YoutubeUtils.parseSearchResults(
                             NetworkUtils.getResponseFromHttpUrl(theWebUrl));
 
                 } catch (Exception e) {
-                    /** If fails returns null to significate the error */
+                    /* If fails returns null to significate the error */
                     e.printStackTrace();
                     return null;
                 }

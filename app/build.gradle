@@ -6,7 +6,7 @@ def noKeyFound = '"NO_KEY_FOUND"'
 def youtubeApiKey = noKeyFound
 
 def sensitiveDataFile = file('../sensitive_data.txt')
-def Properties sensitiveData = new Properties()
+Properties sensitiveData = new Properties()
 
 if (sensitiveDataFile.canRead()){
     // Read the sensitive data from file sensitive_data.txt
@@ -24,10 +24,18 @@ if (youtubeApiKey == noKeyFound) youtubeApiKey = '"REVIEWERS_YOUTUBE_API_KEY_GOE
 // End of reading the sensitive data
 
 android {
+    signingConfigs {
+        release_config {
+            keyAlias 'CapstoneKey'
+            keyPassword 'capstone'
+            storeFile file('../capstone.jks')
+            storePassword 'capstone'
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.aiassoft.capstone"
-        minSdkVersion 19 // kitkat
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -46,38 +54,30 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
+            signingConfig signingConfigs.release_config
         }
         debug {
             debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$androidSupportVersion"
     implementation "com.android.support:design:$androidSupportVersion"
     implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
     implementation "com.android.support:cardview-v7:$androidSupportVersion"
-
     implementation "com.android.support:support-annotations:$androidSupportVersion"
-
     implementation 'com.google.android.gms:play-services-ads:12.0.1'
-
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
-
     // Butter Knife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
 }

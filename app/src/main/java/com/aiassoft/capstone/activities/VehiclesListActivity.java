@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
+ * This project was made under the supervision of Udacity
+ * in the Android Developer Nanodegree Program
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.aiassoft.capstone.activities;
 
 import android.Manifest;
@@ -103,7 +124,7 @@ public class VehiclesListActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        /** recovering the instance state */
+        /* recovering the instance state */
         if (savedInstanceState != null) {
             mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
         }
@@ -198,7 +219,7 @@ public class VehiclesListActivity extends AppCompatActivity
         Parcelable recyclerState = mVehiclesList.getLayoutManager().onSaveInstanceState();
         outState.putParcelable(STATE_RECYCLER, recyclerState);
 
-        /** call superclass to save any view hierarchy */
+        /* call superclass to save any view hierarchy */
         super.onSaveInstanceState(outState);
     }
 
@@ -332,7 +353,7 @@ public class VehiclesListActivity extends AppCompatActivity
                 Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
 
                 if (cursor != null && cursor.getCount() != 0) {
-                    /** ArrayList to hold the vehicles list items */
+                    /* ArrayList to hold the vehicles list items */
                     List<Vehicle> vehiclesListItems = new ArrayList<Vehicle>();
                     Vehicle vehiclesListItem;
 
@@ -444,8 +465,8 @@ public class VehiclesListActivity extends AppCompatActivity
      */
     @Override
     public void onClick(int vehicleId) {
-        /** Prepare to call the detail activity, to show the vehicle's details
-         *  for edit or delete
+        /* Prepare to call the detail activity, to show the vehicle's details
+           for edit or delete
          */
         Intent intent = new Intent(this, VehicleEntityActivity.class);
         intent.putExtra(VehicleEntityActivity.EXTRA_VEHICLE_ID, vehicleId);

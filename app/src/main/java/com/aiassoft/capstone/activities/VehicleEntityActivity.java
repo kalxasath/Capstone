@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
+ * This project was made under the supervision of Udacity
+ * in the Android Developer Nanodegree Program
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.aiassoft.capstone.activities;
 
 import android.Manifest;
@@ -173,7 +194,7 @@ public class VehicleEntityActivity extends AppCompatActivity
         initDialogsOnClickListener();
 
 
-        /** recovering the instance state */
+        /* recovering the instance state */
         if (savedInstanceState != null) {
             mVehicleId = savedInstanceState.getInt(STATE_VEHICLE_ID, Const.INVALID_ID);
             mScrollViewContainerScrollToY = savedInstanceState.getInt(STATE_SCROLL_POS, Const.INVALID_INT); // NestedScrollView
@@ -181,16 +202,16 @@ public class VehicleEntityActivity extends AppCompatActivity
             mEntityUpdated = savedInstanceState.getBoolean(STATE_ENTITY_UPDATED, false);
         } else {
 
-            /**
-             * should be called from another activity. if not, show error toast and return
+            /*
+              should be called from another activity. if not, show error toast and return
              */
             Intent intent = getIntent();
             if (intent == null) {
                 closeOnError();
             } else {
 
-                /** Intent parameter should be a valid vehicle id for editing / deleting
-                 *  Otherwise NEW_RECORD_ID signifies a new vehicle entity
+                /* Intent parameter should be a valid vehicle id for editing / deleting
+                   Otherwise NEW_RECORD_ID signifies a new vehicle entity
                  */
                 mVehicleId = intent.getIntExtra(EXTRA_VEHICLE_ID, Const.NEW_RECORD_ID);
             }
@@ -205,6 +226,8 @@ public class VehicleEntityActivity extends AppCompatActivity
                 setEntityTitle(getString(R.string.add_new_vehicle));
                 // Generate Entities Structure
                 mVehicle = new Vehicle();
+
+                setEntityUpdatedStateToFalse();
             }
 
         }
@@ -231,7 +254,7 @@ public class VehicleEntityActivity extends AppCompatActivity
 
         outState.putParcelable(STATE_ENTITY, mVehicle);
 
-        /** call superclass to save any view hierarchy */
+        /* call superclass to save any view hierarchy */
         super.onSaveInstanceState(outState);
     }
 
@@ -312,14 +335,6 @@ public class VehicleEntityActivity extends AppCompatActivity
         adapterDistanceUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDistanceUnitSpinner.setAdapter(adapterDistanceUnit);
         mDistanceUnitSpinner.setOnItemSelectedListener(this);
-//        mDistanceUnitSpinner.postDelayed(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                mEntityUpdated = false;
-//            }
-//        }, 300);
     }
 
     private void initTextWatchers() {
@@ -334,6 +349,7 @@ public class VehicleEntityActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d(LOG_TAG, "GVGVGVGVGV afterTextChanged");
                 mEntityUpdated = true;
                 setEntityTitle(s.toString());
             }
@@ -354,6 +370,7 @@ public class VehicleEntityActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d(LOG_TAG, "GVGVGVGVGV afterTextChanged");
                 mEntityUpdated = true;
             }
         };
@@ -362,6 +379,25 @@ public class VehicleEntityActivity extends AppCompatActivity
         mInitialMileage.addTextChangedListener(mTextWatcherForUpdate);
         mTankVolume.addTextChangedListener(mTextWatcherForUpdate);
         mNotes.addTextChangedListener(mTextWatcherForUpdate);
+    }
+
+
+    private void setEntityUpdatedStateToFalse() {
+        // We need a post delay so that we can set
+        // that no changes are existing on entities data
+        // and this because spinners are running in their world
+        //
+        // Dear Reviewer,
+        // Is there a point or method in the activity were the system
+        // says hey I am done with the queue of the background tasks?
+        // and this every time after ui starts new background tasks
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Log.d(LOG_TAG, "GVGVGVGVGV Handler reset to false");
+                mEntityUpdated = false;
+            }
+        }, 300);
     }
 
     private void setEntityTitle(String s) {
@@ -488,10 +524,10 @@ public class VehicleEntityActivity extends AppCompatActivity
     }
 
     private boolean saveEntity() {
-        /** We'll create a new ContentValues object to place data into. */
+        /* We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
 
-        /** Put the Vehicle's data into the ContentValues */
+        /* Put the Vehicle's data into the ContentValues */
         contentValues.put(VehiclesEntry.COLUMN_NAME_IMAGE, mVehicle.getImage());
         contentValues.put(VehiclesEntry.COLUMN_NAME_NAME, mVehicle.getName());
         contentValues.put(VehiclesEntry.COLUMN_NAME_MAKE, mVehicle.getMake());
@@ -507,8 +543,8 @@ public class VehicleEntityActivity extends AppCompatActivity
         int recordsUpdated;
 
         if (mVehicleId == Const.NEW_RECORD_ID) {
-            /**
-             * Insert new Vehicle's data via a ContentResolver
+            /*
+              Insert new Vehicle's data via a ContentResolver
              */
             uri = getContentResolver().insert(VehiclesEntry.CONTENT_URI, contentValues);
 
@@ -625,9 +661,9 @@ public class VehicleEntityActivity extends AppCompatActivity
         mVehicle.setNotes(mNotes.getText().toString());
     }
 
-    /**
-     * The loader, is used to read the data from the database 
-     * and populate the views with vehicle's data
+    /*
+      The loader, is used to read the data from the database
+      and populate the views with vehicle's data
      */
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -723,20 +759,7 @@ public class VehicleEntityActivity extends AppCompatActivity
             populateViews();
         }
 
-        // We need a post delay so that we can set
-        // that no changes are existing on entities data
-        // and this because spinners are running in their world
-        //
-        // Dear Reviewer,
-        // Is there a point or method in the activity were the system
-        // says hey I am done with the queue of the background tasks?
-        // and this every time after ui starts new background tasks
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                mEntityUpdated = false;
-            }
-        }, 300);
+        setEntityUpdatedStateToFalse();
     }
 
     /**
@@ -860,6 +883,7 @@ public class VehicleEntityActivity extends AppCompatActivity
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(LOG_TAG, "GVGVGVGVGV onItemSelected");
         mEntityUpdated = true;
     }
 

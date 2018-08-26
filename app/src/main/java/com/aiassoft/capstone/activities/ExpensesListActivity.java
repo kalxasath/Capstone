@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
+ * This project was made under the supervision of Udacity
+ * in the Android Developer Nanodegree Program
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.aiassoft.capstone.activities;
 
 import android.annotation.SuppressLint;
@@ -31,6 +52,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.adapters.ExpensesListAdapter;
 import com.aiassoft.capstone.data.ExpensesContract;
@@ -55,6 +77,8 @@ public class ExpensesListActivity extends AppCompatActivity
         View.OnClickListener,
         ExpensesListAdapter.ExpensesAdapterOnClickHandler,
         LoaderCallbacks<List<Expense>> {
+
+    private static final String LOG_TAG = MyApp.APP_TAG + ExpensesListActivity.class.getSimpleName();
 
     public static final int EXPENSES_LOADER_ID = 0;
 
@@ -95,7 +119,7 @@ public class ExpensesListActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        /** recovering the instance state */
+        /* recovering the instance state */
         if (savedInstanceState != null) {
             mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
         }
@@ -191,7 +215,7 @@ public class ExpensesListActivity extends AppCompatActivity
         Parcelable recyclerState = mExpensesList.getLayoutManager().onSaveInstanceState();
         outState.putParcelable(STATE_RECYCLER, recyclerState);
 
-        /** call superclass to save any view hierarchy */
+        /* call superclass to save any view hierarchy */
         super.onSaveInstanceState(outState);
     }
 
@@ -319,7 +343,7 @@ public class ExpensesListActivity extends AppCompatActivity
                         ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE + " desc");
 
                 if (cursor != null && cursor.getCount() > 0) {
-                    /** ArrayList to hold the expenses list items */
+                    /* ArrayList to hold the expenses list items */
                     List<Expense> expensesListItems = new ArrayList<Expense>();
                     Expense expensesListItem;
 
@@ -447,9 +471,9 @@ public class ExpensesListActivity extends AppCompatActivity
      */
     @Override
     public void onClick(int expenseId) {
-        /** Prepare to call the detail activity, to show the expense's details
-         * for edit or delete
-         **/
+        /* Prepare to call the detail activity, to show the expense's details
+          for edit or delete
+         */
         Intent intent = new Intent(this, ExpensesEntityActivity.class);
         intent.putExtra(ExpensesEntityActivity.EXTRA_EXPENSES_ID, expenseId);
         startActivityForResult(intent, CHILD_UPDATE);

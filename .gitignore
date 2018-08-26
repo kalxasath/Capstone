@@ -25,6 +25,8 @@ sensitive_data.txt
 bin/
 gen/
 out/
+release/
+
 
 # Gradle files
 .gradle/

@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -25,8 +28,8 @@ import com.aiassoft.capstone.MyApp;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by gvryn on 14/08/18.
+/*
+  Created by gvryn on 14/08/18.
  */
 
 /** for each widget save the vehicle id, so we can populate the data

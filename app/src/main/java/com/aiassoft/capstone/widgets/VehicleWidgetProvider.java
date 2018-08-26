@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -30,8 +33,8 @@ import com.aiassoft.capstone.services.VehicleWidgetUpdateService;
 import static com.aiassoft.capstone.utilities.PrefUtils.prefClearWidgets;
 import static com.aiassoft.capstone.utilities.PrefUtils.rmWidgetVehicleId;
 
-/**
- * Created by gvryn on 14/08/18.
+/*
+  Created by gvryn on 14/08/18.
  */
 
 /**

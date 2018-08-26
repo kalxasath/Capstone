@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -52,8 +55,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by gvryn on 14/08/18.
+/*
+  Created by gvryn on 14/08/18.
  */
 
 /**
@@ -81,7 +84,7 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
 
     private static Context mContext;
 
-    /** The views in the xml file */
+    /* The views in the xml file */
     /** The recycler view */
     @BindView(R.id.vehicles_list) RecyclerView mVehiclesList;
 
@@ -242,7 +245,7 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
 
 
                 if (cursor != null && cursor.getCount() != 0) {
-                    /** ArrayList to hold the vehicles list items */
+                    /* ArrayList to hold the vehicles list items */
                     List<Vehicle> vehiclesListItems = new ArrayList<Vehicle>();
                     Vehicle vehiclesListItem;
 
@@ -354,7 +357,7 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
         VehicleWidgetProvider.sendRefreshBroadcast(mContext);
 
         Intent resultIntent = new Intent();
-        /** Set the results as expected from a 'configure activity'. */
+        /* Set the results as expected from a 'configure activity'. */
         resultIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, resultIntent);
         finish();

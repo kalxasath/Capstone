@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -61,9 +64,9 @@ public class CapstoneDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int prevVersion, int newVersion) {
-        /**
-         * At the moment we have only one version of our database
-         * so we don't need to implement any version change here
+        /*
+          At the moment we have only one version of our database
+          so we don't need to implement any version change here
          */
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + VehiclesEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ExpensesEntry.TABLE_NAME);

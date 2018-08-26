@@ -1,3 +1,24 @@
+/*
+ * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
+ * This project was made under the supervision of Udacity
+ * in the Android Developer Nanodegree Program
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.aiassoft.capstone.activities;
 
 import android.Manifest;
@@ -175,7 +196,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
         mButtonOpenDatePicker.setOnClickListener(this);
 
 
-        /** Initialize the Spinners */
+        /* Initialize the Spinners */
         initSpinners();
 
         initTextWatchers();
@@ -185,7 +206,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
         mDate.setOnClickListener(this);
 
 
-        /** recovering the instance state */
+        /* recovering the instance state */
         if (savedInstanceState != null) {
             mExpenseId = savedInstanceState.getInt(STATE_EXPENSE_ID, Const.INVALID_ID);
             mScrollViewContainerScrollToY = savedInstanceState.getInt(STATE_SCROLL_POS, Const.INVALID_INT); // NestedScrollView
@@ -193,16 +214,16 @@ public class ExpensesEntityActivity extends AppCompatActivity
             mEntityUpdated = savedInstanceState.getBoolean(STATE_ENTITY_UPDATED, false);
         } else {
 
-            /**
-             * should be called from another activity. if not, show error toast and return
+            /*
+              should be called from another activity. if not, show error toast and return
              */
             Intent intent = getIntent();
             if (intent == null) {
                 closeOnError();
             } else {
 
-                /** Intent parameter should be a valid vehicle id for editing / deleting
-                 *  Otherwise NEW_RECORD_ID signifies a new vehicle entity
+                /* Intent parameter should be a valid vehicle id for editing / deleting
+                   Otherwise NEW_RECORD_ID signifies a new vehicle entity
                  */
                 mExpenseId = intent.getIntExtra(EXTRA_EXPENSES_ID, Const.NEW_RECORD_ID);
             }
@@ -230,7 +251,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
         outState.putParcelable(STATE_ENTITY, mExpense);
 
-        /** call superclass to save any view hierarchy */
+        /* call superclass to save any view hierarchy */
         super.onSaveInstanceState(outState);
     }
     @Override
@@ -394,9 +415,9 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
     private boolean saveEntity() {
 //todo saveEntity
-        /** We'll create a new ContentValues object to place data into. */
+        /* We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
-        /** Put the Expenses data into the ContentValues */
+        /* Put the Expenses data into the ContentValues */
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_VEHICLE_ID, mExpense.getVehicleId());
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_EXPENSE_TYPE, mExpense.getExpenseType());
         contentValues.put(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE, mExpense.getSubtype());
@@ -410,8 +431,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
         int recordsUpdated;
 
         if (mExpenseId == Const.NEW_RECORD_ID) {
-            /**
-             * Insert new Expenses data via a ContentResolver
+            /*
+              Insert new Expenses data via a ContentResolver
              */
             uri = getContentResolver().insert(ExpensesContract.ExpensesEntry.CONTENT_URI, contentValues);
 
@@ -626,8 +647,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
 //todo loader
-    /**
-     * Vehicles loader
+    /*
+      Vehicles loader
      */
     /**
      * Fetch data from the database
@@ -716,7 +737,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 mVehiclesNamesList = null;
 
                 if (cursor != null && cursor.getCount() != 0) {
-                    /** ArrayList to hold the vehicles list items */
+                    /* ArrayList to hold the vehicles list items */
                     mVehiclesListData = new ArrayList<Vehicle>();
                     Vehicle vehiclesListItem;
                     mVehiclesNamesList = new ArrayList<CharSequence>();
@@ -886,6 +907,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
     public void OnSelectedDate(int year, int month, int day) {
 //        showSnackbar(mRootLayout, year+", "+month+", "+day);
         mExpense.getYearMonthDay().setDate(year, month, day);
+
+        mEntityUpdated = true;
 
         mDate.setText(mExpense.getYearMonthDay().getDisplayDate());
     }

@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -23,8 +26,8 @@ import android.widget.RemoteViewsService;
 
 import com.aiassoft.capstone.MyApp;
 
-/**
- * Created by gvryn on 15/08/18.
+/*
+  Created by gvryn on 15/08/18.
  */
 
 /**

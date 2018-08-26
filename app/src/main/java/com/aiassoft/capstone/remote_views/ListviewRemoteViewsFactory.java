@@ -1,5 +1,8 @@
-/**
+/*
  * Copyright (C) 2018 by George Vrynios
+ *
+ * Capstone final project
+ *
  * This project was made under the supervision of Udacity
  * in the Android Developer Nanodegree Program
  *
@@ -34,8 +37,8 @@ import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 import static com.aiassoft.capstone.data.DBQueries.fetchVehiclesTotalRunningCosts;
 import static com.aiassoft.capstone.utilities.PrefUtils.getWidgetVehicleId;
 
-/**
- * Created by gvryn on 15/08/18.
+/*
+  Created by gvryn on 15/08/18.
  */
 
 /**
@@ -56,13 +59,13 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
         mContext = applicationContext;
 
 
-        /** Ger widget's Id */
+        /* Ger widget's Id */
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
 
-        /** Get widget's vehicleId */
+        /* Get widget's vehicleId */
         mVehicleId = getWidgetVehicleId(appWidgetId);
 
-        /** Get Vehicle's total running costs */
+        /* Get Vehicle's total running costs */
         mData = fetchVehiclesTotalRunningCosts(mVehicleId);
 //        Toast.makeText(mContext, "Vehicle " + mData.getName(), Toast.LENGTH_SHORT).show();
     }
@@ -75,7 +78,7 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
     /** called on start and when notifyAppWidgetViewDataChanged is called */
     @Override
     public void onDataSetChanged() {
-        /** Get Vehicle's total running costs */
+        /* Get Vehicle's total running costs */
         mData = fetchVehiclesTotalRunningCosts(mVehicleId);
     }
 
@@ -86,7 +89,7 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     @Override
     public int getCount() {
-        /** we have mData for one vehicle, so we always return 1 */
+        /* we have mData for one vehicle, so we always return 1 */
         return 1;
     }
 
