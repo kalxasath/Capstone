@@ -21,6 +21,7 @@
 
 package com.aiassoft.capstone.widgets;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -34,9 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -48,7 +47,6 @@ import com.aiassoft.capstone.model.Vehicle;
 import com.aiassoft.capstone.utilities.AppUtils;
 import com.aiassoft.capstone.utilities.PrefUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +61,7 @@ import butterknife.ButterKnife;
  * This activity is started from the widget provider every time
  * the user creates a new widget in the home screen.
  * This activity allows the users to select the vehicle
- * that the widget will show the data
+ * for that the widget will show the data
  */
 public class VehicleWidgetConfigureActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<List<Vehicle>>,
@@ -192,6 +190,7 @@ public class VehicleWidgetConfigureActivity extends AppCompatActivity
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<Vehicle>> onCreateLoader(int id, final Bundle loaderArgs) {
 

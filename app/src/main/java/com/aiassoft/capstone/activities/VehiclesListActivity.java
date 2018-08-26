@@ -22,6 +22,7 @@
 package com.aiassoft.capstone.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +49,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +87,7 @@ public class VehiclesListActivity extends AppCompatActivity
 
     public static final int VEHICLES_LOADER_ID = 0;
 
+    // Entity state indicator, used to know entity's return state
     public static final int CHILD_INSERT = 0;
     public static final int CHILD_UPDATE = 1;
 
@@ -140,9 +141,6 @@ public class VehiclesListActivity extends AppCompatActivity
         initNavigation();
 
         initVehiclesListRecyclerView();
-
-        if (mRecyclerState != null)
-            mVehiclesList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
 
         fetchVehiclesList();
     }
@@ -243,7 +241,6 @@ public class VehiclesListActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         mDrawer.closeDrawer(GravityCompat.START);
@@ -255,27 +252,6 @@ public class VehiclesListActivity extends AppCompatActivity
         }
 
         return true;
-    }
-
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-        if(keyCode== KeyEvent.KEYCODE_DPAD_RIGHT){
-            mDrawerToggle.syncState();
-            if(! mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-        else if(keyCode== KeyEvent.KEYCODE_DPAD_LEFT){
-            mDrawerToggle.syncState();
-            if(mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-        return super.onKeyUp(keyCode, event);
     }
 
     /**
@@ -306,13 +282,11 @@ public class VehiclesListActivity extends AppCompatActivity
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<Vehicle>> onCreateLoader(int id, final Bundle loaderArgs) {
 
         return new AsyncTaskLoader<List<Vehicle>>(this) {
-
-            /* This Vehicle array will hold and help cache our vehicles list data */
-            List<Vehicle> mCachedVehiclesListData = null;
 
             /**
              * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
@@ -321,18 +295,13 @@ public class VehiclesListActivity extends AppCompatActivity
             protected void onStartLoading() {
                 super.onStartLoading();
 
-                if (mCachedVehiclesListData != null) {
-                    deliverResult(mCachedVehiclesListData);
-                } else {
+                mLoadingIndicator.setVisibility(View.VISIBLE);
 
-                    mLoadingIndicator.setVisibility(View.VISIBLE);
-
-                    forceLoad();
-                }
+                forceLoad();
             }
 
             /**
-             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
+             * This is the method of the AsyncTaskLoader that will load the data
              * from the database in the background.
              *
              * @return Vehicles' data from the database as a List of VehiclesReviewsListItem.
@@ -382,7 +351,6 @@ public class VehiclesListActivity extends AppCompatActivity
              * @param data The result of the load
              */
             public void deliverResult(List<Vehicle> data) {
-                mCachedVehiclesListData = data;
                 super.deliverResult(data);
             } // deliverResult
 
@@ -492,6 +460,14 @@ public class VehiclesListActivity extends AppCompatActivity
     /**
      * called after child activity finish
      * if resultCode == Activity.RESULT_OK we will restart the loader
+     *
+     * Knowing issue, If the user in this activity hasn't granted external storage permission
+     * but later he grants in the vehicle activity and
+     * returns back from the vehicle activity with out any changes
+     * in the if statement the loader will not be restarted so the
+     * images will not be updated in this lifecycle
+     * I don't want to deal with users they don't know what they want, they should do a little be more
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -500,7 +476,7 @@ public class VehiclesListActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             // if we have changes then we restart the loader
-            // so that to we read the new data and update the UI.
+            // so that we read the new data and update the UI.
             getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
 
             // update the home screen widgets
@@ -508,7 +484,7 @@ public class VehiclesListActivity extends AppCompatActivity
         }
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * App Permissions for read external storage
@@ -523,10 +499,10 @@ public class VehiclesListActivity extends AppCompatActivity
                 String[] permissionsWeNeed = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE };
                 requestPermissions(permissionsWeNeed, Const.MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE);
             }
-        } else {
-            // Otherwise, permissions were granted and we are ready to go!
-            getSupportLoaderManager().restartLoader(VEHICLES_LOADER_ID, null, this);
         }
+        // else {
+            // Otherwise, permissions were granted and we are ready to go!
+        // }
     }
 
     @Override
@@ -557,8 +533,5 @@ public class VehiclesListActivity extends AppCompatActivity
             }
         }
     }
-
-
-
 
 }

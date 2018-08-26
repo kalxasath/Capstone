@@ -32,6 +32,9 @@ import com.aiassoft.capstone.R;
  * Created by gvryn on 29/07/18.
  */
 
+/**
+ * class model to hold the expenses data for various use
+ */
 public class Expense implements Parcelable {
 
     /**
@@ -53,8 +56,7 @@ public class Expense implements Parcelable {
     private int vehicleId;
     private int expenseType;
     private int subtype;
-//    private String date;
-    private YearMonthDay yearMonthDay; // todo change to date
+    private YearMonthDay yearMonthDay;
     private int odometer;
     private float fuelQuantity;
     private float amount;
@@ -77,7 +79,6 @@ public class Expense implements Parcelable {
         this.vehicleId = vehicleId;
         this.expenseType = expenseType;
         this.subtype = subtype;
-//        this.date = date;
         this.yearMonthDay = new YearMonthDay();
         yearMonthDay.setDate(date);
         this.fuelQuantity = fuelQuantity;
@@ -92,7 +93,6 @@ public class Expense implements Parcelable {
         this.vehicleId = vehicleId;
         this.expenseType = expenseType;
         this.subtype = subtype;
-//        this.date = date;
         this.yearMonthDay = new YearMonthDay();
         yearMonthDay.setDate(date);
         this.fuelQuantity = fuelQuantity;
@@ -108,7 +108,6 @@ public class Expense implements Parcelable {
         this.vehicleId = in.readInt();
         this.expenseType = in.readInt();
         this.subtype = in.readInt();
-//        this.date = in.readString();
         this.yearMonthDay = in.readParcelable(YearMonthDay.class.getClassLoader());
         this.odometer = in.readInt();
         this.fuelQuantity = in.readFloat();
@@ -171,14 +170,6 @@ public class Expense implements Parcelable {
     public void setSubtype(int subtype) {
         this.subtype = subtype;
     }
-
-//    public String XgetDate() {
-//        return date;
-//    }
-
-//    public void XsetDate(String date) {
-//        this.date = date;
-//    }
 
     public int getOdometer() {
         return this.odometer;
@@ -253,7 +244,6 @@ public class Expense implements Parcelable {
         dest.writeInt(this.vehicleId);
         dest.writeInt(this.expenseType);
         dest.writeInt(this.subtype);
-//        dest.writeString(this.date);
         dest.writeInt(this.odometer);
         dest.writeFloat(this.fuelQuantity);
         dest.writeFloat(this.amount);

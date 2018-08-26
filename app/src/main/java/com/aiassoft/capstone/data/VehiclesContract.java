@@ -29,6 +29,7 @@ import com.aiassoft.capstone.R;
 
 /**
  * Created by gvryn on 24/06/2018.
+ *
  * Defining the VehiclesContract class
  * In this table will be stored the Vehicles
  */

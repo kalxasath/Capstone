@@ -40,6 +40,9 @@ import butterknife.ButterKnife;
  * Created by gvryn on 05/08/18.
  */
 
+/**
+ * return a date picker dialog to select a date
+ */
 public class DatePickerDialog extends DialogFragment implements View.OnClickListener {
 
     private static final String LOG_TAG = MyApp.APP_TAG + DatePickerDialog.class.getSimpleName();
@@ -82,7 +85,7 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
         switch(v.getId()){
             case R.id.btn_accept:
                 int day = mDatePicker.getDayOfMonth();
-                int month = mDatePicker.getMonth() + 1; // months start in 0
+                int month = mDatePicker.getMonth() + 1; // months start at 0
                 int year = mDatePicker.getYear();
                 mSelectedDateHandler.OnSelectedDate(year, month, day);
                 break;

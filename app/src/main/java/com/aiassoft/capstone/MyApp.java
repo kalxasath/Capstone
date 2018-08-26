@@ -28,6 +28,7 @@ import com.aiassoft.capstone.utilities.AppUtils;
 
 /**
  * Created by gvryn on 23/06/2018.
+ *
  * This application class is used to store static resources
  * being used in static methods
  */

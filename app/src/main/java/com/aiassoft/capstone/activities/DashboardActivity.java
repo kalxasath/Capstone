@@ -23,9 +23,8 @@ package com.aiassoft.capstone.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -41,8 +40,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +77,8 @@ public class DashboardActivity extends AppCompatActivity
 
     public static final int DASHBOARD_LOADER_ID = 0;
 
+    private static final String STATE_RECYCLER = "STATE_RECYCLER";
+
     Context mContext;
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
@@ -94,6 +93,8 @@ public class DashboardActivity extends AppCompatActivity
 
     /** The recycler's view adapter */
     DashboardListAdapter mDashboardListAdapter;
+
+    Parcelable mRecyclerState = null;
 
     @BindView(R.id.empty_view) TextView mEmptyView;
 
@@ -112,6 +113,11 @@ public class DashboardActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        /* recovering the instance state */
+        if (savedInstanceState != null) {
+            mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
+        }
+
         setSupportActionBar(mToolbar);
 
         initFab();
@@ -124,7 +130,17 @@ public class DashboardActivity extends AppCompatActivity
 
         initDashboardListRecyclerView();
 
-        fetchDashboardList(true);
+        fetchDashboardList();
+    }
+
+    /** invoked when the activity may be temporarily destroyed, save the instance state here */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Parcelable recyclerState = mDashboardList.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(STATE_RECYCLER, recyclerState);
+
+        /* call superclass to save any view hierarchy */
+        super.onSaveInstanceState(outState);
     }
 
     private void initFab() {
@@ -222,7 +238,6 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         mDrawer.closeDrawer(GravityCompat.START);
@@ -236,31 +251,10 @@ public class DashboardActivity extends AppCompatActivity
         return true;
     }
 
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-        if(keyCode== KeyEvent.KEYCODE_DPAD_RIGHT){
-            mDrawerToggle.syncState();
-            if(! mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-        else if(keyCode== KeyEvent.KEYCODE_DPAD_LEFT){
-            mDrawerToggle.syncState();
-            if(mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-        return super.onKeyUp(keyCode, event);
-    }
-
     /**
      * Fetch the dashboard' data from the database
      */
-    private void fetchDashboardList(Boolean invalidateCache) {
+    private void fetchDashboardList() {
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
          * created and (if the activity/fragment is currently started) starts the loader. Otherwise
@@ -292,10 +286,6 @@ public class DashboardActivity extends AppCompatActivity
     public Loader<List<VehiclesTotalRunningCosts>> onCreateLoader(int id, final Bundle loaderArgs) {
 
         return new AsyncTaskLoader<List<VehiclesTotalRunningCosts>>(this) {
-
-            /* This VehiclesTotalRunningCosts array will hold and help cache our dashboard list data */
-            List<VehiclesTotalRunningCosts> mCachedDashboardListData = null;
-
             /**
              * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
              */
@@ -303,66 +293,21 @@ public class DashboardActivity extends AppCompatActivity
             protected void onStartLoading() {
                 super.onStartLoading();
 
-                if (mCachedDashboardListData != null) {
-                    deliverResult(mCachedDashboardListData);
-                } else {
+                mLoadingIndicator.setVisibility(View.VISIBLE);
 
-                    mLoadingIndicator.setVisibility(View.VISIBLE);
-
-                    forceLoad();
-                }
+                forceLoad();
             } // onStartLoading
 
             /**
-             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
-             * from theexpensedb.org in the background.
+             * This is the method of the AsyncTaskLoader that will load the data
+             * from the database in the background.
              *
-             * @return VehiclesTotalRunningCosts' data from theexpensedb.org as a List of DashboardReviewsListItem.
+             * @return VehiclesTotalRunningCosts' data from database as a List of DashboardReviewsListItem.
              *         null if an error occurs
              */
             @Override
             public List<VehiclesTotalRunningCosts> loadInBackground() {
-                /* ArrayList to hold the dashboard list items */
-                List<VehiclesTotalRunningCosts> dashboardListItems = new ArrayList<VehiclesTotalRunningCosts>();
-                VehiclesTotalRunningCosts dashboardListItem;
-
-                CapstoneDBHelper dbHelper;
-                dbHelper = new CapstoneDBHelper(getContext());
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-                // Read the available Vehicles
-                String sqlVehicles =
-                        "select v._id as vehicleId, v.Name, v.distanceUnit, " +
-                        "       v.volumeUnit, m.minOdo, m.maxOdo " +
-                        "from vehicles as v " +
-                        "left outer join ( " +
-                        "      select e.vehicleId, min(e.odometer) as minOdo, " +
-                        "             max(e.odometer) as maxOdo " +
-                        "      from expenses as e " +
-                        "      where e.expenseType = 0 " +
-                        "      group by e.vehicleId " +
-                        ") as m on m.vehicleId = v._id ";
-
-                Cursor cVehicles = db.rawQuery(sqlVehicles, null);
-
-                if (cVehicles != null && cVehicles.getCount() > 0) {
-
-                    while (cVehicles.moveToNext()) {
-                        int vehicleId = cVehicles.getInt(cVehicles.getColumnIndex("vehicleId"));
-                        dashboardListItem = fetchVehiclesTotalRunningCosts(vehicleId);
-                        dashboardListItems.add(dashboardListItem);
-                    }
-
-                    cVehicles.close();
-                }
-
-                db.close();
-                dbHelper.close();
-
-
-                    mCachedDashboardListData = null;
-
-                return dashboardListItems;
+                return fetchVehiclesTotalRunningCosts();
             } // loadInBackground
 
             /**
@@ -371,7 +316,6 @@ public class DashboardActivity extends AppCompatActivity
              * @param data The result of the load
              */
             public void deliverResult(List<VehiclesTotalRunningCosts> data) {
-//                mCachedDashboardListData = data;
                 super.deliverResult(data);
             } // deliverResult
 
@@ -397,6 +341,11 @@ public class DashboardActivity extends AppCompatActivity
         /* Update the adapters data with the new one */
         invalidateData();
         mDashboardListAdapter.setDashboardData(data);
+
+        if (mRecyclerState != null) {
+            mDashboardList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+            mRecyclerState = null;
+        }
     } // onLoadFinished
 
     /**
@@ -446,7 +395,7 @@ public class DashboardActivity extends AppCompatActivity
      */
     @Override
     public void onClick(int dashboardId) {
-        // this method will not be used
+        // We aren't using this method in this application
     }
 
 

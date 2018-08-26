@@ -21,11 +21,9 @@
 
 package com.aiassoft.capstone.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
@@ -33,11 +31,14 @@ import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 
 /**
  * Created by gvryn on 23/06/2018.
+ *
  * SQLite DB Helper
  * to take care of creating the database for the first time
  * and upgrading it when the schema changes.
  */
 public class CapstoneDBHelper extends SQLiteOpenHelper {
+
+    private static final String LOG_TAG = MyApp.APP_TAG + CapstoneDBHelper.class.getSimpleName();
 
     /**
      * The database name

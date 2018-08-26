@@ -119,7 +119,6 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
         public DashboardAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-//            view.setOnClickListener(this);
         }
 
         /**
@@ -169,7 +168,6 @@ public class DashboardListAdapter extends RecyclerView.Adapter<DashboardListAdap
         Resources res = context.getResources();
         VehiclesTotalRunningCosts data = mVehiclesTotalRunningCosts.get(position);
 
-        //viewHolder.mVehicleTitle.getContext().getString(R.string.total_running_costs)
         viewHolder.mVehicleTitle.setText(String.format(
                 context.getString(R.string.total_running_costs), data.getName()));
         if (! data.hasData) {

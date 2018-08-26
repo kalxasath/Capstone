@@ -67,7 +67,6 @@ public class ListviewRemoteViewsFactory implements RemoteViewsService.RemoteView
 
         /* Get Vehicle's total running costs */
         mData = fetchVehiclesTotalRunningCosts(mVehicleId);
-//        Toast.makeText(mContext, "Vehicle " + mData.getName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

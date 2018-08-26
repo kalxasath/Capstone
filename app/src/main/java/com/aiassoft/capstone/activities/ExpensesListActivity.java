@@ -45,7 +45,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +81,7 @@ public class ExpensesListActivity extends AppCompatActivity
 
     public static final int EXPENSES_LOADER_ID = 0;
 
+    // Entity state indicator, used to know entity's return state
     public static final int CHILD_INSERT = 0;
     public static final int CHILD_UPDATE = 1;
 
@@ -123,8 +123,6 @@ public class ExpensesListActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
         }
-
-
 
         setSupportActionBar(mToolbar);
 
@@ -208,7 +206,6 @@ public class ExpensesListActivity extends AppCompatActivity
 
     }
 
-
     /** invoked when the activity may be temporarily destroyed, save the instance state here */
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -239,7 +236,6 @@ public class ExpensesListActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         mDrawer.closeDrawer(GravityCompat.START);
@@ -251,26 +247,6 @@ public class ExpensesListActivity extends AppCompatActivity
         }
 
         return true;
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-        if(keyCode== KeyEvent.KEYCODE_DPAD_RIGHT){
-            mDrawerToggle.syncState();
-            if(! mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-        else if(keyCode== KeyEvent.KEYCODE_DPAD_LEFT){
-            mDrawerToggle.syncState();
-            if(mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-        return super.onKeyUp(keyCode, event);
     }
 
     /**
@@ -328,10 +304,10 @@ public class ExpensesListActivity extends AppCompatActivity
             }
 
             /**
-             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
-             * from theexpensedb.org in the background.
+             * This is the method of the AsyncTaskLoader that will load the data
+             * from the database in the background.
              *
-             * @return Expenses' data from theexpensedb.org as a List of ExpensesReviewsListItem.
+             * @return Expenses' data from database as a List of ExpensesReviewsListItem.
              *         null if an error occurs
              */
             @Override

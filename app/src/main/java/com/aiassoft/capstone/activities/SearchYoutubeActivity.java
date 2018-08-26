@@ -21,8 +21,10 @@
 
 package com.aiassoft.capstone.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -30,7 +32,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,6 +82,9 @@ public class SearchYoutubeActivity extends AppCompatActivity
      * This ID will be used to identify the Loader responsible for loading our videos list.
      */
     public static final int VIDEOS_LOADER_ID = 0;
+
+    private static final String STATE_SEARCH_QUERY = "STATE_SEARCH_QUERY";
+    private static final String STATE_RECYCLER = "STATE_RECYCLER";
     /**
      * Used to identify the WEB URL that is being used in the loader.loadInBackground
      * to get the videos' data from youtube.com
@@ -103,11 +106,13 @@ public class SearchYoutubeActivity extends AppCompatActivity
 
     SearchView mSearchView;
     MenuItem mSearchMenuItem;
-    SearchView mSearchViewMI;
+    String mSearchQuery;
 
     /* The views in the xml file */
     /** The recycler view */
     @BindView(R.id.videos_list) RecyclerView mVideosList;
+
+    Parcelable mRecyclerState = null;
 
     /** The Error Message Block,
      * is used to display errors and will be hidden if there are no error
@@ -128,13 +133,18 @@ public class SearchYoutubeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_drawer);
         mContext = this;
+        mSearchQuery = null;
 
         mContainer = this.findViewById(R.id.layout_container);
         View.inflate(this, R.layout.activity_search_youtube, mContainer);
 
         ButterKnife.bind(this);
 
-        mNavigationView = this.findViewById(R.id.nav_view);
+        /* recovering the instance state */
+        if (savedInstanceState != null) {
+            mSearchQuery = savedInstanceState.getString(STATE_SEARCH_QUERY, null);
+            mRecyclerState = savedInstanceState.getParcelable(STATE_RECYCLER);
+        }
 
         setSupportActionBar(mToolbar);
 
@@ -146,6 +156,20 @@ public class SearchYoutubeActivity extends AppCompatActivity
 
         initVideosListRecyclerView();
 
+        if (mSearchQuery != null)
+            fetchVideosList(mSearchQuery);
+    }
+
+    /** invoked when the activity may be temporarily destroyed, save the instance state here */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(STATE_SEARCH_QUERY, mSearchQuery);
+
+        Parcelable recyclerState = mVideosList.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(STATE_RECYCLER, recyclerState);
+
+        /* call superclass to save any view hierarchy */
+        super.onSaveInstanceState(outState);
     }
 
     private void initFab() {
@@ -227,7 +251,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
         getSupportLoaderManager().destroyLoader(VIDEOS_LOADER_ID);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         mDrawer.closeDrawer(GravityCompat.START);
@@ -239,27 +262,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
         }
 
         return true;
-    }
-
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-        if(keyCode== KeyEvent.KEYCODE_DPAD_RIGHT){
-            mDrawerToggle.syncState();
-            if(! mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-        else if(keyCode== KeyEvent.KEYCODE_DPAD_LEFT){
-            mDrawerToggle.syncState();
-            if(mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-        return super.onKeyUp(keyCode, event);
     }
 
     @Override
@@ -275,6 +277,19 @@ public class SearchYoutubeActivity extends AppCompatActivity
         mSearchView.setOnQueryTextListener(this);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int selectedMenuItem = item.getItemId();
+
+        if (selectedMenuItem == R.id.action_search) {
+            invalidateData();
+            mSearchQuery = null;
+            mRecyclerState = null;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -297,9 +312,7 @@ public class SearchYoutubeActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextChange(String newText) {
-//        Snackbar.make(mSearchView, "TextChange " + newText, Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show();
-//        Toast.makeText(this, "TextChange " + newText, Toast.LENGTH_LONG).show();
+        // We aren't using this method in this application, but we are required to Override it
         return false;
     }
 
@@ -346,14 +359,11 @@ public class SearchYoutubeActivity extends AppCompatActivity
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<VideosListItem>> onCreateLoader(int id, final Bundle loaderArgs) {
 
         return new AsyncTaskLoader<List<VideosListItem>>(this) {
-
-            /* This VideosListItem array will hold and help cache our videos list data */
-            List<VideosListItem> mCachedVideosListData = null;
-
             /**
              * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
              */
@@ -364,24 +374,31 @@ public class SearchYoutubeActivity extends AppCompatActivity
                     return;
                 }
 
-                if (mCachedVideosListData != null) {
-                    deliverResult(mCachedVideosListData);
+                String searchQuery = loaderArgs.getString(LOADER_EXTRA_SEARCH_QUERY);
+                if (searchQuery == null || TextUtils.isEmpty(searchQuery)) {
+                    /* If null or empty string is passed, return immediately */
+                    return;
                 } else {
-                    /* If Error Message Block is visible, hide it */
-                    if (mErrorMessageBlock.getVisibility() == View.VISIBLE) {
-                        showVideosListView();
+                    if (! searchQuery.equals(mSearchQuery)) {
+                        mSearchQuery = searchQuery;
                     }
-                    mLoadingIndicator.setVisibility(View.VISIBLE);
-
-                    forceLoad();
                 }
+
+
+                /* If Error Message Block is visible, hide it */
+                if (mErrorMessageBlock.getVisibility() == View.VISIBLE) {
+                    showVideosListView();
+                }
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+
+                forceLoad();
             } // onStartLoading
 
             /**
-             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
-             * from thevideodb.org in the background.
+             * This is the method of the AsyncTaskLoader that will load the data
+             * from the database in the background.
              *
-             * @return Videos' data from thevideodb.org as a List of VideosReviewsListItem.
+             * @return Videos' data from database as a List of VideosReviewsListItem.
              *         null if an error occurs
              */
             @Override
@@ -417,7 +434,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
              * @param data The result of the load
              */
             public void deliverResult(List<VideosListItem> data) {
-                mCachedVideosListData = data;
                 super.deliverResult(data);
             } // deliverResult
 
@@ -435,9 +451,6 @@ public class SearchYoutubeActivity extends AppCompatActivity
     public void onLoadFinished(Loader<List<VideosListItem>> loader, List<VideosListItem> data) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
-        /* Update the adapters data with the new one */
-        mVideosListAdapter.setVideosData(data);
-
         /* Check for error */
         if (null == data) {
             /* If an error has occurred, show the error message */
@@ -445,6 +458,15 @@ public class SearchYoutubeActivity extends AppCompatActivity
         } else {
             /* Else show the videos list */
             showVideosListView();
+        }
+
+        /* Update the adapters data with the new one */
+        invalidateData();
+        mVideosListAdapter.setVideosData(data);
+
+        if (mRecyclerState != null) {
+            mVideosList.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+            mRecyclerState = null;
         }
     } // onLoadFinished
 

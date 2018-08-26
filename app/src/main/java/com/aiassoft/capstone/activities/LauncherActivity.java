@@ -38,7 +38,6 @@
  *    After that you will see in the drawer the menu option
  *    Fill database with fake data.
  *    The whole procedure comes as is and is not supported
- *    for errors, suggestions or have to do (Thank you)
  *
  * Playing video from the YouTube Results
  *    tap in the play circle to start video playing
@@ -56,13 +55,6 @@
  *    NestedScrollView name layout_container
  *
  *
- */
-
-/*
- * PLEASE if I have anything not implemented or wrong implemented
- * give me, teach me how to do it
- * give me a hint, a link
- * Thank you
  */
 
 package com.aiassoft.capstone.activities;

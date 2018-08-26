@@ -41,12 +41,11 @@ import static com.aiassoft.capstone.utilities.TestUtils.insertFakeData;
  * Created by gvryn on 25/07/18.
  */
 
+/**
+ * is used for all drawer activities to navigate around of them
+ */
 public class DrawerMenu {
-    /**
-     * We never need to create an instance of the Const class
-     * because the Const is simply a class filled,
-     * with App related constants that are all static.
-     */
+
     private DrawerMenu() {
         throw new AssertionError(R.string.no_instances_for_you);
     }

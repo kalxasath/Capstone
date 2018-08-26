@@ -39,6 +39,11 @@ import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
  * Created by gvryn on 05/08/18.
  */
 
+/**
+ * This method inserts fake data to the database
+ * Menu option by default is hidden, developer should enabled by seld
+ * since this method is not supported and it comes as is
+ */
 public final class TestUtils {
 
     private TestUtils() {

@@ -22,6 +22,7 @@
 package com.aiassoft.capstone.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -73,7 +74,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -99,6 +99,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
     public static final int EXPENSES_LOADER_ID = 0;
 
     public static final String EXTRA_EXPENSES_ID = "EXTRA_EXPENSES_ID";
+    public static final String LOAD_ONLY_VEHICLES = "LOAD_ONLY_VEHICLES";
 
     private static final String STATE_EXPENSE_ID = "STATE_EXPENSE_ID";
     private static final String STATE_SCROLL_POS = "STATE_SCROLL_POS";
@@ -127,6 +128,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
     private DatePickerDialog mDatePickerDialog;
 
     private static boolean mEntityUpdated;
+    private static boolean mReadOnlyVehicles;
 
     private int mScrollViewContainerScrollToY = Const.INVALID_INT;
 
@@ -208,12 +210,15 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
         /* recovering the instance state */
         if (savedInstanceState != null) {
+            mReadOnlyVehicles = true;
+
             mExpenseId = savedInstanceState.getInt(STATE_EXPENSE_ID, Const.INVALID_ID);
             mScrollViewContainerScrollToY = savedInstanceState.getInt(STATE_SCROLL_POS, Const.INVALID_INT); // NestedScrollView
             mExpense = savedInstanceState.getParcelable(STATE_ENTITY);
             mEntityUpdated = savedInstanceState.getBoolean(STATE_ENTITY_UPDATED, false);
         } else {
 
+            mReadOnlyVehicles = false;
             /*
               should be called from another activity. if not, show error toast and return
              */
@@ -227,17 +232,16 @@ public class ExpensesEntityActivity extends AppCompatActivity
                  */
                 mExpenseId = intent.getIntExtra(EXTRA_EXPENSES_ID, Const.NEW_RECORD_ID);
             }
+        }
 
-            fetchData();
+        fetchData();
 
-            if (mExpenseId != Const.NEW_RECORD_ID) {
-                mToolbarPhoto.setContentDescription(
-                        getString(R.string.vehicle_screen_ready_for_edit_record));
-            } else {
-                mToolbarPhoto.setContentDescription(
-                        getString(R.string.vehicle_screen_ready_for_new_record));
-            }
-
+        if (mExpenseId != Const.NEW_RECORD_ID) {
+            mToolbarPhoto.setContentDescription(
+                    getString(R.string.vehicle_screen_ready_for_edit_record));
+        } else {
+            mToolbarPhoto.setContentDescription(
+                    getString(R.string.vehicle_screen_ready_for_new_record));
         }
 
     }
@@ -325,15 +329,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
         mAdapterSubtype.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSubtypeSpinner.setAdapter(mAdapterSubtype);
         mSubtypeSpinner.setOnItemSelectedListener(this);
-
-//        mVehiclesSpinner.postDelayed(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                mEntityUpdated = false;
-//            }
-//        }, 500);
     }
 
 
@@ -414,7 +409,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     private boolean saveEntity() {
-//todo saveEntity
         /* We'll create a new ContentValues object to place data into. */
         ContentValues contentValues = new ContentValues();
         /* Put the Expenses data into the ContentValues */
@@ -525,7 +519,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
         // For an new entry entity
         // We need here to set the VehicleId, since the populateViews needs it
         // Title and image are populated on spinners onItemSelected
-        if (mVehiclesListData.size() != 0 && mExpenseId == Const.NEW_RECORD_ID) {
+        if (mVehiclesListData.size() != 0 && mExpenseId == Const.NEW_RECORD_ID & ! mReadOnlyVehicles) {
             mExpense.setVehicleId(mVehiclesListData.get(0).getId());
             mExpense.setVehiclePosInSpinner(0);
         }
@@ -565,7 +559,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
     }
 
     private void updateExpenseFromViews() {
-//todo updateExpenseFromViews
         // vehicle's id is store when selecting from the spinner
         mExpense.setExpenseType((int)mExpenseTypeSpinner.getSelectedItemId());
         mExpense.setSubtype((int)mSubtypeSpinner.getSelectedItemId());
@@ -576,13 +569,13 @@ public class ExpensesEntityActivity extends AppCompatActivity
         mExpense.setNotes(mNotes.getText().toString());
     }
 
-    private void hideOdometerControls() {
+    private void hideFuelQyantityControls() {
         mFuelQuantityWrapper.setVisibility(View.GONE);
-        mDistanceUnit.setVisibility(View.GONE);
+        mVolumeUnit.setVisibility(View.GONE);
         mFuelQuantity.setText("0.0");
     }
 
-    private void showOdometerControls() {
+    private void showFuelQyantityControls() {
         mFuelQuantityWrapper.setVisibility(View.VISIBLE);
         mVolumeUnit.setVisibility(View.VISIBLE);
     }
@@ -592,24 +585,23 @@ public class ExpensesEntityActivity extends AppCompatActivity
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//todo SPINNET on change
         mEntityUpdated = true;
         setEntityTitle(null);
         switch (parent.getId()) {
             case R.id.expense_type_spinner:
                 switch (position) {
                     case 0:
-                        showOdometerControls();
+                        showFuelQyantityControls();
                         mAdapterSubtype = ArrayAdapter.createFromResource(this,
                                 R.array.refuel_expenses_subtypes, android.R.layout.simple_spinner_item);
                         break;
                     case 1:
-                        hideOdometerControls();
+                        hideFuelQyantityControls();
                         mAdapterSubtype = ArrayAdapter.createFromResource(this,
                                 R.array.bill_expenses_subtypes, android.R.layout.simple_spinner_item);
                         break;
                     case 2:
-                        hideOdometerControls();
+                        hideFuelQyantityControls();
                         mAdapterSubtype = ArrayAdapter.createFromResource(this,
                                 R.array.service_expenses_subtypes, android.R.layout.simple_spinner_item);
                         break;
@@ -646,7 +638,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
     }
 
-//todo loader
     /*
       Vehicles loader
      */
@@ -654,11 +645,15 @@ public class ExpensesEntityActivity extends AppCompatActivity
      * Fetch data from the database
      * 1. Fetch the vehicles list
      * 2. Fetch the entities data
+     * due to load different kind of information we want on device rotation
+     * to load only the vehicles data for the spinner
+     * so the mReadOnlyVehicles is used to control this issue
      */
     private void fetchData() {
         /* Create a bundle to pass parameters to the loader */
         Bundle loaderArgs = new Bundle();
         loaderArgs.putInt(EXTRA_EXPENSES_ID, mExpenseId);
+        loaderArgs.putBoolean(LOAD_ONLY_VEHICLES, mReadOnlyVehicles);
 
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
@@ -684,11 +679,13 @@ public class ExpensesEntityActivity extends AppCompatActivity
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<Expense> onCreateLoader(int id, final Bundle loaderArgs) {
 
         return new AsyncTaskLoader<Expense>(this) {
             private int mExpenseId;
+            private boolean mReadOnlyVehicles;
 
             /**
              * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
@@ -701,6 +698,7 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 }
 
                 mExpenseId = loaderArgs.getInt(EXTRA_EXPENSES_ID, Const.INVALID_ID);
+                mReadOnlyVehicles = loaderArgs.getBoolean(LOAD_ONLY_VEHICLES, false);
 
                 if (mExpenseId == Const.INVALID_ID) {
                     return;
@@ -710,15 +708,14 @@ public class ExpensesEntityActivity extends AppCompatActivity
             } // onStartLoading
 
             /**
-             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
-             * from thevehicledb.org in the background.
+             * This is the method of the AsyncTaskLoader that will load the data
+             * from the database in the background.
              *
-             * @return Vehicles' data from thevehicledb.org as a List of VehiclesReviewsListItem.
+             * @return Vehicles' data from database as a List of VehiclesReviewsListItem.
              *         null if an error occurs
              */
             @Override
             public Expense loadInBackground() {
-//todo loadInBackground load the data
                 // Load the Vehicles for the spinner
                 Uri uri = VehiclesContract.VehiclesEntry.CONTENT_URI;
                 uri = uri.buildUpon().build();
@@ -760,7 +757,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
                     cursor.close();
 
                     // We initialize the expenses only if we have at least one vehicle
-                    if (mExpenseId != Const.NEW_RECORD_ID) {
+                    // we are not in more read only the vehicles to populate the spinner
+                    if (! mReadOnlyVehicles && mExpenseId != Const.NEW_RECORD_ID) {
                         uri = ExpensesContract.ExpensesEntry.CONTENT_URI;
                         uri = uri.buildUpon().build();
                         cursor = getContentResolver().query(uri, null,
@@ -777,8 +775,8 @@ public class ExpensesEntityActivity extends AppCompatActivity
                             expense.getYearMonthDay().setDate(cursor.getString(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_DATE)));
                             expense.setSubtype(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_SUBTYPE)));
                             expense.setOdometer(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_ODOMETER)));
-                            expense.setFuelQuantity(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY)));
-                            expense.setAmount(cursor.getInt(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT)));
+                            expense.setFuelQuantity(cursor.getFloat(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_FUEL_QUANTITY)));
+                            expense.setAmount(cursor.getFloat(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_AMOUNT)));
                             expense.setNotes(cursor.getString(cursor.getColumnIndex(ExpensesContract.ExpensesEntry.COLUMN_NAME_NOTES)));
                             cursor.close();
                         }
@@ -812,36 +810,41 @@ public class ExpensesEntityActivity extends AppCompatActivity
      */
     @Override
     public void onLoadFinished(Loader<Expense> loader, Expense data) {
-//todo onLoadFinished
         // we don't need any more the loader
         getSupportLoaderManager().destroyLoader(EXPENSES_LOADER_ID);
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mVehiclesSpinner.setVisibility(View.VISIBLE);
 
-        if (mVehiclesNamesList.size() == 0) {
-            showSnackbar(mRootLayout, R.string.enter_vehicles_first);
+        if (! mReadOnlyVehicles) {
+            if (mVehiclesNamesList.size() == 0) {
+                showSnackbar(mRootLayout, R.string.enter_vehicles_first);
+            } else {
+                if (data == null) {
+                    mExpenseId = Const.NEW_RECORD_ID;
+                    mExpense = new Expense();
+                    mExpense.getYearMonthDay().setTodayDate();
+                } else
+                    mExpense = data;
+
+                populateVehiclesSpinner();
+
+                populateViews();
+
+                // We need a post delay so that we can set
+                // that no changes are existing on entities data
+                // and this because spinners are running in their world
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        mEntityUpdated = false;
+                    }
+                }, 300);
+            }
         } else {
-            if (data == null) {
-                mExpenseId = Const.NEW_RECORD_ID;
-                mExpense = new Expense();
-                mExpense.getYearMonthDay().setTodayDate();
-            } else
-                mExpense = data;
-
             populateVehiclesSpinner();
-
-            populateViews();
-
-            // We need a post delay so that we can set
-            // that no changes are existing on entities data
-            // and this because spinners are running in their world
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    mEntityUpdated = false;
-                }
-            }, 300);
+            mExpense.setVehiclePosInSpinner(findVehiclesSpinnerPosition(mExpense.getVehicleId()));
+            mVehiclesSpinner.setSelection(mExpense.getVehiclePosInSpinner());
         }
     } // onLoadFinished
 
@@ -905,7 +908,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
 
     @Override
     public void OnSelectedDate(int year, int month, int day) {
-//        showSnackbar(mRootLayout, year+", "+month+", "+day);
         mExpense.getYearMonthDay().setDate(year, month, day);
 
         mEntityUpdated = true;
@@ -921,7 +923,6 @@ public class ExpensesEntityActivity extends AppCompatActivity
             int month = mExpense.getYearMonthDay().getMonth();
             int day = mExpense.getYearMonthDay().getDay();
 
-//            showSnackbar(mRootLayout, year+", "+month+", "+day);
             mDatePickerDialog.setDate(year, month, day);
 
             mDatePickerDialog.show(getSupportFragmentManager(), "");
@@ -942,10 +943,10 @@ public class ExpensesEntityActivity extends AppCompatActivity
                 String[] permissionsWeNeed = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE };
                 requestPermissions(permissionsWeNeed, Const.MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE);
             }
-        } else {
-            // Otherwise, permissions were granted and we are ready to go!
-            //displayVehicleImage();
         }
+        //else {
+            // Otherwise, permissions were granted and we are ready to go!
+        //}
     }
 
     @Override

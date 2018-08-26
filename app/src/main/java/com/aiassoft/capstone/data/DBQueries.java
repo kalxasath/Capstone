@@ -24,15 +24,19 @@ package com.aiassoft.capstone.data;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gvryn on 16/08/18.
+ *
+ * In this class will be reside the database queries
  */
 
 public final class DBQueries {
@@ -43,6 +47,12 @@ public final class DBQueries {
         throw new AssertionError(R.string.no_instances_for_you);
     }
 
+    /**
+     * Returns the vehicle name of a given vehicle id
+     *
+     * @param vehicleId The vehicle id
+     * @return the name of the vehicle
+     */
     public static final String fetchVehiclesName(int vehicleId) {
         String vehicleName = MyApp.getContext().getString(R.string.deleted_vehicle);
 
@@ -50,9 +60,6 @@ public final class DBQueries {
         uri = uri.buildUpon().appendPath(vehicleId+"").build();
         Cursor cVehicle = MyApp.getContext().getContentResolver().query(uri,
                 new String[] {VehiclesEntry.COLUMN_NAME_NAME}, null, null, null);
-
-//        uri = uri.buildUpon().build();
-//        Cursor cVehicle = getContentResolver().query(uri, new String[] {VehiclesEntry.COLUMN_NAME_NAME}, "_ID = ?", new String[] { vehicleId + ""}, null);
 
         if (cVehicle != null && cVehicle.getCount() > 0) {
             cVehicle.moveToNext();
@@ -63,6 +70,59 @@ public final class DBQueries {
         return vehicleName;
     }
 
+    /**
+     * This method calculates the data for the dashboard activity for each vehicle
+     * Each in the list item has the data from one vehicle and is from type VehiclesTotalRunningCosts
+     *
+     * @return a list of type VehiclesTotalRunningCosts
+     */
+    public static final List<VehiclesTotalRunningCosts> fetchVehiclesTotalRunningCosts() {
+        /* ArrayList to hold the dashboard list items */
+        List<VehiclesTotalRunningCosts> dashboardListItems = new ArrayList<VehiclesTotalRunningCosts>();
+        VehiclesTotalRunningCosts dashboardListItem;
+
+        CapstoneDBHelper dbHelper;
+        dbHelper = new CapstoneDBHelper(MyApp.getContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Read the available Vehicles
+        String sqlVehicles =
+                "select v._id as vehicleId, v.Name, v.distanceUnit, " +
+                        "       v.volumeUnit, m.minOdo, m.maxOdo " +
+                        "from vehicles as v " +
+                        "left outer join ( " +
+                        "      select e.vehicleId, min(e.odometer) as minOdo, " +
+                        "             max(e.odometer) as maxOdo " +
+                        "      from expenses as e " +
+                        "      where e.expenseType = 0 " +
+                        "      group by e.vehicleId " +
+                        ") as m on m.vehicleId = v._id ";
+
+        Cursor cVehicles = db.rawQuery(sqlVehicles, null);
+
+        if (cVehicles != null && cVehicles.getCount() > 0) {
+
+            while (cVehicles.moveToNext()) {
+                int vehicleId = cVehicles.getInt(cVehicles.getColumnIndex("vehicleId"));
+                dashboardListItem = fetchVehiclesTotalRunningCosts(vehicleId);
+                dashboardListItems.add(dashboardListItem);
+            }
+
+            cVehicles.close();
+        }
+
+        db.close();
+        dbHelper.close();
+
+        return dashboardListItems;
+    }
+
+    /**
+     * This method calculates the data for the dashboard activity for a vehicle
+     *
+     * @param vehicleId The vehicle's id
+     * @return the data for the given vehicle
+     */
     public static final VehiclesTotalRunningCosts fetchVehiclesTotalRunningCosts(int vehicleId) {
         VehiclesTotalRunningCosts data = new VehiclesTotalRunningCosts();
 

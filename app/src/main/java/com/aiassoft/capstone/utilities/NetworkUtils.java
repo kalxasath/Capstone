@@ -24,8 +24,6 @@ package com.aiassoft.capstone.utilities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
@@ -74,17 +72,7 @@ public class NetworkUtils {
             e.printStackTrace();
             return null;
         }
-        /*
-        catch (FileNotFoundException e) {
-            Log.d(LOG_TAG, MyApp.getContext().getString(R.string.invalid_api_key));
-            e.printStackTrace();
-            return null;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        */
+
         finally {
             urlConnection.disconnect();
         }

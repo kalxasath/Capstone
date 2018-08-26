@@ -158,11 +158,6 @@ public class VehiclesListAdapter extends RecyclerView.Adapter<VehiclesListAdapte
                     .into(vehiclesAdapterViewHolder.mVehicleImage);
         }
 
-//        Picasso.with(vehiclesAdapterViewHolder.mVehicleImage.getContext())
-//                .load(R.drawable.jonathan_daniels_453915_unsplash_rsz)
-//                .placeholder(R.drawable.jonathan_daniels_453915_unsplash_rsz)
-//                .into(vehiclesAdapterViewHolder.mVehicleImage);
-
         vehiclesAdapterViewHolder.mVehicleTitle.setText(vehiclesTitle);
     }
 

@@ -29,25 +29,26 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.aiassoft.capstone.Const;
+import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.data.ExpensesContract.ExpensesEntry;
 import com.aiassoft.capstone.data.VehiclesContract.VehiclesEntry;
 
 /**
  * Created by gvryn on 23/06/2018.
- * Defining the FavoriteVideosContract class
- * In this table will be stored the youtube ids
- * from the user's favorite videos, so that he
- * can find them quickly
+ * Defining the CapstoneContentProvider class
  */
 public class CapstoneContentProvider extends ContentProvider {
+
+    private static final String LOG_TAG = MyApp.APP_TAG + CapstoneContentProvider.class.getSimpleName();
 
     private CapstoneDBHelper mDBHelper;
 
     /**
-     * Define final integer constants for the directory of FAVORITE_VIDEOS and a single item.
+     * Define final integer constants
      * It's convention to use 10, 20, 30, etc for directories,
      * and related ints (11, 12, ..) for items in that directory.
      */
@@ -146,6 +147,9 @@ public class CapstoneContentProvider extends ContentProvider {
                 break;
             default:
                 /* Default case throws an UnsupportedOperationException */
+                // This error will be throwed in the development state
+                //
+                Log.d(LOG_TAG, getContext().getString(R.string.unknown_uri) + uri);
                 throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
@@ -171,6 +175,7 @@ public class CapstoneContentProvider extends ContentProvider {
              */
         } else {
             /* Otherwise, we'll throw a SQLiteException, because the insert failed. */
+            Log.d(LOG_TAG, getContext().getString(R.string.failed_to_insert_row_into) + uri);
             throw new android.database.SQLException(getContext().getString(R.string.failed_to_insert_row_into) + uri);
         }
 
@@ -270,7 +275,8 @@ public class CapstoneContentProvider extends ContentProvider {
 
             /* default exception */
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                Log.d(LOG_TAG, getContext().getString(R.string.unknown_uri) + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
         /* Return the desired Cursor */
@@ -323,7 +329,8 @@ public class CapstoneContentProvider extends ContentProvider {
 
             /* default exception */
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                Log.d(LOG_TAG, getContext().getString(R.string.unknown_uri) + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
         return deletedRecords;
@@ -405,7 +412,8 @@ public class CapstoneContentProvider extends ContentProvider {
 
             /* default exception */
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                Log.d(LOG_TAG, getContext().getString(R.string.unknown_uri) + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
     }
 

@@ -181,6 +181,12 @@ public class Vehicle implements Parcelable {
         this.notes = notes;
     }
 
+    /**
+     * returns the title of the vehicle
+     * depend of the name, make, model content
+     *
+     * @return the title
+     */
     public String getTitle() {
         if (!this.name.isEmpty()) {
             return this.name;
@@ -195,6 +201,10 @@ public class Vehicle implements Parcelable {
         }
     }
 
+    /**
+     * returns the make & model concatenated as a string
+     * @return the make & model string
+     */
     public String getMakeModel() {
         if (this.name.isEmpty()) {
             return "";

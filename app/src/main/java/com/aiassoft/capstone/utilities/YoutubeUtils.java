@@ -43,7 +43,7 @@ import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
 import static com.aiassoft.capstone.utilities.AppUtils.showToast;
 
 /**
- * These utilities will be used to play youtube videos.
+ * These utilities will be used for all YouTube helper methods
  */
 public class YoutubeUtils {
 

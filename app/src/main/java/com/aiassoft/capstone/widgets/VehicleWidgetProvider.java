@@ -70,11 +70,15 @@ public class VehicleWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+        // Clear all widget stored preferences
         prefClearWidgets();
     }
 
+    /**
+     * Send a broadcast to update the home screen widgets
+     * @param context
+     */
     public static void sendRefreshBroadcast(Context context) {
-//todo sendRefreshBroadcast
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
         ComponentName thisWidget = new ComponentName(context, VehicleWidgetProvider.class);

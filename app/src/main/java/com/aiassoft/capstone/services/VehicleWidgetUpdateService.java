@@ -41,7 +41,7 @@ import static com.aiassoft.capstone.utilities.PrefUtils.getWidgetVehicleId;
   Created by gvryn on 14/08/18.
  */
 
-/** This service updates the widgets with the appropriate recipe ingredients */
+/** This service updates the widgets with the appropriate vehicle total running costs */
 public class VehicleWidgetUpdateService extends Service {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VehicleWidgetUpdateService.class.getSimpleName();

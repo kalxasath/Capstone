@@ -37,6 +37,10 @@ import java.util.Date;
  * Created by gvryn on 24/08/18.
  */
 
+/**
+ * special handling of the date field
+ * returns date in format to display in the views, to store in the database etc
+ */
 public class YearMonthDay implements Parcelable {
 
     private static final String LOG_TAG = MyApp.APP_TAG + YearMonthDay.class.getSimpleName();
@@ -101,12 +105,24 @@ public class YearMonthDay implements Parcelable {
         return "yyyyMMdd";
     }
 
+    /**
+     * Splits a date string that is in database format
+     * and stores in the appropriated files
+     *
+     * @param date the date in format yyyyMMdd
+     */
     private void splitDate(String date) {
         this.year = Integer.parseInt(date.substring(0, 4));
         this.month = Integer.parseInt(date.substring(4, 6));
         this.day = Integer.parseInt(date.substring(6));
     }
 
+    /**
+     * return a date string that is compatible with the
+     * database storing format
+     *
+     * @return the date string in format yyyyMMdd
+     */
     private String joinData() {
         String date = String.valueOf(this.year) +
                 (this.month < 10 ? "0" : "") + String.valueOf(this.month) +
@@ -127,21 +143,40 @@ public class YearMonthDay implements Parcelable {
 
     public void setDay(int day) { this.day = day; }
 
+    /**
+     * sets the today date to the object class holders
+     */
     public void setTodayDate() {
         Date date = new Date();
         setDate(date);
     }
 
+    /**
+     * Gets a date string in format yyyyMMdd
+     * and stores it in the object class holders
+     *
+     * @param date the date to be stored
+     */
     public void setDate(String date) {
         splitDate(date);
     }
 
+    /**
+     * Gets a date in 3 parameters and stores in the object class holders
+     * @param year the year
+     * @param month the month
+     * @param day the day
+     */
     public void setDate(int year, int month, int day) {
         this.year = year;
         this.month = month;
         this.day = day;
     }
 
+    /**
+     * Gets a date in Date format and stores in the object class holders
+     * @param date
+     */
     @SuppressWarnings("deprecation")
     public void setDate(Date date) {
         this.year = date.getYear()+1900;
@@ -149,10 +184,18 @@ public class YearMonthDay implements Parcelable {
         this.day = date.getDate();
     }
 
+    /**
+     * Returns the stored date data as a date string in database format yyyyMMdd
+     * @return the date string
+     */
     public String getDbDate() {
         return joinData();
     }
 
+    /**
+     * Returns the stored date data as Date type date
+     * @return the date
+     */
     public Date getDate() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getAppLocalizedPattern());
         Date retDate = null;

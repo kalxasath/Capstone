@@ -26,12 +26,14 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.aiassoft.capstone.MyApp;
-import com.aiassoft.capstone.widgets.VehicleWidgetProvider;
 
 /**
  * Created by gvryn on 08/08/18.
  */
 
+/**
+ * class model to hold the VehiclesTotalRunningCosts data for various use
+ */
 public class VehiclesTotalRunningCosts implements Parcelable {
 
     private static final String LOG_TAG = MyApp.APP_TAG + VehiclesTotalRunningCosts.class.getSimpleName();
@@ -123,7 +125,6 @@ public class VehiclesTotalRunningCosts implements Parcelable {
      * @param in
      */
     protected VehiclesTotalRunningCosts(Parcel in) {
-        Log.d(LOG_TAG, "VehiclesTotalRunningCosts parcel to object");
         this.vehicleId = in.readInt();
         this.name = in.readString();
         this.distanceUnit = in.readInt();
@@ -187,7 +188,6 @@ public class VehiclesTotalRunningCosts implements Parcelable {
     }
 
     public void calcTotals() {
-//todo check totals
         expenseTotalCost = expenseParkingCost + expenseTollCost + expenseInsuranceCost;
         serviceTotalCost = serviceBasicCost + serviceDamageCost;
 
@@ -391,8 +391,6 @@ public class VehiclesTotalRunningCosts implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        Log.d(LOG_TAG,"writeToParcel");
-
         dest.writeInt(this.vehicleId);
         dest.writeString(this.name);
         dest.writeInt(this.distanceUnit);

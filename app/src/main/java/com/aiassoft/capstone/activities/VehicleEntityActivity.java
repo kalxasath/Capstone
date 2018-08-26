@@ -22,6 +22,7 @@
 package com.aiassoft.capstone.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -120,6 +121,7 @@ public class VehicleEntityActivity extends AppCompatActivity
     private ImageView mToolbarPhoto;
 
     private static boolean mEntityUpdated;
+    private static boolean mForceDisplayVehiclesImage;
 
     private int mScrollViewContainerScrollToY = Const.INVALID_INT;
 
@@ -200,8 +202,14 @@ public class VehicleEntityActivity extends AppCompatActivity
             mScrollViewContainerScrollToY = savedInstanceState.getInt(STATE_SCROLL_POS, Const.INVALID_INT); // NestedScrollView
             mVehicle = savedInstanceState.getParcelable(STATE_ENTITY);
             mEntityUpdated = savedInstanceState.getBoolean(STATE_ENTITY_UPDATED, false);
+
+            mForceDisplayVehiclesImage = true;
+            requestPermissions();
+            displayVehicleImage();
+            //todo
         } else {
 
+            mForceDisplayVehiclesImage = false;
             /*
               should be called from another activity. if not, show error toast and return
              */
@@ -227,6 +235,7 @@ public class VehicleEntityActivity extends AppCompatActivity
                 // Generate Entities Structure
                 mVehicle = new Vehicle();
 
+                // use a post delay to set mEntityUpdated = false;
                 setEntityUpdatedStateToFalse();
             }
 
@@ -349,7 +358,6 @@ public class VehicleEntityActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d(LOG_TAG, "GVGVGVGVGV afterTextChanged");
                 mEntityUpdated = true;
                 setEntityTitle(s.toString());
             }
@@ -370,7 +378,6 @@ public class VehicleEntityActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d(LOG_TAG, "GVGVGVGVGV afterTextChanged");
                 mEntityUpdated = true;
             }
         };
@@ -394,7 +401,6 @@ public class VehicleEntityActivity extends AppCompatActivity
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                Log.d(LOG_TAG, "GVGVGVGVGV Handler reset to false");
                 mEntityUpdated = false;
             }
         }, 300);
@@ -614,7 +620,7 @@ public class VehicleEntityActivity extends AppCompatActivity
     }
 
     private void displayVehicleImage() {
-        if (mVehicleId != Const.NEW_RECORD_ID) {
+        if (mVehicleId != Const.NEW_RECORD_ID || mForceDisplayVehiclesImage) {
             String imagePath = mVehicle.getImage();
 
             if (imagePath == null || imagePath.isEmpty()) {
@@ -633,7 +639,6 @@ public class VehicleEntityActivity extends AppCompatActivity
 
     private void populateViews() {
         requestPermissions();
-
         displayVehicleImage();
 
         setEntityTitle(mVehicle.getTitle());
@@ -673,6 +678,7 @@ public class VehicleEntityActivity extends AppCompatActivity
      *
      * @return Return a new Loader instance that is ready to start loading.
      */
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<Vehicle> onCreateLoader(int id, final Bundle loaderArgs) {
 
@@ -695,10 +701,10 @@ public class VehicleEntityActivity extends AppCompatActivity
             } // onStartLoading
 
             /**
-             * This is the method of the AsyncTaskLoader that will load and parse the JSON data
+             * This is the method of the AsyncTaskLoader that will load the data
              * from the database in the background.
              *
-             * @return Vehicles' data from the database as a List of VehiclesReviewsListItem.
+             * @return Vehicles' data from database as a List of VehiclesReviewsListItem.
              *         null if an error occurs
              */
             @Override
@@ -759,6 +765,7 @@ public class VehicleEntityActivity extends AppCompatActivity
             populateViews();
         }
 
+        // use a post delay to set mEntityUpdated = false;
         setEntityUpdatedStateToFalse();
     }
 
@@ -883,7 +890,6 @@ public class VehicleEntityActivity extends AppCompatActivity
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(LOG_TAG, "GVGVGVGVGV onItemSelected");
         mEntityUpdated = true;
     }
 
@@ -906,10 +912,10 @@ public class VehicleEntityActivity extends AppCompatActivity
                 String[] permissionsWeNeed = new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE };
                 requestPermissions(permissionsWeNeed, Const.MY_PERMISSION_READ_EXTERNAL_STORAGE_REQUEST_CODE);
             }
-        } else {
-            // Otherwise, permissions were granted and we are ready to go!
-            displayVehicleImage();
         }
+        // else {
+            // Otherwise, permissions were granted and we are ready to go!
+        // }
     }
 
     @Override
@@ -940,9 +946,4 @@ public class VehicleEntityActivity extends AppCompatActivity
             }
         }
     }
-
-
-
-
-
 }

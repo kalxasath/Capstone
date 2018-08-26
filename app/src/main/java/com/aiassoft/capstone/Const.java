@@ -56,7 +56,4 @@ public final class Const {
 
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
-//    public static final String FILE_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
-
 }
