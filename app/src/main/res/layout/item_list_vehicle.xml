@@ -44,6 +44,7 @@
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
+            android:focusable="true"
             android:scaleType="centerCrop"
             android:contentDescription="@string/will_be_set_at_runtime"
             android:src="@drawable/jonathan_daniels_453915_unsplash_rsz"
@@ -57,7 +58,7 @@
             android:textSize="@dimen/ilv_title_text_size"
             android:textColor="@color/ilv_title_text_color"
             android:background="@color/ilv_title_background"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:padding="@dimen/ilv_title_padding"
             />
 </android.support.v7.widget.CardView>

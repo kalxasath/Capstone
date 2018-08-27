@@ -242,7 +242,7 @@ public class ExpensesListActivity extends AppCompatActivity
 
         // Handle navigation view item clicks here.
         if (DrawerMenu.navigate(this, item, mNavigationView)) {
-            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
+//            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
         }
 

@@ -23,7 +23,6 @@ package com.aiassoft.capstone.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.aiassoft.capstone.MyApp;
 

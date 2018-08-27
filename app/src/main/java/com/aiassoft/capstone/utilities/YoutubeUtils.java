@@ -24,11 +24,8 @@ package com.aiassoft.capstone.utilities;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.aiassoft.capstone.BuildConfig;
-import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.model.VideosListItem;
@@ -39,7 +36,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.aiassoft.capstone.utilities.AppUtils.showSnackbar;
 import static com.aiassoft.capstone.utilities.AppUtils.showToast;
 
 /**

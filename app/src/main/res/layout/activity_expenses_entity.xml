@@ -139,7 +139,6 @@
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/odometer_wrapper"
         app:layout_constraintBottom_toBottomOf="@+id/odometer_wrapper"
-        android:text="Kilometers"
         />
 
     <!-- fuelQuantity -->
@@ -171,7 +170,6 @@
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/fuel_quantity_wrapper"
         app:layout_constraintBottom_toBottomOf="@+id/fuel_quantity_wrapper"
-        android:text="liters"
         />
 
     <!-- amount -->

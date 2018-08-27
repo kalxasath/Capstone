@@ -24,7 +24,6 @@ package com.aiassoft.capstone;
 import android.app.Application;
 import android.content.Context;
 
-import com.aiassoft.capstone.utilities.AppUtils;
 
 /**
  * Created by gvryn on 23/06/2018.

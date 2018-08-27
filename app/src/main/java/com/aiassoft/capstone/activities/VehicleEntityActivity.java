@@ -849,6 +849,8 @@ public class VehicleEntityActivity extends AppCompatActivity
         try {
             dispatchPickPictureIntent();
         } catch (IOException e) {
+            Log.d(LOG_TAG, "not posible error");
+            e.printStackTrace();
         }
     }
 

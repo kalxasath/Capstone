@@ -157,7 +157,6 @@
             android:textSize="@dimen/ild_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/refuel_total_cost_title"
-            android:text="Total Liters"
             />
 
         <TextView

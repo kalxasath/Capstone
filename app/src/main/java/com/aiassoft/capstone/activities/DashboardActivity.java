@@ -49,14 +49,12 @@ import android.widget.TextView;
 import com.aiassoft.capstone.MyApp;
 import com.aiassoft.capstone.R;
 import com.aiassoft.capstone.adapters.DashboardListAdapter;
-import com.aiassoft.capstone.data.CapstoneDBHelper;
 import com.aiassoft.capstone.model.VehiclesTotalRunningCosts;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -244,7 +242,7 @@ public class DashboardActivity extends AppCompatActivity
 
         // Handle navigation view item clicks here.
         if (DrawerMenu.navigate(this, item, mNavigationView)) {
-            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
+//            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
             finish();
         }
 

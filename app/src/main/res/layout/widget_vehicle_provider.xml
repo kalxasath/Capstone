@@ -18,14 +18,11 @@
  * limitations under the License.
  */
 -->
-<FrameLayout
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/wvp_backgroundColor"
-    >
+    android:background="@color/wvp_backgroundColor">
 
     <TextView
         android:id="@+id/vehicle_title"

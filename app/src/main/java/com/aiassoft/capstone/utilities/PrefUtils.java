@@ -23,7 +23,6 @@ package com.aiassoft.capstone.utilities;
 
 import android.content.SharedPreferences;
 
-import com.aiassoft.capstone.Const;
 import com.aiassoft.capstone.MyApp;
 
 import static android.content.Context.MODE_PRIVATE;

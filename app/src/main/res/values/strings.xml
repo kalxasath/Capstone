@@ -163,6 +163,7 @@
     <string name="dashboard_refuel_title">Refuel</string>
     <string name="dashboard_expenses_title">Expenses</string>
     <string name="dashboard_service_title">Service</string>
+    <string name="dashboard_total_liters">Total Liters</string>
 
     <!-- Widget -->
     <string name="select_vehicle_for_widget">Select Vehicle for Widget</string>

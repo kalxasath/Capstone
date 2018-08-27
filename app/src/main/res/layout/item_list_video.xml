@@ -20,11 +20,9 @@
  * limitations under the License.
  */
 -->
-<android.support.v7.widget.CardView
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="@dimen/ilv_card_view_height"
@@ -54,6 +52,7 @@
         android:adjustViewBounds="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:focusable="true"
         android:scaleType="centerCrop"
         android:contentDescription="@string/will_be_set_at_runtime"
         android:src="@drawable/jonathan_daniels_453915_unsplash_rsz"
@@ -67,6 +66,7 @@
         android:adjustViewBounds="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:focusable="true"
         android:scaleType="fitCenter"
         android:layout_gravity="center"
         android:contentDescription="@string/video_playback"
@@ -83,7 +83,7 @@
         android:textColor="@color/ilv_title_text_color"
         android:background="@color/ilv_title_background"
         android:clickable="true"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:padding="@dimen/ilv_title_padding"
         android:singleLine="true"
         android:ellipsize="marquee"
