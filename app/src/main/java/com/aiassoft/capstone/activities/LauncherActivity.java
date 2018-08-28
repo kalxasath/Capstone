@@ -21,9 +21,20 @@
 
 /*
  * PLEASE RESPECT PREVIOUS REVIEWERS OPINIONS AND REQUESTS AND DON'T ASK FOR NEW REQUESTS
- * AS THE 2ND REVIEWER FROM CAPSTONE 2 PLEASE PLEASE STAY ON PATH OF 1RST REVIEWERS REQUESTS
+ * PLEASE STAY ON PATH OF 1RST REVIEWERS REQUESTS
  * I WANT TO FINISH THIS PROJECT AND I KNOW THAT I AM ON PATH
  * THANK YOU VERY MUCH
+ *
+ * FINALLY
+ * I have added the (in my opinion not) missing 2nd Google Play Services
+ * Firebase SDK: implementation 'com.google.firebase:firebase-core:16.0.3'
+ *   Implemented Analytics events APP_OPEN, SELECT_CONTENT and SEARCH in activities LauncherActivity
+ *   and the 4 drawer activities, i.e., Dashboard, Vehicles List, Expenses List, YouTube search
+ * Crashlytics SDK: implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
+ *   tested, also works from alone, no need any implementation from the developer to start working
+ * AdMob changed from implementation 'com.google.android.gms:play-services-ads:15.0.1'
+ *                 to implementation 'com.google.firebase:firebase-ads:15.0.1'
+ *
  *
  * 2nd reviewers requirements to pass the capstone stage 2
  *
@@ -163,9 +174,9 @@ public class LauncherActivity extends AppCompatActivity {
         //Crashlytics.getInstance().crash();
 
         // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle bundle;
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         bundle = new Bundle();
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 

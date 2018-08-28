@@ -54,6 +54,7 @@ import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.List;
 
@@ -171,6 +172,9 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     private void initAdView() {
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, mContext.getString(R.string.banner_ad_unit_id));
+
         // Create an ad request. Check logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
