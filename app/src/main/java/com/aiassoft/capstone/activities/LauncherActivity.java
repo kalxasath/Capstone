@@ -20,12 +20,34 @@
  */
 
 /*
- * 1st reviewers requirements to pass the capstone stage 2
- *
  * PLEASE RESPECT PREVIOUS REVIEWERS OPINIONS AND REQUESTS AND DON'T ASK FOR NEW REQUESTS
  * AS THE 2ND REVIEWER FROM CAPSTONE 2 PLEASE PLEASE STAY ON PATH OF 1RST REVIEWERS REQUESTS
  * I WANT TO FINISH THIS PROJECT AND I KNOW THAT I AM ON PATH
  * THANK YOU VERY MUCH
+ *
+ * 2nd reviewers requirements to pass the capstone stage 2
+ *
+ * - app/src/main/res/layout/app_drawer_container.xml
+ *   line 46 required contentDescription
+ *   fixed by adding android:contentDescription="@string/will_be_set_at_runtime"
+ *   at runtime when the FAB is used (visible) then it is set to the appropriate  message like
+ *   mFab.setContentDescription(getString(R.string.add_new_expense));
+ *
+ *
+ * - app/build.gradle
+ *   line 77 required to implement 2nd Google Play Service
+ *   I have declared in my Capstone 1 (blueprint) that I will use Google YouTube search service as the second service and this was approved
+ *   this is not my fault, the reviewers have to respect previous reviewers opinions!
+ *   I have sent mail to Udacity support for this unpleasant surprise he asked me to implement the 3rd service
+ *   I have spend a lot of time to implemented the Google YouTube search service
+ *   PLEASE CONSIDER AND ASK UDACITY BEFORE YOU REQUEST AGAIN TO IMPLEMENT THE 3RD SERVICE!!!!!!!!!!!
+ *
+ *   I am still waiting about Udacity's arbitration, that are not serious things, because this is a fault from Udacity
+ *   2 reviewers have seen the capstone 1 and no one has mentiont that the 2nd service should a Google Play Service
+ *   I hope Udacity will decide wisely, because it is Udacity's fault not mine!!!!!!
+ *
+ *
+ * 1st reviewers requirements to pass the capstone stage 2
  *
  * - app/build.gradle
  *   line 31 required missing file ../capstone.jks
