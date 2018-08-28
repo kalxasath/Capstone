@@ -147,11 +147,16 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.crashlytics.android.Crashlytics;
+
 public class LauncherActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Worked
+        //Crashlytics.getInstance().crash();
 
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
