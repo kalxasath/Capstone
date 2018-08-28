@@ -60,6 +60,7 @@ import com.aiassoft.capstone.model.Expense;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.AppUtils;
 import com.aiassoft.capstone.widgets.VehicleWidgetProvider;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;

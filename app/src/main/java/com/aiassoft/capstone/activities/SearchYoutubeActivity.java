@@ -23,6 +23,7 @@ package com.aiassoft.capstone.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -55,6 +56,7 @@ import com.aiassoft.capstone.model.VideosListItem;
 import com.aiassoft.capstone.navigation.DrawerMenu;
 import com.aiassoft.capstone.utilities.NetworkUtils;
 import com.aiassoft.capstone.utilities.YoutubeUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.net.URL;
 import java.util.List;
@@ -76,6 +78,8 @@ public class SearchYoutubeActivity extends AppCompatActivity
         LoaderManager.LoaderCallbacks<List<VideosListItem>> {
 
     private static final String LOG_TAG = MyApp.APP_TAG + SearchYoutubeActivity.class.getSimpleName();
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     /**
@@ -131,6 +135,8 @@ public class SearchYoutubeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         setContentView(R.layout.app_drawer);
         mContext = this;
         mSearchQuery = null;
@@ -304,6 +310,11 @@ public class SearchYoutubeActivity extends AppCompatActivity
             displayNetworkConnectivityError();
         } else {
             invalidateOptionsMenu();
+
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, searchQuery);
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH, bundle);
+
             fetchVideosList(searchQuery);
         }
 

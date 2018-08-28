@@ -178,6 +178,12 @@
     <string name="date_picker_accept">Accept</string>
     <string name="date_picker_title">GV Title GV</string>
 
+    <!-- Google Analytics -->
+    <string name="ga_dashboard">Dashboard</string>
+    <string name="ga_vehicle_list">Vehicle List</string>
+    <string name="ga_expenses_list">Expenses List</string>
+    <string name="ga_youtube_search">YouToube Search</string>
+
 
     <!-- Dummy Large Text -->
     <string name="large_text">

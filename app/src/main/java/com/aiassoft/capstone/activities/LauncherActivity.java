@@ -147,9 +147,13 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.aiassoft.capstone.R;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class LauncherActivity extends AppCompatActivity {
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +161,17 @@ public class LauncherActivity extends AppCompatActivity {
 
         // Worked
         //Crashlytics.getInstance().crash();
+
+        // Obtain the FirebaseAnalytics instance.
+        Bundle bundle;
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        bundle = new Bundle();
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
+
+        bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, this.getString(R.string.ga_dashboard));
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
